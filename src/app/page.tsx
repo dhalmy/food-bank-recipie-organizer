@@ -10,7 +10,7 @@ import recipeImage from "./images/recipe.png";
 import inventoryImage from "./images/inventory.png";
 
 import { useEffect, useState } from 'react';
-import { is_database_created, create_database, use_found_database } from '../database/indexedDB';
+import { is_database_created, create_database, use_found_database } from '../database/localDatabase';
 
 export default function LandingPage() {
   const [dbStatus, setDbStatus] = useState<string>('Checking...');
