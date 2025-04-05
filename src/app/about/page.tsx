@@ -8,7 +8,6 @@ export default function AboutPage() {
     backgroundSize: "cover",
     backgroundPosition: "center",
     minHeight: "100vh",
-    padding: "2rem",
     fontFamily: '"EB Garamond", serif',
     lineHeight: "1.6",
     color: "#333",
@@ -17,7 +16,6 @@ export default function AboutPage() {
   const contentStyle = {
     maxWidth: "800px",
     margin: "0 auto",
-    padding: "2rem",
   };
 
   const titleImageStyle = {

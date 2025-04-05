@@ -64,7 +64,7 @@ export default function LandingPage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "2rem",
+          
           fontFamily: '"EB Garamond", serif',
         }}
       >
