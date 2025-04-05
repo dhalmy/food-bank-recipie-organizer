@@ -1,5 +1,6 @@
-import Head from "next/head";
 'use client';
+
+import Head from "next/head";
 import Link from "next/link";
 import backgroundImage from "./images/background.png";
 import titleImage from "./images/title.png";
