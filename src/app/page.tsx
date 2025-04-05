@@ -1,11 +1,13 @@
+import Head from "next/head";
 'use client';
 import Link from "next/link";
-import backgroundImage from "./background.png";
-import titleImage from "./title.png";
-import homeImage from "./home.png";
-import mealPrepImage from "./meal-preparation.png";
-import recipeImage from "./recipe.png";
-import inventoryImage from "./inventory.png";
+import backgroundImage from "./images/background.png";
+import titleImage from "./images/title.png";
+import aboutImage from "./images/about.png";
+import mealPrepImage from "./images/meal-preparation.png";
+import recipeImage from "./images/recipe.png";
+import inventoryImage from "./images/inventory.png";
+
 import { useEffect, useState } from 'react';
 import { is_database_created, create_database, use_found_database } from '../database/indexedDB';
 
@@ -40,46 +42,58 @@ export default function LandingPage() {
   });
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${backgroundImage.src})`,
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <img
-        src={titleImage.src}
-        alt="Food Bank Recipe Organizer"
-        style={{ maxHeight: "175px", width: "auto" }}
-      />
+    <>
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "20px",
-          marginTop: "2rem",
+          backgroundImage: `url(${backgroundImage.src})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "2rem",
+          fontFamily: '"EB Garamond", serif',
         }}
       >
-        <Link href="/" style={{ textDecoration: "none" }}>
-          <div style={buttonStyle(homeImage.src)}></div>
-        </Link>
-        <Link href="/meal-preparation" style={{ textDecoration: "none" }}>
-          <div style={buttonStyle(mealPrepImage.src)}></div>
-        </Link>
-        <Link href="/recipe" style={{ textDecoration: "none" }}>
-          <div style={buttonStyle(recipeImage.src)}></div>
-        </Link>
-        <Link href="/inventory" style={{ textDecoration: "none" }}>
-          <div style={buttonStyle(inventoryImage.src)}></div>
-        </Link>
+        <img
+          src={titleImage.src}
+          alt="Food Bank Recipe Organizer"
+          style={{ maxHeight: "175px", width: "auto" }}
+        />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "20px",
+            marginTop: "2rem",
+          }}
+        >
+          <Link href="/meal-preparation" style={{ textDecoration: "none" }}>
+            <div style={buttonStyle(mealPrepImage.src)}></div>
+          </Link>
+          <Link href="/recipes" style={{ textDecoration: "none" }}>
+            <div style={buttonStyle(recipeImage.src)}></div>
+          </Link>
+          <Link href="/inventory" style={{ textDecoration: "none" }}>
+            <div style={buttonStyle(inventoryImage.src)}></div>
+          </Link>
+          <Link href="/about" style={{ textDecoration: "none" }}>
+            <div style={buttonStyle(aboutImage.src)}></div>
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
