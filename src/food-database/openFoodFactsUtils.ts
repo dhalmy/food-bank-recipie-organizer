@@ -1,4 +1,4 @@
-import { FoodItem, add_food_item, get_food_item } from './localDatabase';
+import { InventoryItem, add_inventory_item, get_inventory_item } from './localDatabase';
 
 interface OpenFoodFactsResponse {
   code: string;
@@ -35,9 +35,9 @@ interface OpenFoodFactsResponse {
 /**
  * Fetches product data from OpenFoodFacts API using a UPC-A code
  * @param upcCode The UPC-A code to look up
- * @returns A promise that resolves to a FoodItem or null if not found
+ * @returns A promise that resolves to an InventoryItem or null if not found
  */
-export async function fetchProductByUPC(upcCode: string): Promise<FoodItem | null> {
+export async function fetchProductByUPC(upcCode: string): Promise<InventoryItem | null> {
   try {
     console.log(`Fetching product with UPC: ${upcCode}`);
     const apiUrl = `https://world.openfoodfacts.org/api/v3/product/${upcCode}.json`;
@@ -90,8 +90,8 @@ export async function fetchProductByUPC(upcCode: string): Promise<FoodItem | nul
       }
     }
     
-    // Create a FoodItem from the API response
-    const foodItem: FoodItem = {
+    // Create an InventoryItem from the API response
+    const inventoryItem: InventoryItem = {
       serialNumber: upcCode,
       foodTypeId: foodTypeId,
       subCategory: data.product.product_name || data.product.brands || 'Unknown Product',
@@ -132,8 +132,8 @@ export async function fetchProductByUPC(upcCode: string): Promise<FoodItem | nul
       }
     };
     
-    console.log('Created FoodItem:', JSON.stringify(foodItem, null, 2));
-    return foodItem;
+    console.log('Created InventoryItem:', JSON.stringify(inventoryItem, null, 2));
+    return inventoryItem;
   } catch (error) {
     console.error('Error fetching product from OpenFoodFacts:', error);
     return null;
@@ -148,26 +148,26 @@ export async function fetchProductByUPC(upcCode: string): Promise<FoodItem | nul
 export async function addProductByUPC(upcCode: string): Promise<boolean> {
   console.log(`Adding product with UPC: ${upcCode}`);
   
-  // Check if the product already exists in the database
-  const existingItem = get_food_item(upcCode);
-  if (existingItem) {
-    console.log('Product already exists in database:', existingItem);
-    return true; // Return true since the product is already in the database
-  }
-  
-  const foodItem = await fetchProductByUPC(upcCode);
-  
-  if (!foodItem) {
-    console.error('Failed to fetch product data');
-    return false;
-  }
-  
   try {
-    console.log('Adding food item to database:', foodItem);
-    add_food_item(foodItem);
+    // Check if the product already exists in the database
+    const existingItem = get_inventory_item(upcCode);
+    if (existingItem) {
+      console.log('Product already exists in database:', existingItem);
+      return true; // Return true since the product is already in the database
+    }
+    
+    const inventoryItem = await fetchProductByUPC(upcCode);
+    
+    if (!inventoryItem) {
+      console.error('Failed to fetch product data');
+      return false;
+    }
+    
+    console.log('Adding inventory item to database:', inventoryItem);
+    add_inventory_item(inventoryItem);
     
     // Verify the item was added
-    const addedItem = get_food_item(upcCode);
+    const addedItem = get_inventory_item(upcCode);
     if (addedItem) {
       console.log('Product added successfully and verified in database');
       return true;

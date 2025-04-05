@@ -1,6 +1,6 @@
-import { FoodItem, get_all_food_items, add_food_item, update_food_item, delete_food_item } from './localDatabase';
+import { InventoryItem as DatabaseInventoryItem, get_all_inventory_items, add_inventory_item, update_inventory_item, delete_inventory_item } from './localDatabase';
 
-// Interface for inventory items (simplified version of FoodItem for the UI)
+// Interface for inventory items (simplified version for the UI)
 export interface InventoryItem {
   id: string;
   name: string;
@@ -10,20 +10,20 @@ export interface InventoryItem {
   expiryDate?: string;
 }
 
-// Convert FoodItem to InventoryItem
-export function foodItemToInventoryItem(foodItem: FoodItem): InventoryItem {
+// Convert DatabaseInventoryItem to UI InventoryItem
+export function databaseItemToUIItem(item: DatabaseInventoryItem): InventoryItem {
   return {
-    id: foodItem.serialNumber,
-    name: foodItem.subCategory,
-    quantity: foodItem.quantity.value,
-    unit: foodItem.quantity.unit,
-    category: `Food Type ID: ${foodItem.foodTypeId}`,
-    expiryDate: foodItem.expirationDate
+    id: item.serialNumber,
+    name: item.subCategory,
+    quantity: item.quantity.value,
+    unit: item.quantity.unit,
+    category: `Food Type ID: ${item.foodTypeId}`,
+    expiryDate: item.expirationDate
   };
 }
 
-// Convert InventoryItem to FoodItem
-export function inventoryItemToFoodItem(item: InventoryItem): FoodItem {
+// Convert UI InventoryItem to DatabaseInventoryItem
+export function uiItemToDatabaseItem(item: InventoryItem): DatabaseInventoryItem {
   return {
     serialNumber: item.id,
     foodTypeId: parseInt(item.category.split(': ')[1]) || 1, // Default to 1 if parsing fails
@@ -50,25 +50,34 @@ export function inventoryItemToFoodItem(item: InventoryItem): FoodItem {
 
 // Get all inventory items
 export function getAllInventoryItems(): InventoryItem[] {
-  const foodItems = get_all_food_items();
-  return foodItems.map(foodItemToInventoryItem);
+  try {
+    const databaseItems = get_all_inventory_items();
+    if (!databaseItems) {
+      console.warn('No inventory items found in database, returning empty array');
+      return [];
+    }
+    return databaseItems.map(databaseItemToUIItem);
+  } catch (error) {
+    console.error('Error getting inventory items:', error);
+    return [];
+  }
 }
 
 // Add a new inventory item
 export function addInventoryItem(item: InventoryItem): void {
-  const foodItem = inventoryItemToFoodItem(item);
-  add_food_item(foodItem);
+  const databaseItem = uiItemToDatabaseItem(item);
+  add_inventory_item(databaseItem);
 }
 
 // Update an existing inventory item
 export function updateInventoryItem(item: InventoryItem): void {
-  const foodItem = inventoryItemToFoodItem(item);
-  update_food_item(foodItem);
+  const databaseItem = uiItemToDatabaseItem(item);
+  update_inventory_item(databaseItem);
 }
 
 // Delete an inventory item
 export function deleteInventoryItem(id: string): void {
-  delete_food_item(id);
+  delete_inventory_item(id);
 }
 
 // Get inventory items by category

@@ -1,0 +1,36 @@
+{
+  "foodTypes": [
+    {
+      "foodTypeId": 1,
+      "name": "Grains",
+      "description": "Cereals, bread, rice, pasta, etc."
+    },
+    {
+      "foodTypeId": 2,
+      "name": "Proteins",
+      "description": "Meat, fish, eggs, legumes, etc."
+    },
+    {
+      "foodTypeId": 3,
+      "name": "Vegetables",
+      "description": "Fresh, frozen, or canned vegetables"
+    },
+    {
+      "foodTypeId": 4,
+      "name": "Fruits",
+      "description": "Fresh, frozen, or canned fruits"
+    },
+    {
+      "foodTypeId": 5,
+      "name": "Dairy",
+      "description": "Milk, cheese, yogurt, etc."
+    },
+    {
+      "foodTypeId": 6,
+      "name": "Condiments",
+      "description": "Sauces, spices, oils, etc."
+    }
+  ],
+  "inventoryItems": [
+  ]
+} 

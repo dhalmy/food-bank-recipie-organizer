@@ -11,8 +11,9 @@ import {
   updateInventoryItem, 
   deleteInventoryItem,
   InventoryItem
-} from '@/database/inventoryUtils';
-import { addProductByUPC } from '@/database/openFoodFactsUtils';
+} from '@/food-database/inventoryUtils';
+import { addProductByUPC } from '@/food-database/openFoodFactsUtils';
+import { initializeDatabase } from '@/food-database/localDatabase';
 
 export default function InventoryPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -31,6 +32,10 @@ export default function InventoryPage() {
 
   // Load inventory items on component mount
   useEffect(() => {
+    // Initialize the database first
+    initializeDatabase();
+    
+    // Then load the inventory items
     const items = getAllInventoryItems();
     setInventory(items);
   }, []);
