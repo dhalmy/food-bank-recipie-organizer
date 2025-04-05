@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getAllItems, addItem, removeItems } from '@/lib/db';
 
 interface FoodItem {
   id: string;
@@ -27,50 +26,34 @@ export default function InventoryPage() {
     category: '',
   });
 
-  useEffect(() => {
-    loadInventory();
-  }, []);
-
-  const loadInventory = async () => {
-    try {
-      const items = await getAllItems();
-      setInventory(items);
-    } catch (error) {
-      console.error('Failed to load inventory:', error);
+  const handleAddItem = () => {
+    if (!newItem.name || !newItem.unit || !newItem.category) {
+      alert('Please fill in all required fields');
+      return;
     }
+
+    const item: FoodItem = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: newItem.name,
+      quantity: newItem.quantity || 0,
+      unit: newItem.unit,
+      category: newItem.category,
+      expiryDate: newItem.expiryDate,
+    };
+
+    setInventory([...inventory, item]);
+    setNewItem({
+      name: '',
+      quantity: 0,
+      unit: '',
+      category: '',
+    });
+    setIsAddingItem(false);
   };
 
-  const handleAddItem = async () => {
-    try {
-      if (!newItem.name || !newItem.unit || !newItem.category) {
-        alert('Please fill in all required fields');
-        return;
-      }
-
-      await addItem(newItem as Omit<FoodItem, 'id'>);
-      await loadInventory();
-      setNewItem({
-        name: '',
-        quantity: 0,
-        unit: '',
-        category: '',
-      });
-      setIsAddingItem(false);
-    } catch (error) {
-      console.error('Failed to add item:', error);
-      alert('Failed to add item. Please try again.');
-    }
-  };
-
-  const handleRemoveItems = async () => {
-    try {
-      await removeItems(selectedItems);
-      await loadInventory();
-      setSelectedItems([]);
-    } catch (error) {
-      console.error('Failed to remove items:', error);
-      alert('Failed to remove items. Please try again.');
-    }
+  const handleRemoveItems = () => {
+    setInventory(inventory.filter(item => !selectedItems.includes(item.id)));
+    setSelectedItems([]);
   };
 
   const handleGetRecipeSuggestions = () => {
