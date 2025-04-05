@@ -21,6 +21,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             <Link href="/" style={linkStyle}>Home</Link>
             <Link href="/about" style={linkStyle}>About</Link>
             <Link href="/recipes" style={linkStyle}>Recipes</Link>
+            <Link href="/mealprep" style={linkStyle}>Meal Prep</Link>
           </nav>
         </header>
       )}
