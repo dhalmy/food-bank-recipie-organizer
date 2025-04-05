@@ -1,5 +1,4 @@
 'use client';
-
 import Head from "next/head";
 import Link from "next/link";
 import backgroundImage from "./images/background.png";
@@ -8,9 +7,10 @@ import aboutImage from "./images/about.png";
 import mealPrepImage from "./images/meal-preparation.png";
 import recipeImage from "./images/recipe.png";
 import inventoryImage from "./images/inventory.png";
-
 import { useEffect, useState } from 'react';
 import { is_database_created, create_database, use_found_database } from '../database/indexedDB';
+import { create_dummy_data } from '../database/dummyData';
+import { openDB } from "idb";
 
 export default function LandingPage() {
   const [dbStatus, setDbStatus] = useState<string>('Checking...');
@@ -22,6 +22,8 @@ export default function LandingPage() {
       if (!exists) {
         await create_database();
         setDbStatus('Database created.');
+        const db = await openDB('foodBank', 1);
+        await create_dummy_data(db); // Add dummy data
       } else {
         await use_found_database();
         setDbStatus('Database already exists.');
