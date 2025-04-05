@@ -68,7 +68,7 @@ const recipeBoxStyle = {
   padding: '1rem',
   border: '1px solid #ccc',
   borderRadius: '8px',
-  backgroundColor: '#f9f9f9',
+  backgroundColor: 'var(--background)',
 } as const;
 
 const rightColumnStyle = {
@@ -90,7 +90,7 @@ const buttonStyle = {
   border: 'none',
   borderRadius: '6px',
   backgroundColor: '#0070f3',
-  color: 'white',
+  color: 'var(--foreground)',
   fontWeight: 'bold',
   cursor: 'pointer',
 } as const;
