@@ -1,0 +1,156 @@
+{
+  "foodTypes": [
+    {
+      "foodTypeId": 1,
+      "name": "Grains",
+      "description": "Cereals, bread, rice, pasta, etc."
+    },
+    {
+      "foodTypeId": 2,
+      "name": "Proteins",
+      "description": "Meat, fish, eggs, legumes, etc."
+    },
+    {
+      "foodTypeId": 3,
+      "name": "Vegetables",
+      "description": "Fresh, frozen, or canned vegetables"
+    },
+    {
+      "foodTypeId": 4,
+      "name": "Fruits",
+      "description": "Fresh, frozen, or canned fruits"
+    },
+    {
+      "foodTypeId": 5,
+      "name": "Dairy",
+      "description": "Milk, cheese, yogurt, etc."
+    },
+    {
+      "foodTypeId": 6,
+      "name": "Condiments",
+      "description": "Sauces, spices, oils, etc."
+    }
+  ],
+  "foodItems": [
+    {
+      "serialNumber": "GRAIN001",
+      "foodTypeId": 1,
+      "subCategory": "Rice",
+      "nutritionalFacts": {
+        "calories": {
+          "value": 130,
+          "unit": "kcal"
+        },
+        "protein": {
+          "value": 2.7,
+          "unit": "g"
+        },
+        "fat": {
+          "value": 0.3,
+          "unit": "g"
+        },
+        "carbohydrates": {
+          "value": 28,
+          "unit": "g"
+        },
+        "sugar": {
+          "value": 0,
+          "unit": "g"
+        },
+        "sodium": {
+          "value": 1,
+          "unit": "mg"
+        }
+      },
+      "expirationDate": "2024-12-31",
+      "quantity": {
+        "value": 10,
+        "unit": "kg"
+      },
+      "servingSize": {
+        "value": 100,
+        "unit": "g"
+      }
+    },
+    {
+      "serialNumber": "PROT001",
+      "foodTypeId": 2,
+      "subCategory": "Canned Beans",
+      "nutritionalFacts": {
+        "calories": {
+          "value": 120,
+          "unit": "kcal"
+        },
+        "protein": {
+          "value": 7,
+          "unit": "g"
+        },
+        "fat": {
+          "value": 0.5,
+          "unit": "g"
+        },
+        "carbohydrates": {
+          "value": 22,
+          "unit": "g"
+        },
+        "sugar": {
+          "value": 1,
+          "unit": "g"
+        },
+        "sodium": {
+          "value": 400,
+          "unit": "mg"
+        }
+      },
+      "expirationDate": "2024-10-15",
+      "quantity": {
+        "value": 24,
+        "unit": "cans"
+      },
+      "servingSize": {
+        "value": 130,
+        "unit": "g"
+      }
+    },
+    {
+      "serialNumber": "VEG001",
+      "foodTypeId": 3,
+      "subCategory": "Canned Vegetables",
+      "nutritionalFacts": {
+        "calories": {
+          "value": 25,
+          "unit": "kcal"
+        },
+        "protein": {
+          "value": 1.2,
+          "unit": "g"
+        },
+        "fat": {
+          "value": 0.1,
+          "unit": "g"
+        },
+        "carbohydrates": {
+          "value": 5,
+          "unit": "g"
+        },
+        "sugar": {
+          "value": 2,
+          "unit": "g"
+        },
+        "sodium": {
+          "value": 300,
+          "unit": "mg"
+        }
+      },
+      "expirationDate": "2024-08-30",
+      "quantity": {
+        "value": 36,
+        "unit": "cans"
+      },
+      "servingSize": {
+        "value": 125,
+        "unit": "g"
+      }
+    }
+  ]
+} 
