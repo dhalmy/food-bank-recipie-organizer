@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
-import { convertRecipesToMinRecipes, getListOfRecipes, getRecipeFromName } from './types';
+import { convertRecipesToMinRecipes, filterCookingLevel, filterCookingTime, filterPrepTime, getListOfRecipes, getRecipeFromName } from './types';
 import recipeListTitle from './recipe-list-title.png';
 import recipeGeneratorTitle from './recipe-generator-title.png';
 
@@ -508,6 +508,16 @@ export default function RecipesPage() {
   const [inputValue, setInputValue] = useState('');
   const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
   const [recipeSearchQuery, setRecipeSearchQuery] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [difficultyFilters, setDifficultyFilters] = useState({
+    easy: false,
+    medium: false,
+    hard: false
+  });
+  const [prepTimeMax, setPrepTimeMax] = useState(60); // Minutes
+  const [cookTimeMax, setCookTimeMax] = useState(120); // Minutes
+
+  const filterRef = useRef<HTMLDivElement>(null);
 
   // Load recipes on initial render
   useEffect(() => {
@@ -547,11 +557,55 @@ export default function RecipesPage() {
   }, [selectedIngredients]);
 
   // Filter recipes based on search query
-  const filteredRecipes = recipeSearchQuery.trim() === '' 
-    ? availableRecipes 
-    : availableRecipes.filter(recipeName => 
-        recipeName.toLowerCase().includes(recipeSearchQuery.toLowerCase())
-      );
+  const filteredRecipes = recipeSearchQuery.trim() === ''
+    ? availableRecipes
+    : availableRecipes.filter(recipeName =>
+      recipeName.toLowerCase().includes(recipeSearchQuery.toLowerCase())
+    );
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
+  // Apply filters
+  const applyFilters = () => {
+    var filteredRecipeList = filterCookingLevel(recipes, difficultyFilters);
+    filteredRecipeList = filterCookingTime(filteredRecipeList, cookTimeMax);
+    filteredRecipeList = filterPrepTime(filteredRecipeList, prepTimeMax);
+    setAvailableRecipes(getListOfRecipes(convertRecipesToMinRecipes(filteredRecipeList), availableIngredients))
+    console.log("Applied filters:", {
+      difficultyFilters,
+      prepTimeMax,
+      cookTimeMax,
+    });
+    setIsFilterOpen(false);
+  };
+
+  // Reset filters
+  const resetFilters = () => {
+    setDifficultyFilters({ easy: false, medium: false, hard: false });
+    setPrepTimeMax(60);
+    setCookTimeMax(120);
+  };
+
+
+  // Handle difficulty checkbox changes
+  const handleDifficultyChange = (difficulty: 'easy' | 'medium' | 'hard') => {
+    setDifficultyFilters({
+      ...difficultyFilters,
+      [difficulty]: !difficultyFilters[difficulty]
+    });
+  };
 
   // Handle selecting a meal
   const handleSelectMeal = async (recipe: Recipe) => {
@@ -645,7 +699,7 @@ export default function RecipesPage() {
       setExpandedRecipe(null); // Collapse if already expanded
     } else {
       setExpandedRecipe(recipeId); // Expand the clicked recipe
-      
+
       // Add setTimeout to allow the DOM to update before scrolling
       setTimeout(() => {
         // Find the recipe container and scroll it to the left
@@ -660,7 +714,7 @@ export default function RecipesPage() {
   return (
     <div style={containerStyle}>
       <style dangerouslySetInnerHTML={{ __html: fancyScrollbarStyles }} />
-      
+
       <div style={pageHeaderStyle}>
         <h1 style={{
           fontSize: '2.5rem',
@@ -675,7 +729,7 @@ export default function RecipesPage() {
           margin: '0 auto',
         }}>Discover recipes based on your available ingredients or generate new ones</p>
       </div>
-      
+
       {/* Main Content Layout */}
       <div style={mainLayoutContainer}>
         {/* Left Column - Generator and Ingredients */}
@@ -694,12 +748,12 @@ export default function RecipesPage() {
                 margin: 0,
               }}>AI Powered Recipe Generator</h2>
             </div>
-            
-            <p style={{color: '#8D6E63', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
+
+            <p style={{ color: '#8D6E63', marginBottom: '1.5rem', fontSize: '1.05rem' }}>
               Create a custom recipe using your available ingredients. Select ingredients from below and click generate.
             </p>
           </div>
-          
+
           {/* Ingredients Flow - Selector, Selected, and Generate Button */}
           <div style={ingredientsFlowContainer}>
             {/* Ingredients Selection Section */}
@@ -713,7 +767,7 @@ export default function RecipesPage() {
               }}>
                 Available Ingredients
               </h2>
-              
+
               <div style={ingredientSelectorContainer}>
                 <div style={baseIngredientsList}>
                   {availableIngredients.map((ingredientName, i) => (
@@ -743,17 +797,17 @@ export default function RecipesPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Selected Ingredients */}
             {selectedIngredients.length > 0 && (
               <div style={selectedIngredientsContainer}>
                 <div style={{
-                  fontSize: '0.95rem', 
+                  fontSize: '0.95rem',
                   marginBottom: '0.75rem',
                   color: '#834D18',
                   fontWeight: '600'
                 }}>Selected ingredients:</div>
-                <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem'}}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {selectedIngredients.map((ingredient, index) => (
                     <div
                       key={index}
@@ -769,13 +823,13 @@ export default function RecipesPage() {
                       onClick={() => handleRecipeClick(ingredient)}
                     >
                       {ingredient}
-                      <span style={{marginLeft: '0.5rem'}}>×</span>
+                      <span style={{ marginLeft: '0.5rem' }}>×</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            
+
             {/* Generate Button */}
             <div style={buttonGroupStyle}>
               <button
@@ -799,7 +853,7 @@ export default function RecipesPage() {
             )}
           </div>
         </div>
-        
+
         {/* Right Column - Existing Recipes (Scrollable) */}
         <div style={rightColumnStyle}>
           <div style={rightScrollContainer}>
@@ -822,32 +876,112 @@ export default function RecipesPage() {
                 position: 'relative',
                 width: '200px',
               }}>
-                <input 
-                  type="text"
-                  placeholder="Filter recipes..."
-                  value={recipeSearchQuery}
-                  onChange={(e) => setRecipeSearchQuery(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.5rem 0.75rem',
-                    border: '1px solid #E9D8C4',
-                    borderRadius: '20px',
-                    fontSize: '0.9rem',
-                    backgroundColor: '#FFF8F0',
-                    color: '#5D4037',
-                    outline: 'none',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#E67E22';
-                    e.target.style.boxShadow = '0 0 0 2px rgba(230, 126, 34, 0.2)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#E9D8C4';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                />
+
+                <div style={searchContainerStyle}>
+                  <div style={inputGroupStyle}>
+                    <input
+                      type="text"
+                      placeholder="Filter recipes..."
+                      value={recipeSearchQuery}
+                      onChange={(e) => setRecipeSearchQuery(e.target.value)}
+                      style={inputStyle}
+                    />
+                    <button
+                      onClick={() => setIsFilterOpen(!isFilterOpen)}
+                      style={filterButtonStyle}
+                      aria-label="Open filter options"
+                    >
+                      <div style={hamburgerIconStyle}>
+                        <div style={hamburgerLineStyle}></div>
+                        <div style={{ ...hamburgerLineStyle, width: '12px' }}></div>
+                        <div style={{ ...hamburgerLineStyle, width: '8px' }}></div>
+                      </div>
+                    </button>
+                  </div>
+
+                  {isFilterOpen && (
+                    <div ref={filterRef} style={filterPopupStyle}>
+                      <h3 style={filterHeaderStyle}>Filter Options</h3>
+
+                      <div style={filterSectionStyle}>
+                        <h4 style={filterSectionHeaderStyle}>Difficulty</h4>
+                        <div style={checkboxGroupStyle}>
+                          <label style={checkboxLabelStyle}>
+                            <input
+                              type="checkbox"
+                              checked={difficultyFilters.easy}
+                              onChange={() => handleDifficultyChange('easy')}
+                            />
+                            <span style={checkboxTextStyle}>Easy</span>
+                          </label>
+                          <label style={checkboxLabelStyle}>
+                            <input
+                              type="checkbox"
+                              checked={difficultyFilters.medium}
+                              onChange={() => handleDifficultyChange('medium')}
+                            />
+                            <span style={checkboxTextStyle}>Medium</span>
+                          </label>
+                          <label style={checkboxLabelStyle}>
+                            <input
+                              type="checkbox"
+                              checked={difficultyFilters.hard}
+                              onChange={() => handleDifficultyChange('hard')}
+                            />
+                            <span style={checkboxTextStyle}>Hard</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div style={filterSectionStyle}>
+                        <h4 style={filterSectionHeaderStyle}>Prep Time (max minutes)</h4>
+                        <div style={sliderContainerStyle}>
+                          <input
+                            type="range"
+                            min="0"
+                            max="60"
+                            value={prepTimeMax}
+                            onChange={(e) => setPrepTimeMax(parseInt(e.target.value))}
+                            style={sliderStyle}
+                          />
+                          <span style={sliderValueStyle}>{prepTimeMax} min</span>
+                        </div>
+                      </div>
+
+                      <div style={filterSectionStyle}>
+                        <h4 style={filterSectionHeaderStyle}>Cook Time (max minutes)</h4>
+                        <div style={sliderContainerStyle}>
+                          <input
+                            type="range"
+                            min="0"
+                            max="120"
+                            value={cookTimeMax}
+                            onChange={(e) => setCookTimeMax(parseInt(e.target.value))}
+                            style={sliderStyle}
+                          />
+                          <span style={sliderValueStyle}>{cookTimeMax} min</span>
+                        </div>
+                      </div>
+
+                      <div style={filterButtonsStyle}>
+                        <button
+                          onClick={resetFilters}
+                          style={resetButtonStyle}
+                        >
+                          Reset
+                        </button>
+                        <button
+                          onClick={applyFilters}
+                          style={applyButtonStyle}
+                        >
+                          Apply Filters
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {recipeSearchQuery && (
-                  <button 
+                  <button
                     onClick={() => setRecipeSearchQuery('')}
                     style={{
                       position: 'absolute',
@@ -865,14 +999,14 @@ export default function RecipesPage() {
                 )}
               </div>
             </div>
-            
+
             {error && <p style={errorStyle}>{error}</p>}
-            
+
             <div style={recipesGridContainer}>
               {isLoading && recipes.length === 0 ? (
                 <p style={loadingStyle}>Loading recipes...</p>
               ) : filteredRecipes.length > 0 ? (
-                <div 
+                <div
                   className="recipe-scroll-container fancy-scrollbar"
                   style={{
                     display: 'flex',
@@ -899,13 +1033,13 @@ export default function RecipesPage() {
                       {filteredRecipes.map(recipeName => {
                         // Convert recipe name to full recipe object
                         const recipe = getRecipeFromName(recipes, recipeName);
-                        
+
                         // Skip if recipe not found
                         if (!recipe) return null;
-                        
+
                         return (
-                          <div 
-                            key={recipe.id} 
+                          <div
+                            key={recipe.id}
                             style={{
                               ...compactRecipeCardStyle,
                               width: '180px',
@@ -913,12 +1047,12 @@ export default function RecipesPage() {
                             }}
                             onClick={() => handleExpandRecipe(recipe.id)}
                           >
-                            <h3 style={{...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0'}}>
+                            <h3 style={{ ...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0' }}>
                               {recipe.name}
                             </h3>
-                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                              <span style={{color: '#8D6E63', fontSize: '0.8rem'}}>{recipe.difficulty}</span>
-                              <button 
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ color: '#8D6E63', fontSize: '0.8rem' }}>{recipe.difficulty}</span>
+                              <button
                                 style={expandButtonStyle}
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -933,18 +1067,18 @@ export default function RecipesPage() {
                       }).filter(Boolean)}
                     </div>
                   )}
-                  
+
                   {/* Then, if there's an expanded recipe, show it */}
                   {expandedRecipe && availableRecipes.map(recipeName => {
                     // Convert recipe name to full recipe object
                     const recipe = getRecipeFromName(recipes, recipeName);
-                    
+
                     // Skip if recipe not found or not the expanded one
                     if (!recipe || recipe.id !== expandedRecipe) return null;
-                    
+
                     return (
-                      <div 
-                        key={recipe.id} 
+                      <div
+                        key={recipe.id}
                         style={{
                           ...expandedRecipeCardStyle,
                           width: '380px',
@@ -955,32 +1089,32 @@ export default function RecipesPage() {
                           overflow: 'auto'
                         }}
                       >
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 0.5rem 0', borderBottom: '1px dotted #E9D8C4'}}>
-                          <h3 style={{...recipeNameStyle, fontSize: '1.1rem', margin: 0}}>{recipe.name}</h3>
-                          <button 
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 0.5rem 0', borderBottom: '1px dotted #E9D8C4' }}>
+                          <h3 style={{ ...recipeNameStyle, fontSize: '1.1rem', margin: 0 }}>{recipe.name}</h3>
+                          <button
                             style={collapseButtonStyle}
                             onClick={() => handleExpandRecipe(recipe.id)}
                           >
                             Collapse
                           </button>
                         </div>
-                        
-                        <div style={{flex: 1, overflow: 'auto', padding: '0.5rem 0.25rem 0.5rem 0'}}>
-                          <div style={{...miniIngredientsStyle, marginBottom: '0.75rem'}}>
-                            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18'}}>Ingredients</h4>
-                            <div style={{maxHeight: '300px', overflowY: 'auto', paddingRight: '0.25rem'}}>
+
+                        <div style={{ flex: 1, overflow: 'auto', padding: '0.5rem 0.25rem 0.5rem 0' }}>
+                          <div style={{ ...miniIngredientsStyle, marginBottom: '0.75rem' }}>
+                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18' }}>Ingredients</h4>
+                            <div style={{ maxHeight: '300px', overflowY: 'auto', paddingRight: '0.25rem' }}>
                               {recipe.ingredients.map((ing, i) => (
-                                <div key={i} style={{...ingredientStyle, marginBottom: '0.25rem'}}>
+                                <div key={i} style={{ ...ingredientStyle, marginBottom: '0.25rem' }}>
                                   <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
                                   <span style={nameStyle}>{ing.name}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
-                          
+
                           <div>
-                            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18'}}>Details</h4>
-                            <div style={{...detailsStyle, fontSize: '0.85rem', marginTop: '0.25rem', flexWrap: 'wrap', gap: '0.5rem'}}>
+                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18' }}>Details</h4>
+                            <div style={{ ...detailsStyle, fontSize: '0.85rem', marginTop: '0.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                               <span><strong>Difficulty:</strong> {recipe.difficulty}</span>
                               <span><strong>Prep:</strong> {recipe.prepTime}</span>
                               <span><strong>Cook:</strong> {recipe.cookTime}</span>
@@ -988,10 +1122,10 @@ export default function RecipesPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <button
                           onClick={() => handleSelectMeal(recipe)}
-                          style={{...miniSelectButtonStyle, marginTop: '0.5rem'}}
+                          style={{ ...miniSelectButtonStyle, marginTop: '0.5rem' }}
                           disabled={isLoading}
                         >
                           {isLoading ? '...' : 'View Details'}
@@ -999,7 +1133,7 @@ export default function RecipesPage() {
                       </div>
                     );
                   }).filter(Boolean)}
-                  
+
                   {/* If there's an expanded recipe, show the rest of the recipes in a grid */}
                   {expandedRecipe && (
                     <div style={{
@@ -1014,13 +1148,13 @@ export default function RecipesPage() {
                       {filteredRecipes.map(recipeName => {
                         // Convert recipe name to full recipe object
                         const recipe = getRecipeFromName(recipes, recipeName);
-                        
+
                         // Skip if recipe not found or it's the expanded one
                         if (!recipe || recipe.id === expandedRecipe) return null;
-                        
+
                         return (
-                          <div 
-                            key={recipe.id} 
+                          <div
+                            key={recipe.id}
                             style={{
                               ...compactRecipeCardStyle,
                               width: '180px',
@@ -1028,12 +1162,12 @@ export default function RecipesPage() {
                             }}
                             onClick={() => handleExpandRecipe(recipe.id)}
                           >
-                            <h3 style={{...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0'}}>
+                            <h3 style={{ ...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0' }}>
                               {recipe.name}
                             </h3>
-                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                              <span style={{color: '#8D6E63', fontSize: '0.8rem'}}>{recipe.difficulty}</span>
-                              <button 
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ color: '#8D6E63', fontSize: '0.8rem' }}>{recipe.difficulty}</span>
+                              <button
                                 style={expandButtonStyle}
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1093,14 +1227,14 @@ export default function RecipesPage() {
             gap: '1.5rem',
           }}>
             {/* Recipe Header */}
-            <h3 style={{...recipeNameStyle, fontSize: '1.4rem', marginBottom: '0'}}>{generatedRecipe.name}</h3>
-            
+            <h3 style={{ ...recipeNameStyle, fontSize: '1.4rem', marginBottom: '0' }}>{generatedRecipe.name}</h3>
+
             {/* Details Box */}
-            <div style={{...detailsStyle, marginTop: '0'}}>
+            <div style={{ ...detailsStyle, marginTop: '0' }}>
               <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
               <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
             </div>
-            
+
             {/* Two Column Layout for Ingredients and Instructions */}
             <div style={{
               display: 'flex',
@@ -1113,7 +1247,7 @@ export default function RecipesPage() {
                 flex: '1',
                 minWidth: '300px',
               }}>
-                <h4 style={{margin: '0 0 0.75rem 0', fontSize: '1.1rem', color: '#834D18'}}>Ingredients</h4>
+                <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '1.1rem', color: '#834D18' }}>Ingredients</h4>
                 <div style={ingredientsStyle}>
                   {generatedRecipe.ingredients.map((ing, i) => (
                     <div key={i} style={ingredientStyle}>
@@ -1144,14 +1278,14 @@ export default function RecipesPage() {
                   margin: '0',
                 }}>
                   {generatedRecipe.instructions.map((step, i) => (
-                    <li key={i} style={{marginBottom: '0.75rem'}}>{step}</li>  
+                    <li key={i} style={{ marginBottom: '0.75rem' }}>{step}</li>
                   ))}
                 </ol>
               </div>
             </div>
 
             {/* Save Button */}
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
               <button
                 onClick={saveGeneratedRecipe}
                 style={saveButtonStyle}
@@ -1166,3 +1300,163 @@ export default function RecipesPage() {
     </div>
   );
 }
+
+const searchContainerStyle = {
+  position: 'relative' as const,
+  width: '100%',
+  maxWidth: '600px',
+  margin: '0 auto',
+};
+
+const inputGroupStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  position: 'relative' as const,
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '0.5rem 0.75rem',
+  paddingRight: '40px', // Space for filter button
+  border: '1px solid #E9D8C4',
+  borderRadius: '20px',
+  fontSize: '0.9rem',
+  backgroundColor: '#FFF8F0',
+  color: '#5D4037',
+  outline: 'none',
+};
+
+const filterButtonStyle = {
+  position: 'absolute' as const,
+  right: '8px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '32px',
+  height: '32px',
+  backgroundColor: '#bc4424',
+  border: 'none',
+  borderRadius: '50%',
+  cursor: 'pointer',
+  zIndex: 1,
+};
+
+const hamburgerIconStyle = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  alignItems: 'flex-end',
+  justifyContent: 'center',
+  gap: '3px',
+  width: '16px',
+  height: '16px',
+};
+
+const hamburgerLineStyle = {
+  width: '16px',
+  height: '2px',
+  backgroundColor: 'white',
+  borderRadius: '1px',
+};
+
+const filterPopupStyle = {
+  position: 'absolute' as const,
+  top: 'calc(100% + 10px)',
+  right: '0',
+  width: '300px',
+  backgroundColor: 'white',
+  borderRadius: '12px',
+  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+  border: '1px solid #E9D8C4',
+  padding: '1.25rem',
+  zIndex: 100,
+};
+
+const filterHeaderStyle = {
+  margin: '0 0 1rem 0',
+  fontSize: '1.1rem',
+  fontWeight: 'bold',
+  color: '#5D4037',
+  borderBottom: '1px solid #E9D8C4',
+  paddingBottom: '0.5rem',
+};
+
+const filterSectionStyle = {
+  marginBottom: '1.25rem',
+};
+
+const filterSectionHeaderStyle = {
+  margin: '0 0 0.5rem 0',
+  fontSize: '0.9rem',
+  fontWeight: 'bold',
+  color: '#5D4037',
+};
+
+const checkboxGroupStyle = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+  gap: '0.5rem',
+};
+
+const checkboxLabelStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  fontSize: '0.9rem',
+};
+
+const checkboxTextStyle = {
+  marginLeft: '0.5rem',
+};
+
+const sliderContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+};
+
+const sliderStyle = {
+  flex: '1',
+  appearance: 'none' as const,
+  height: '6px',
+  borderRadius: '3px',
+  backgroundColor: '#E9D8C4',
+  outline: 'none',
+  // Additional styles for slider thumbs would need vendor prefixes in real CSS
+};
+
+const sliderValueStyle = {
+  minWidth: '48px',
+  textAlign: 'right' as const,
+  fontSize: '0.9rem',
+};
+
+const filterButtonsStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: '0.75rem',
+  marginTop: '1.5rem',
+};
+
+const resetButtonStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#f5f5f5',
+  color: '#5D4037',
+  border: '1px solid #E9D8C4',
+  borderRadius: '6px',
+  fontSize: '0.9rem',
+  cursor: 'pointer',
+  flex: '1',
+};
+
+const applyButtonStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#bc4424',
+  color: 'white',
+  border: 'none',
+  borderRadius: '6px',
+  fontSize: '0.9rem',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  flex: '1',
+};

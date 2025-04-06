@@ -70,17 +70,28 @@ function convertStringTimeToNumber(time: string): number {
 }
 
 //check difficulty
-export function filterCookingLevel(recipes: Recipe[], difficulty: string[]): Recipe[] {
-  return recipes.filter(recipe => difficulty.includes(recipe.difficulty));
+export function filterCookingLevel(recipes: Recipe[], difficultyFilters: {easy: boolean, medium: boolean, hard: boolean}): Recipe[] {
+  // Convert the difficulty filters object into an array of selected difficulty levels
+  const selectedDifficulties = Object.entries(difficultyFilters)
+    .filter(([_, isSelected]) => isSelected)
+    .map(([difficulty]) => difficulty);
+
+  // If no filters are selected, return all recipes
+  if (selectedDifficulties.length === 0) {
+    return recipes;
+  }
+
+  // Filter recipes based on selected difficulties
+  return recipes.filter(recipe => selectedDifficulties.includes(recipe.difficulty.toLowerCase()));
 }
 
 // filters for if cooking time takes longer than desired
 export function filterCookingTime(recipe: Recipe[], time_min: number): Recipe[] {
-  return recipe.filter(recipe => convertStringTimeToNumber(recipe.cookTime) > time_min);
+  return recipe.filter(recipe => convertStringTimeToNumber(recipe.cookTime) < time_min);
 }
 // filters for if prep time takes longer than desired
 export function filterPrepTime(recipe: Recipe[], time_min: number): Recipe[] {
-  return recipe.filter(recipe => convertStringTimeToNumber(recipe.prepTime) > time_min)
+  return recipe.filter(recipe => convertStringTimeToNumber(recipe.prepTime) < time_min)
 }
 
 export function convertRecipesToMinRecipes(recipes: Recipe[]): minRecipe[] {
