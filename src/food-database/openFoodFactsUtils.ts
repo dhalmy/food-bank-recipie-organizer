@@ -12,7 +12,7 @@ interface OpenFoodFactsResponse {
     product_quantity_unit?: string;
     serving_quantity?: string;
     serving_quantity_unit?: string;
-    serving_size?: string;
+    // serving_size?: string;
     // Image URLs
     image_front_url?: string;
     image_front_thumb_url?: string;
@@ -146,7 +146,7 @@ export async function fetchProductByUPC(upcCode: string): Promise<InventoryItem 
         value: parseFloat(data.product.product_quantity || '1'),
         unit: data.product.product_quantity_unit || 'item'
       },
-      servingSize: {
+      servingQuantity: {
         value: parseFloat(data.product.serving_quantity || '100'),
         unit: data.product.serving_quantity_unit || 'g'
       },
