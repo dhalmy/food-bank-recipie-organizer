@@ -13,7 +13,7 @@ interface Ingredient {
   unit: string;
 }
 
-interface Recipe {
+export interface Recipe {
   id: string;
   name: string;
   cuisine: string;
