@@ -35,7 +35,6 @@ export default function RecipesPage() {
   const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
   const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
 
-  const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
 
   // Load recipes on initial render
   useEffect(() => {
@@ -96,7 +95,7 @@ export default function RecipesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: input,
-          ingredients: baseIngredients
+          ingredients: availableIngredients
         })
       });
 
