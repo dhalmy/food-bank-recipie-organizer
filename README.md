@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Food Bank Recipe Organizer
 
-## Getting Started
+This project is a Next.js application designed to help food banks organize and generate recipes based on available ingredients.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Docker installed on your system.
+* An OpenAI API key.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone the repository:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    ```bash
+    git clone [your-repository-url]
+    cd food-bank-recipe-organizer
+    ```
 
-## Learn More
+2.  **Create a `.env.local` file:**
 
-To learn more about Next.js, take a look at the following resources:
+    * In the root of the project, create a file named `.env.local`.
+    * Add your OpenAI API key to this file:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+        ```
+        OPENAI_API_KEY=your_actual_api_key
+        ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    * **Important:** Never commit this file to version control. Ensure it is included in your `.gitignore` file.
 
-## Deploy on Vercel
+## Building the Docker Image
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Build the Docker image with the OpenAI API key as a secret:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    docker build --secret id=OPENAI_API_KEY,src=.env.local -t food-bank-recipe-app .
+    ```
+
+    * This command builds the Docker image and passes your API key as a Docker secret.
+    * The `-t food-bank-recipe-app` tag names the image `food-bank-recipe-app`.
+    * The `.` at the end specifies the build context (the current directory).
+
+2.  **Run the Docker container:**
+
+    ```bash
+    docker run -p 3000:3000 food-bank-recipe-app
+    ```
+
+    * This command runs the Docker container and maps port 3000 of the container to port 3000 on your host machine.
+    * You can then access the application in your browser at `http://localhost:3000`.
+
+## Docker Compose (Optional)
+
+If you prefer to use Docker Compose, run `docker-compose up --build` root of your project:
+
