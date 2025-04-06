@@ -32,15 +32,13 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Overall layout background remains the same
 const layoutStyle = {
   backgroundImage: `url(${backgroundImage.src})`,
-  backgroundSize: "cover",
+  backgroundSize: "auto", // or "contain" if you want the image fully visible
+  backgroundRepeat: "repeat", // this will tile the image
   backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
   minHeight: "100vh",
-};
-
+};  
 // Header gets its own background image
 const headerStyle = {
   display: 'flex',

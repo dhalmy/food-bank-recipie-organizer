@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
 import { convertRecipesToMinRecipes, getListOfRecipes } from './types';
+import recipeListTitle from './recipe-list-title.png';
+import recipeGeneratorTitle from './recipe-generator-title.png';
 
 interface Ingredient {
   name: string;
@@ -141,7 +143,7 @@ export default function RecipesPage() {
     <div style={containerStyle}>
       {/* Left column: recipe list */}
       <div style={leftColumnStyle}>
-        <h2 style={headerStyle}>Recipe List</h2>
+        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
         {error && <p style={errorStyle}>{error}</p>}
         {isLoading && recipes.length === 0 ? (
           <p style={loadingStyle}>Loading recipes...</p>
@@ -179,7 +181,7 @@ export default function RecipesPage() {
 
       {/* Right column: controls */}
       <div style={rightColumnStyle}>
-        <h2 style={headerStyle}>Recipe Generator</h2>
+        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
         
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
@@ -275,12 +277,6 @@ const rightColumnStyle = {
   gap: '2rem'
 } as const;
 
-
-const headerStyle = {
-  fontSize: '1.5rem',
-  marginBottom: '1rem',
-  color: '#333'
-} as const;
 
 const recipeBoxStyle = {
   padding: '1.5rem',
@@ -453,6 +449,15 @@ const previewContent = {
   flexDirection: 'column',
   gap: '1rem'
 } as const;
+
+const titleImageStyle = {
+  width: '250px',
+  height: '150px',
+  objectFit: 'contain', // Ensures the whole image is visible
+  display: 'block',
+  margin: '0 auto 1rem auto', // Centers the image horizontally
+} as const;
+
 
 const saveButtonStyle = {
   padding: '0.75rem 1.5rem',
