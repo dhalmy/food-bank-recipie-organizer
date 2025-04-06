@@ -2453,6 +2453,85 @@ export function delete_inventory_item(serialNumber: string): void {
   }
 }
 
+export function decrement_item(serialNumber: string): void {
+  try {
+    const db = get_database();
+    const itemIndex = db.inventoryItems.findIndex(item => item.serialNumber === serialNumber);
+    
+    if (itemIndex === -1) {
+      throw new Error(`Item with serial number ${serialNumber} not found`);
+    }
+    
+    const item = db.inventoryItems[itemIndex];
+    
+    // Check if quantity exists and is a number
+    if (typeof item.quantity?.value !== 'number') {
+      throw new Error(`Invalid quantity for item ${serialNumber}`);
+    }
+    
+    // Decrement the quantity
+    if (item.quantity.value > 1) {
+      // Create a new object to avoid direct mutation
+      const updatedItem = {
+        ...item,
+        quantity: {
+          ...item.quantity,
+          value: item.quantity.value - 1
+        }
+      };
+      
+      // Update the item in the database
+      db.inventoryItems[itemIndex] = updatedItem;
+    } else {
+      // If quantity is 1 or less, remove the item
+      db.inventoryItems.splice(itemIndex, 1);
+    }
+    
+    // Save the updated database
+    save_database(db);
+  } catch (error) {
+    console.error("Error decrementing item:", error);
+    // You might want to re-throw the error or handle it differently
+    throw error;
+  }
+}
+
+export function increment_item(serialNumber: string): void {
+  try {
+    const db = get_database();
+    const itemIndex = db.inventoryItems.findIndex(item => item.serialNumber === serialNumber);
+    
+    if (itemIndex === -1) {
+      throw new Error(`Item with serial number ${serialNumber} not found`);
+    }
+    
+    const item = db.inventoryItems[itemIndex];
+    
+    // Check if quantity exists and is a number
+    if (typeof item.quantity?.value !== 'number') {
+      throw new Error(`Invalid quantity for item ${serialNumber}`);
+    }
+    
+    // Increment the quantity
+    const updatedItem = {
+      ...item,
+      quantity: {
+        ...item.quantity,
+        value: item.quantity.value + 1
+      }
+    };
+    
+    // Update the item in the database
+    db.inventoryItems[itemIndex] = updatedItem;
+    
+    // Save the updated database
+    save_database(db);
+  } catch (error) {
+    console.error("Error incrementing item:", error);
+    throw error;
+  }
+}
+
 // Get inventory items by food type
 export function get_inventory_items_by_type(foodTypeId: number): InventoryItem[] {
   const db = get_database();
