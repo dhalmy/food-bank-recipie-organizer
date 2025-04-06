@@ -1,4 +1,25 @@
-# Food Bank Recipe Organizer
+# PantryEQ - Equal Access Meal Kits
+
+## About the Project
+
+**Inspiration and Vision**  
+We united around a commitment to **social equity**, determined to create a real impact on food insecurity. From the outset, we knew that food banks needed a smarter way to turn unpredictable donations into nutritious, accessible meal kits that truly empower communities.
+
+**Team Roles and Contributions**  
+We defined clear roles from the start, allowing each of us to focus on our strengths:
+- **David:** Led the ingredient integration, ensuring that our system accurately gathered and processed data from various sources.
+- **Pierre:** Took charge of the AI recipe generation, developing innovative algorithms to create appetizing recipes from available pantry items.
+- **Griffyn:** Bridged the gap between the raw ingredient data and AI-driven recipe generation, ensuring a seamless flow of information that resulted in coherent, practical meal kits.
+- **UI (Myself):** Developed the landing page, designed the complete UI, created the graphics, and crafted the "About Us" page, bringing our project’s vision to life through compelling visual storytelling.
+
+**Technical Journey and Challenges**  
+Our path was filled with both breakthroughs and obstacles:
+- **Database Evolution:** Initially, we faced significant issues with our database setup. We rapidly pivoted to a JSON-only storage solution, which streamlined our process and improved reliability.
+- **API Integration:** Extracting data from the [Open Food Facts API](https://world.openfoodfacts.org) posed a major challenge. We had to devise robust methods to extract and utilize the necessary ingredient data effectively.
+- **AI Integration:** Integrating AI for recipe generation required innovative thinking, as Pierre worked tirelessly to ensure that the technology could translate ingredient lists into creative and nutritious recipes.
+
+
+
 
 This project is a Next.js application designed to help food banks organize and generate recipes based on available ingredients.
 
