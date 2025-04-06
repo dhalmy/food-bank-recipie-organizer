@@ -42,7 +42,7 @@ export default function AboutPage() {
             We are a team of four dedicated students—two French and two American—who connected through the IIT swim team and a commitment to making a tangible impact on food insecurity. Our journeys have taken us from local community centers to international volunteer kitchens.
           </p>
           <p style={paragraphStyle}>
-            One of our members gained firsthand insight into food insecurity while volunteering at Resto du Cœur in Lyon. Pierre’s time at an outreach program in Colombes opened his eyes to the transformative power of community support. David’s community service at a Chicago neighborhood center and Gryffin’s hands-on experience at a local soup kitchen have both deepened our understanding of the challenges many face in accessing nutritious food.
+            One of our members gained firsthand insight into food insecurity while volunteering at Resto du Cœur in Lyon. Pierre’s time at an outreach program in Colombes opened his eyes to the transformative power of community support. David’s community service at a Chicago neighborhood center and Griffin’s hands-on experience at a local soup kitchen have both deepened our understanding of the challenges many face in accessing nutritious food.
           </p>
           <p style={paragraphStyle}>
             These varied experiences have inspired us to create practical solutions for food banks, ensuring that every meal package we help prepare offers more than just sustenance—it provides nourishment and dignity. With our diverse cultural insights and dedicated volunteer backgrounds, we believe we are uniquely equipped to tackle the complexities of food distribution and make a positive difference in communities worldwide.
