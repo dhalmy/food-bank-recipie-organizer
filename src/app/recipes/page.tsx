@@ -138,7 +138,7 @@ const pageHeaderStyle = {
   maxWidth: '1200px',
   margin: '0 auto 2rem auto',
   width: 'calc(100% - 2rem)',
-  '@media (max-width: 768px)': {
+  '@media (maxWidth: 768px)': {
     padding: '1.5rem 1rem',
   }
 } as const;
