@@ -10,10 +10,13 @@ export async function POST(request: Request) {
     const { prompt, ingredients } = await request.json();
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [{
         role: "user",
         content: `Create a detailed recipe using these ingredients: ${ingredients.join(', ')}. 
+        Make a healthy and coherent recipe.
+        USE BETWEEN 4 AND 6 INGREDIENTS NOT MORE THAN 6. IF MORE THAN 6 INGREDIENTS ARE PROVIDED, SELECT ONLY 6. 
+        IF LESS THAN 4 INGREDIENTS ARE PROVIDED, SELECT THE REST FROM THE INGREDIENTS LIST.
         Additional instructions: ${prompt}.
         Respond in JSON format with this structure:
         {
