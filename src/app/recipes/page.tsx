@@ -81,7 +81,7 @@ const mainLayoutContainer = {
   margin: '0 auto 2rem auto',
   width: '100%',
   position: 'relative',
-  '@media (max-width: 992px)': {
+  '@media (maxWidth: 992px)': {
     flexDirection: 'column',
     gap: '1.5rem',
   }
@@ -93,7 +93,7 @@ const leftColumnStyle = {
   gap: '2rem',
   width: '65%',
   height: '100%',
-  '@media (max-width: 992px)': {
+  '@media (maxWidth: 992px)': {
     width: '100%',
   }
 } as const;
@@ -104,7 +104,7 @@ const rightColumnStyle = {
   width: '35%',
   position: 'relative',
   alignSelf: 'stretch',
-  '@media (max-width: 992px)': {
+  '@media (maxWidth: 992px)': {
     width: '100%',
   }
 } as const;
@@ -119,7 +119,7 @@ const rightScrollContainer = {
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  '@media (max-width: 992px)': {
+  '@media (maxWidth: 992px)': {
     position: 'relative',
     width: '100%',
   }
@@ -252,7 +252,7 @@ const baseIngredientsList = {
   padding: '0.5rem',
   height: '100%',
   maxHeight: '400px',
-  '@media (max-width: 992px)': {
+  '@media (maxWidth: 992px)': {
     maxHeight: '250px',
   }
 } as const;
