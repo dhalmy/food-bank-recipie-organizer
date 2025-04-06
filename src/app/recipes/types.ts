@@ -35,7 +35,7 @@ export function convertRecipesToMinRecipes(recipes: Recipe[]): minRecipe[] {
 export function getListOfRecipes(recipes: minRecipe[], availableIngredients: string[]): string[] {
   // Normalize available ingredients once
   const normalizedAvailable = availableIngredients.map(normalizeIngredient);
-
+  
   return recipes
     .filter(recipe => canMakeRecipe(recipe, normalizedAvailable))
     .map(recipe => recipe.name); // Convert to string array of names
