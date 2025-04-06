@@ -27,6 +27,62 @@ interface Recipe {
   author: string;
 }
 
+function convertStringTimeToNumber(time: string): number {
+  // Remove any leading/trailing whitespace
+  const trimmedTime = time.trim();
+  
+  // Check if the string is empty
+  if (!trimmedTime) {
+    return 0;
+  }
+  
+  // Handle case with just "0 minutes" or "0 hours"
+  if (trimmedTime.startsWith('0')) {
+    return 0;
+  }
+  
+  // Check if time contains hours
+  if (trimmedTime.includes('hour') || trimmedTime.includes('hr')) {
+    const hoursMatch = trimmedTime.match(/(\d+)\s*(hour|hr)/i);
+    const hours = hoursMatch ? parseInt(hoursMatch[1], 10) : 0;
+    
+    // Check if time also contains minutes
+    const minutesMatch = trimmedTime.match(/(\d+)\s*(minute|min)/i);
+    const minutes = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
+    
+    return (hours * 60) + minutes;
+  }
+  
+  // If only minutes are present
+  const minutesMatch = trimmedTime.match(/(\d+)\s*(minute|min)/i);
+  if (minutesMatch) {
+    return parseInt(minutesMatch[1], 10);
+  }
+  
+  // If it's just a number, assume it's minutes
+  const justNumber = trimmedTime.match(/^(\d+)$/);
+  if (justNumber) {
+    return parseInt(justNumber[1], 10);
+  }
+  
+  // Default case if no pattern matches
+  return 0;
+}
+
+//check difficulty
+export function filterCookingLevel(recipes: Recipe[], difficulty: string[]): Recipe[] {
+  return recipes.filter(recipe => difficulty.includes(recipe.difficulty));
+}
+
+// filters for if cooking time takes longer than desired
+export function filterCookingTime(recipe: Recipe[], time_min: number): Recipe[] {
+  return recipe.filter(recipe => convertStringTimeToNumber(recipe.cookTime) > time_min);
+}
+// filters for if prep time takes longer than desired
+export function filterPrepTime(recipe: Recipe[], time_min: number): Recipe[] {
+  return recipe.filter(recipe => convertStringTimeToNumber(recipe.prepTime) > time_min)
+}
+
 export function convertRecipesToMinRecipes(recipes: Recipe[]): minRecipe[] {
   const minRecipes: minRecipe[] = [];
 

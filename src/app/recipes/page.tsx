@@ -38,6 +38,7 @@ export default function RecipesPage() {
   const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
   const [selectedIngredients, setSelectedingredients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
+ 
 
   // Load recipes on initial render
   useEffect(() => {

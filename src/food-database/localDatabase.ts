@@ -159,7 +159,7 @@ export function create_database_with_dummy_data(): void {
         inventoryItems: [
           {
             "serialNumber": "014800000238",
-            "foodTypeId": 3,
+            "foodTypeId": 4,
             "subCategory": "Cinnamon applesauce",
             "nutritionalFacts": {
               "calories": {
@@ -626,7 +626,7 @@ export function create_database_with_dummy_data(): void {
           },
           {
             "serialNumber": "00000000040822",
-            "foodTypeId": 1,
+            "foodTypeId": 3,
             "subCategory": "Jumbo Red Onions",
             "nutritionalFacts": {
               "calories": {
@@ -667,7 +667,7 @@ export function create_database_with_dummy_data(): void {
           },
           {
             "serialNumber": "861745000010",
-            "foodTypeId": 1,
+            "foodTypeId": 2,
             "subCategory": "Pasture raised vital farms eggs",
             "nutritionalFacts": {
               "calories": {
@@ -753,7 +753,7 @@ export function create_database_with_dummy_data(): void {
           },
           {
             "serialNumber": "051500255162",
-            "foodTypeId": 2,
+            "foodTypeId": 6,
             "subCategory": "Jif Peanut Butter",
             "nutritionalFacts": {
               "calories": {
@@ -1654,7 +1654,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "8076800195057",
             "foodTypeId": 1,
-            "subCategory": "Spaghetti N.5",
+            "subCategory": "Spaghetti",
             "nutritionalFacts": {
               "calories": {
                 "value": 364,
@@ -1868,7 +1868,7 @@ export function create_database_with_dummy_data(): void {
           },
           {
             "serialNumber": "00389501",
-            "foodTypeId": 1,
+            "foodTypeId": 3,
             "subCategory": "Bistro salad",
             "nutritionalFacts": {
               "calories": {
@@ -1997,7 +1997,7 @@ export function create_database_with_dummy_data(): void {
           },
           {
             "serialNumber": "01800982",
-            "foodTypeId": 2,
+            "foodTypeId": 6,
             "subCategory": "Chicken & Vegetable broth",
             "nutritionalFacts": {
               "calories": {
@@ -2083,7 +2083,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "20242091",
             "foodTypeId": 3,
-            "subCategory": "Br├│coli",
+            "subCategory": "Brcccoli",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -2168,7 +2168,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "20142360",
             "foodTypeId": 1,
-            "subCategory": "Tast of - Basmati Microwave Rice",
+            "subCategory": "Taste of - Basmati Microwave Rice",
             "nutritionalFacts": {
               "calories": {
                 "value": 132,
