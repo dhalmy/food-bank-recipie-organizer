@@ -36,6 +36,8 @@ export default function RecipesPage() {
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
   const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
+  const [selectedIngredients, setSelectedingredients] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState('');
 
   // Load recipes on initial render
   useEffect(() => {
@@ -53,15 +55,15 @@ export default function RecipesPage() {
         setIsLoading(false);
       }
     };
-  
+
     fetchRecipes();
   }, []);
-  
+
   // Update available ingredients when component mounts
   useEffect(() => {
     setAvailableIngredients(getAllIngredientsList());
   }, []);
-  
+
   // Update available recipes whenever recipes or ingredients change
   useEffect(() => {
     if (recipes.length > 0 && availableIngredients.length > 0) {
@@ -69,6 +71,10 @@ export default function RecipesPage() {
       setAvailableRecipes(getListOfRecipes(minRecipes, availableIngredients));
     }
   }, [recipes, availableIngredients]);
+
+  useEffect(() => {
+    setInputValue(selectedIngredients.join(', '));
+  }, [selectedIngredients]);
 
   // Handle selecting a meal
   const handleSelectMeal = async (recipe: Recipe) => {
@@ -81,7 +87,7 @@ export default function RecipesPage() {
       });
 
       if (!response.ok) throw new Error('Failed to select meal');
-      
+
       router.push('/meal-preparation');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to select meal');
@@ -92,7 +98,7 @@ export default function RecipesPage() {
 
   // Generate recipe using OpenAI API
   const handleGenerate = async () => {
-    if (!input.trim()) {
+    if (!inputValue.trim()) {
       setError('Please enter some description');
       return;
     }
@@ -101,18 +107,17 @@ export default function RecipesPage() {
       setIsLoading(true);
       setError(null);
       setGeneratedRecipe(null);
-
       const response = await fetch('/api/generate-recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: input,
+          prompt: inputValue,
           ingredients: availableIngredients
         })
       });
 
       if (!response.ok) throw new Error('Failed to generate recipe');
-      
+
       const newRecipe = await response.json();
       setGeneratedRecipe(newRecipe);
 
@@ -121,6 +126,14 @@ export default function RecipesPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRecipeClick = (ingredientName: string) => {
+    setSelectedingredients(prev =>
+      prev.includes(ingredientName)
+        ? prev.filter(name => name !== ingredientName)
+        : [...prev, ingredientName]
+    );
   };
 
   // Save generated recipe to the list
@@ -136,7 +149,7 @@ export default function RecipesPage() {
       });
 
       if (!response.ok) throw new Error('Failed to save recipe');
-      
+
       const updatedData = await response.json();
       setRecipes(updatedData);
       setGeneratedRecipe(null);
@@ -154,11 +167,11 @@ export default function RecipesPage() {
       {/* Right column: controls */}
       <div style={leftColumnStyle}>
         <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
-        
+
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
-            <button 
-              onClick={handleGenerate} 
+            <button
+              onClick={handleGenerate}
               style={generateButtonStyle}
               disabled={isLoading}
             >
@@ -166,14 +179,19 @@ export default function RecipesPage() {
             </button>
           </div>
 
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Describe your recipe (e.g. 'quick chicken dinner')"
-            style={inputStyle}
-            disabled={isLoading}
-          />
+          {/* Ingredient bubbles - names only */}
+          {selectedIngredients.map((ingredient, index) => (
+            <div
+              key={index}
+              style={{
+                ...baseIngredientStyle,
+                display: 'inline-flex',
+                cursor: 'default'
+              }}
+            >
+              {ingredient}
+            </div>
+          ))}
 
           {generatedRecipe && (
             <div style={previewContainer}>
@@ -192,7 +210,7 @@ export default function RecipesPage() {
                   <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
                   <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
                 </div>
-                <button 
+                <button
                   onClick={saveGeneratedRecipe}
                   style={saveButtonStyle}
                   disabled={isLoading}
@@ -204,69 +222,74 @@ export default function RecipesPage() {
           )}
         </div>
       </div>
-        <div style={rightColumnStyle}>
-          <div style={baseIngredientsContainer}>
-            <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
-            <div style={baseIngredientsList}>
-              {availableIngredients.map((ing, i) => (
-                <span key={i} style={baseIngredientStyle}>{ing}</span>
-              ))}
-            </div>
-          </div>
-
-          <img src={recipeGeneratorTitle.src} alt="Recipe List" style={titleImageStyle} />
-            {error && <p style={errorStyle}>{error}</p>}
-            {isLoading && recipes.length === 0 ? (
-              <p style={loadingStyle}>Loading recipes...</p>
-            ) : availableRecipes.length > 0 ? (
-              availableRecipes.map(recipeName => {
-                // Convert recipe name to full recipe object
-                const recipe = getRecipeFromName(recipes, recipeName);
-                
-                // Skip if recipe not found (or handle differently if you prefer)
-                if (!recipe) return null;
-
-                return (
-                  <div key={recipe.id} style={recipeBoxStyle}>
-                    <div style={recipeHeaderStyle}>
-                      <h3 style={recipeNameStyle}>{recipe.name}</h3>
-                      <button 
-                        onClick={() => handleSelectMeal(recipe)}
-                        style={selectButtonStyle}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? 'Selecting...' : 'Select Meal'}
-                      </button>
-                    </div>
-                    <div style={ingredientsStyle}>
-                      {recipe.ingredients.map((ing, i) => (
-                        <div key={i} style={ingredientStyle}>
-                          <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
-                          <span style={nameStyle}>{ing.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={detailsStyle}>
-                      <span>{recipe.cuisine} • {recipe.difficulty}</span>
-                      <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
-                    </div>
-                  </div>
-                );
-              }).filter(Boolean) // Remove any null entries from failed lookups
-            ) : (
-              <p style={emptyStyle}>No recipes yet. Add some!</p>
-            )}
-
-
-          <div style={baseIngredientsContainer}>
-            <p style={baseIngredientsTitle}>Available Recipes:</p>
-            <div style={baseIngredientsList}>
-              {availableRecipes.map((ing, i) => (
-                <span key={i} style={baseIngredientStyle}>{ing}</span>
-              ))}
-            </div>
+      <div style={rightColumnStyle}>
+        <div style={baseIngredientsContainer}>
+          <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
+          <div style={baseIngredientsList}>
+            {availableIngredients.map((ingredientName, i) => (
+              <div
+                key={i}
+                onClick={() => handleRecipeClick(ingredientName)}
+                style={{
+                  ...baseIngredientStyle,
+                  cursor: 'pointer',
+                  backgroundColor: selectedIngredients.includes(ingredientName)
+                    ? 'rgba(var(--primary), 0.2)'
+                    : 'rgba(var(--foreground), 0.1)',
+                  border: selectedIngredients.includes(ingredientName)
+                    ? '1px solid rgba(var(--primary), 0.5)'
+                    : '1px solid transparent',
+                }}
+              >
+                {ingredientName}
+              </div>
+            ))}
           </div>
         </div>
+
+        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
+        {error && <p style={errorStyle}>{error}</p>}
+        {isLoading && recipes.length === 0 ? (
+          <p style={loadingStyle}>Loading recipes...</p>
+        ) : availableRecipes.length > 0 ? (
+          availableRecipes.map(recipeName => {
+            // Convert recipe name to full recipe object
+            const recipe = getRecipeFromName(recipes, recipeName);
+
+            // Skip if recipe not found (or handle differently if you prefer)
+            if (!recipe) return null;
+
+            return (
+              <div key={recipe.id} style={recipeBoxStyle}>
+                <div style={recipeHeaderStyle}>
+                  <h3 style={recipeNameStyle}>{recipe.name}</h3>
+                  <button
+                    onClick={() => handleSelectMeal(recipe)}
+                    style={selectButtonStyle}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Selecting...' : 'Select Meal'}
+                  </button>
+                </div>
+                <div style={ingredientsStyle}>
+                  {recipe.ingredients.map((ing, i) => (
+                    <div key={i} style={ingredientStyle}>
+                      <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                      <span style={nameStyle}>{ing.name}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={detailsStyle}>
+                  <span>{recipe.cuisine} • {recipe.difficulty}</span>
+                  <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
+                </div>
+              </div>
+            );
+          }).filter(Boolean) // Remove any null entries from failed lookups
+        ) : (
+          <p style={emptyStyle}>No recipes yet. Add some!</p>
+        )}
+      </div>
     </div>
   );
 }
@@ -513,4 +536,25 @@ const baseIngredientStyle = {
   borderRadius: '20px',
   fontSize: '0.9rem',
   color: 'var(--foreground)'
+} as const;
+
+const recipeButtonStyle = {
+  ...baseIngredientStyle,
+  cursor: 'pointer',
+  border: 'none',
+  outline: 'none',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)',
+    transform: 'scale(1.05)'
+  },
+  '&:active': {
+    transform: 'scale(0.98)'
+  }
+} as const;
+
+const selectedRecipeButtonStyle = {
+  ...recipeButtonStyle,
+  backgroundColor: 'rgba(var(--primary), 0.2)',
+  border: '1px solid rgba(var(--primary), 0.5)'
 } as const;
