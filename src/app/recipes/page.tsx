@@ -1,12 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import recipeListTitle from './recipe-list-title.png';
-import recipeGeneratorTitle from './recipe-generator-title.png';
-
 import { useRouter } from 'next/navigation';
-import { convertRecipesToMinRecipes, getListOfRecipes, minRecipe } from './types';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
+import { convertRecipesToMinRecipes, getListOfRecipes } from './types';
 
 interface Ingredient {
   name: string;
@@ -28,16 +25,16 @@ interface Recipe {
   author: string;
 }
 
-
 export default function RecipesPage() {
   const router = useRouter();
   const [input, setInput] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [minRecipes, setMinRecipes] = useState<minRecipe[]>([]);
+  const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
-  const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
+  const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
+
 
   // Load recipes on initial render
   useEffect(() => {
@@ -56,33 +53,8 @@ export default function RecipesPage() {
       }
     };
 
-     // Load recipes from localStorage if available
-    const storedRecipes = localStorage.getItem('minRecipes');
-    if (storedRecipes) {
-      setMinRecipes(JSON.parse(storedRecipes));
-      console.log("recipies FOUND in local storage")
-    }
-
-    // Fetch fresh recipes
-    const fetchMinRecipes = async () => {
-      console.log("calling fetch Recipes")
-      try {
-        const response = await fetch('/api/recipes');
-        if (response.ok) {
-          const Recipes = await response.json();
-          const MinRecipes = await convertRecipesToMinRecipes(Recipes);
-          console.log(MinRecipes);
-          setMinRecipes(MinRecipes);
-          localStorage.setItem('minRecipes', JSON.stringify(MinRecipes));
-          console.log("recipies LOADED into local storage")
-        }
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
-      }
-    };
-
     setAvailableIngredients(getAllIngredientsList());
-    fetchMinRecipes();
+    setAvailableRecipes(getListOfRecipes(convertRecipesToMinRecipes(recipes), availableIngredients));
     fetchRecipes();
   }, []);
 
@@ -106,54 +78,7 @@ export default function RecipesPage() {
     }
   };
 
-  // Add dummy recipe to JSONL
-  const addDummyRecipe = async () => {
-    const dummyRecipe: Recipe = {
-      id: `dummy-${Date.now()}`,
-      name: `Dummy Recipe ${recipes.length + 1}`,
-      cuisine: 'International',
-      ingredients: [
-        { 
-          name: baseIngredients[Math.floor(Math.random() * baseIngredients.length)], 
-          quantity: (Math.floor(Math.random() * 5) + 1).toString(), 
-          unit: ['g', 'cups', 'pieces'][Math.floor(Math.random() * 3)] 
-        },
-        { 
-          name: baseIngredients[Math.floor(Math.random() * baseIngredients.length)], 
-          quantity: (Math.floor(Math.random() * 3) + 1).toString(), 
-          unit: ['g', 'tbsp', 'pieces'][Math.floor(Math.random() * 3)] 
-        }
-      ],
-      prepTime: '10 minutes',
-      cookTime: '20 minutes',
-      instructions: ['Mix ingredients', 'Cook as directed'],
-      servings: 2,
-      equipment: ['Pan', 'Spoon'],
-      difficulty: 'Easy',
-      author: 'system'
-    };
-
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch('/api/recipes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dummyRecipe)
-      });
-
-      if (!response.ok) throw new Error('Failed to save recipe');
-      
-      const updatedData = await response.json();
-      setRecipes(updatedData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add dummy recipe');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Generate recipe based on input
+  // Generate recipe using OpenAI API
   const handleGenerate = async () => {
     if (!input.trim()) {
       setError('Please enter some description');
@@ -163,51 +88,60 @@ export default function RecipesPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const selectedIngredients = [...baseIngredients]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, Math.floor(Math.random() * 2) + 2);
+      setGeneratedRecipe(null);
 
-      const newRecipe: Recipe = {
-        id: `gen-${Date.now()}`,
-        name: `Generated ${input.split(' ')[0]} Recipe`,
-        cuisine: 'International',
-        ingredients: selectedIngredients.map(ing => ({
-          name: ing,
-          quantity: (Math.floor(Math.random() * 3) + 1).toString(),
-          unit: ['g', 'cups', 'pieces'][Math.floor(Math.random() * 3)]
-        })),
-        prepTime: `${Math.floor(Math.random() * 10) + 5} minutes`,
-        cookTime: `${Math.floor(Math.random() * 20) + 10} minutes`,
-        instructions: ['Prepare ingredients', 'Combine and cook'],
-        servings: Math.floor(Math.random() * 3) + 2,
-        equipment: ['Pan', 'Spoon', 'Bowl'],
-        difficulty: ['Easy', 'Medium'][Math.floor(Math.random() * 2)],
-        author: 'system'
-      };
-
-      const response = await fetch('/api/recipes', {
+      const response = await fetch('/api/generate-recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newRecipe)
+        body: JSON.stringify({
+          prompt: input,
+          ingredients: availableIngredients
+        })
       });
 
-      if (!response.ok) throw new Error('Failed to save generated recipe');
+      if (!response.ok) throw new Error('Failed to generate recipe');
       
-      const updatedData = await response.json();
-      setRecipes(updatedData);
-      setInput('');
+      const newRecipe = await response.json();
+      setGeneratedRecipe(newRecipe);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate recipe');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Save generated recipe to the list
+  const saveGeneratedRecipe = async () => {
+    if (!generatedRecipe) return;
+
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/recipes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(generatedRecipe)
+      });
+
+      if (!response.ok) throw new Error('Failed to save recipe');
+      
+      const updatedData = await response.json();
+      setRecipes(updatedData);
+      setGeneratedRecipe(null);
+      setInput('');
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save recipe');
+    } finally {
+      setIsLoading(false);
     }
+  };
 
   return (
     <div style={containerStyle}>
       {/* Left column: recipe list */}
       <div style={leftColumnStyle}>
-        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
+        <h2 style={headerStyle}>Recipe List</h2>
         {error && <p style={errorStyle}>{error}</p>}
         {isLoading && recipes.length === 0 ? (
           <p style={loadingStyle}>Loading recipes...</p>
@@ -245,7 +179,7 @@ export default function RecipesPage() {
 
       {/* Right column: controls */}
       <div style={rightColumnStyle}>
-        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
+        <h2 style={headerStyle}>Recipe Generator</h2>
         
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
@@ -256,29 +190,59 @@ export default function RecipesPage() {
             >
               {isLoading ? 'Generating...' : 'Generate Recipe'}
             </button>
-            <button 
-              onClick={addDummyRecipe} 
-              style={dummyButtonStyle}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Adding...' : 'Add Dummy Recipe'}
-            </button>
           </div>
 
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Describe your recipe (e.g. 'quick dinner')"
+            placeholder="Describe your recipe (e.g. 'quick chicken dinner')"
             style={inputStyle}
             disabled={isLoading}
           />
+
+          {generatedRecipe && (
+            <div style={previewContainer}>
+              <h3 style={previewHeader}>Generated Recipe Preview</h3>
+              <div style={previewContent}>
+                <h4 style={recipeNameStyle}>{generatedRecipe.name}</h4>
+                <div style={ingredientsStyle}>
+                  {generatedRecipe.ingredients.map((ing, i) => (
+                    <div key={i} style={ingredientStyle}>
+                      <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                      <span style={nameStyle}>{ing.name}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={detailsStyle}>
+                  <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
+                  <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
+                </div>
+                <button 
+                  onClick={saveGeneratedRecipe}
+                  style={saveButtonStyle}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Saving...' : 'Add to Recipes'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div style={baseIngredientsContainer}>
           <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
           <div style={baseIngredientsList}>
             {availableIngredients.map((ing, i) => (
+              <span key={i} style={baseIngredientStyle}>{ing}</span>
+            ))}
+          </div>
+        </div>
+
+        <div style={baseIngredientsContainer}>
+          <p style={baseIngredientsTitle}>Available Recipes:</p>
+          <div style={baseIngredientsList}>
+            {availableRecipes.map((ing, i) => (
               <span key={i} style={baseIngredientStyle}>{ing}</span>
             ))}
           </div>
@@ -310,15 +274,6 @@ const rightColumnStyle = {
   flexDirection: 'column',
   gap: '2rem'
 } as const;
-
-const titleImageStyle = {
-  width: '250px',
-  height: '150px',
-  objectFit: 'contain', // Ensures the whole image is visible
-  display: 'block',
-  margin: '0 auto 1rem auto', // Centers the image horizontally
-} as const;
-
 
 
 const headerStyle = {
@@ -440,16 +395,6 @@ const generateButtonStyle = {
   }
 } as const;
 
-const dummyButtonStyle = {
-  ...generateButtonStyle,
-  backgroundColor: '#4CAF50',
-  flex: 1,
-  ':disabled': {
-    backgroundColor: '#cccccc',
-    cursor: 'not-allowed'
-  }
-} as const;
-
 const inputStyle = {
   padding: '0.75rem',
   border: '1px solid #ddd',
@@ -487,3 +432,44 @@ const baseIngredientStyle = {
   fontSize: '0.9rem',
   color: '#333'
 } as const;
+
+const previewContainer = {
+  marginTop: '2rem',
+  padding: '1.5rem',
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
+} as const;
+
+const previewHeader = {
+  fontSize: '1.25rem',
+  marginBottom: '1rem',
+  color: 'var(--foreground)',
+  fontFamily: '"EB Garamond", serif'
+} as const;
+
+const previewContent = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem'
+} as const;
+
+const saveButtonStyle = {
+  padding: '0.75rem 1.5rem',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  transition: 'background-color 0.2s',
+  marginTop: '1rem',
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
+  },
+  ':disabled': {
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
+    cursor: 'not-allowed'
+  }
+} as const;
+
