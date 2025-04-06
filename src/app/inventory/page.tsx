@@ -18,17 +18,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { 
-  getAllInventoryItems, 
-  addInventoryItem, 
-  updateInventoryItem, 
+import {
+  getAllInventoryItems,
+  addInventoryItem,
+  updateInventoryItem,
   deleteInventoryItem,
   InventoryItem,
 } from '@/food-database/inventoryUtils';
 import { addProductByUPC } from '@/food-database/openFoodFactsUtils';
 import { initializeDatabase } from '@/food-database/localDatabase';
 import { convertRecipesToMinRecipes, minRecipe } from '../recipes/types';
-import { ChevronDown, ChevronUp, Plus, Trash2, Barcode } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Trash2, Barcode, Minus } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -70,7 +70,7 @@ export default function InventoryPage() {
   useEffect(() => {
     // Initialize the database first
     initializeDatabase();
-    
+
     // Then load the inventory items
     const items = getAllInventoryItems();
     setInventory(items);
@@ -99,7 +99,7 @@ export default function InventoryPage() {
     };
 
     fetchRecipes();
-    
+
   }, []);
 
   const handleAddItem = () => {
@@ -186,21 +186,21 @@ export default function InventoryPage() {
     try {
       // Try with the exact UPC code
       let success = await addProductByUPC(upcCode);
-      
+
       // If that fails, try with a leading zero if the code is 12 digits
       if (!success && upcCode.length === 12) {
         const paddedUPC = `0${upcCode}`;
         setScanStatus(`Trying with padded UPC: ${paddedUPC}...`);
         success = await addProductByUPC(paddedUPC);
       }
-      
+
       // If that fails, try without a leading zero if the code is 13 digits
       if (!success && upcCode.length === 13 && upcCode.startsWith('0')) {
         const unpaddedUPC = upcCode.substring(1);
         setScanStatus(`Trying with unpadded UPC: ${unpaddedUPC}...`);
         success = await addProductByUPC(unpaddedUPC);
       }
-      
+
       if (success) {
         setScanStatus('Product added successfully!');
         // Refresh the inventory list to show the updated count
@@ -221,30 +221,30 @@ export default function InventoryPage() {
   };
 
   const toggleItemExpansion = (id: string) => {
-    setExpandedItems(prev => 
-      prev.includes(id) 
-        ? prev.filter(itemId => itemId !== id) 
+    setExpandedItems(prev =>
+      prev.includes(id)
+        ? prev.filter(itemId => itemId !== id)
         : [...prev, id]
     );
   };
 
   const renderNutritionalFacts = (item: InventoryItem) => {
     if (!item.nutritionalFacts) return null;
-    
+
     const { calories, protein, fat, carbohydrates, sugar, sodium } = item.nutritionalFacts;
     const totalQuantity = item.quantity;
     const servingSize = item.servingQuantity?.value || 100;
     const servingSizeUnit = item.servingQuantity?.unit || 'g';
     const servings = servingSize > 0 ? (totalQuantity / servingSize).toFixed(1) : '0';
-    
+
     return (
       <div className="p-4 bg-amber-50 rounded-md border border-amber-200 mt-3">
         <div className="flex flex-col md:flex-row gap-4">
           {item.nutritionImageUrl && (
             <div className="flex-shrink-0">
-              <img 
-                src={item.nutritionImageUrl} 
-                alt="Nutrition Facts" 
+              <img
+                src={item.nutritionImageUrl}
+                alt="Nutrition Facts"
                 className="w-48 h-auto object-contain rounded-md border border-amber-200"
               />
             </div>
@@ -281,10 +281,10 @@ export default function InventoryPage() {
   // Add a function to filter inventory items based on search query
   const filteredInventory = useMemo(() => {
     if (!searchQuery.trim()) return inventory;
-    
+
     const query = searchQuery.toLowerCase().trim();
-    return inventory.filter(item => 
-      item.name.toLowerCase().includes(query) || 
+    return inventory.filter(item =>
+      item.name.toLowerCase().includes(query) ||
       item.category.toLowerCase().includes(query)
     );
   }, [inventory, searchQuery]);
@@ -298,13 +298,13 @@ export default function InventoryPage() {
             <p className="text-amber-700">Manage your food bank inventory items and track nutritional information</p>
           </div>
           <div className="flex gap-3">
-            <Button 
+            <Button
               className="bg-emerald-700 hover:bg-emerald-800 text-white"
               onClick={() => setIsAddingItem(true)}
             >
               <Plus className="mr-2 h-4 w-4" /> Add Item
             </Button>
-            <Button 
+            <Button
               variant="destructive"
               className="bg-orange-600 hover:bg-orange-700"
               onClick={handleRemoveItems}
@@ -314,7 +314,7 @@ export default function InventoryPage() {
             </Button>
           </div>
         </div>
-        
+
         {/* UPC Scanner Section */}
         <Card className="p-6 mb-6 bg-white shadow-sm border-amber-200 border-2">
           <CardHeader className="pb-3 px-0">
@@ -335,7 +335,7 @@ export default function InventoryPage() {
                   className="mt-1.5 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
-              <Button 
+              <Button
                 onClick={handleScanUPC}
                 disabled={isScanningUPC || !upcCode}
                 className="bg-orange-500 hover:bg-orange-600 text-white"
@@ -382,14 +382,44 @@ export default function InventoryPage() {
                 </div>
                 <div>
                   <Label htmlFor="quantity" className="text-amber-700">Quantity *</Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    value={newItem.quantity}
-                    onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                    required
-                    className="mt-1.5 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
-                  />
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setNewItem({
+                        ...newItem,
+                        quantity: Math.max(1, newItem.quantity - 1)
+                      })}
+                      className="h-8 w-8 p-0 border-amber-300 text-orange-500 hover:bg-amber-50"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      value={newItem.quantity}
+                      onChange={(e) => setNewItem({
+                        ...newItem,
+                        quantity: Math.max(1, Number(e.target.value))
+                      })}
+                      required
+                      min="1"
+                      className="w-20 text-center border-amber-300 focus:border-orange-500 focus:ring-orange-500"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setNewItem({
+                        ...newItem,
+                        quantity: newItem.quantity + 1
+                      })}
+                      className="h-8 w-8 p-0 border-amber-300 text-orange-500 hover:bg-amber-50"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="unit" className="text-amber-700">Unit *</Label>
@@ -463,12 +493,12 @@ export default function InventoryPage() {
                         id="servingQuantityValue"
                         type="number"
                         value={newItem.servingQuantity?.value}
-                        onChange={(e) => setNewItem({ 
-                          ...newItem, 
-                          servingQuantity: { 
-                            ...newItem.servingQuantity!, 
-                            value: Number(e.target.value) 
-                          } 
+                        onChange={(e) => setNewItem({
+                          ...newItem,
+                          servingQuantity: {
+                            ...newItem.servingQuantity!,
+                            value: Number(e.target.value)
+                          }
                         })}
                         className="mt-1.5 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                       />
@@ -478,12 +508,12 @@ export default function InventoryPage() {
                       <Input
                         id="servingQuantityUnit"
                         value={newItem.servingQuantity?.unit}
-                        onChange={(e) => setNewItem({ 
-                          ...newItem, 
-                          servingQuantity: { 
-                            ...newItem.servingQuantity!, 
-                            unit: e.target.value 
-                          } 
+                        onChange={(e) => setNewItem({
+                          ...newItem,
+                          servingQuantity: {
+                            ...newItem.servingQuantity!,
+                            unit: e.target.value
+                          }
                         })}
                         placeholder="g, ml, oz, etc."
                         className="mt-1.5 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
@@ -501,30 +531,30 @@ export default function InventoryPage() {
                           id="caloriesValue"
                           type="number"
                           value={newItem.nutritionalFacts?.calories.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              calories: { 
-                                ...newItem.nutritionalFacts!.calories, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              calories: {
+                                ...newItem.nutritionalFacts!.calories,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="caloriesUnit"
                           value={newItem.nutritionalFacts?.calories.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              calories: { 
-                                ...newItem.nutritionalFacts!.calories, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              calories: {
+                                ...newItem.nutritionalFacts!.calories,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="kcal"
@@ -538,30 +568,30 @@ export default function InventoryPage() {
                           id="proteinValue"
                           type="number"
                           value={newItem.nutritionalFacts?.protein.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              protein: { 
-                                ...newItem.nutritionalFacts!.protein, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              protein: {
+                                ...newItem.nutritionalFacts!.protein,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="proteinUnit"
                           value={newItem.nutritionalFacts?.protein.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              protein: { 
-                                ...newItem.nutritionalFacts!.protein, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              protein: {
+                                ...newItem.nutritionalFacts!.protein,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="g"
@@ -575,30 +605,30 @@ export default function InventoryPage() {
                           id="fatValue"
                           type="number"
                           value={newItem.nutritionalFacts?.fat.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              fat: { 
-                                ...newItem.nutritionalFacts!.fat, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              fat: {
+                                ...newItem.nutritionalFacts!.fat,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="fatUnit"
                           value={newItem.nutritionalFacts?.fat.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              fat: { 
-                                ...newItem.nutritionalFacts!.fat, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              fat: {
+                                ...newItem.nutritionalFacts!.fat,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="g"
@@ -612,30 +642,30 @@ export default function InventoryPage() {
                           id="carbsValue"
                           type="number"
                           value={newItem.nutritionalFacts?.carbohydrates.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              carbohydrates: { 
-                                ...newItem.nutritionalFacts!.carbohydrates, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              carbohydrates: {
+                                ...newItem.nutritionalFacts!.carbohydrates,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="carbsUnit"
                           value={newItem.nutritionalFacts?.carbohydrates.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              carbohydrates: { 
-                                ...newItem.nutritionalFacts!.carbohydrates, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              carbohydrates: {
+                                ...newItem.nutritionalFacts!.carbohydrates,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="g"
@@ -649,30 +679,30 @@ export default function InventoryPage() {
                           id="sugarValue"
                           type="number"
                           value={newItem.nutritionalFacts?.sugar.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              sugar: { 
-                                ...newItem.nutritionalFacts!.sugar, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              sugar: {
+                                ...newItem.nutritionalFacts!.sugar,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="sugarUnit"
                           value={newItem.nutritionalFacts?.sugar.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              sugar: { 
-                                ...newItem.nutritionalFacts!.sugar, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              sugar: {
+                                ...newItem.nutritionalFacts!.sugar,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="g"
@@ -686,30 +716,30 @@ export default function InventoryPage() {
                           id="sodiumValue"
                           type="number"
                           value={newItem.nutritionalFacts?.sodium.value}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              sodium: { 
-                                ...newItem.nutritionalFacts!.sodium, 
-                                value: Number(e.target.value) 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              sodium: {
+                                ...newItem.nutritionalFacts!.sodium,
+                                value: Number(e.target.value)
+                              }
+                            }
                           })}
                           className="flex-1 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                         />
                         <Input
                           id="sodiumUnit"
                           value={newItem.nutritionalFacts?.sodium.unit}
-                          onChange={(e) => setNewItem({ 
-                            ...newItem, 
-                            nutritionalFacts: { 
-                              ...newItem.nutritionalFacts!, 
-                              sodium: { 
-                                ...newItem.nutritionalFacts!.sodium, 
-                                unit: e.target.value 
-                              } 
-                            } 
+                          onChange={(e) => setNewItem({
+                            ...newItem,
+                            nutritionalFacts: {
+                              ...newItem.nutritionalFacts!,
+                              sodium: {
+                                ...newItem.nutritionalFacts!.sodium,
+                                unit: e.target.value
+                              }
+                            }
                           })}
                           className="w-20 border-amber-300 focus:border-orange-500 focus:ring-orange-500"
                           placeholder="mg"
@@ -807,9 +837,9 @@ export default function InventoryPage() {
                     </TableCell>
                     <TableCell>
                       {item.imageUrl ? (
-                        <img 
-                          src={isCompactView ? getCompactImageUrl(item.imageUrl) : item.imageUrl} 
-                          alt={item.name} 
+                        <img
+                          src={isCompactView ? getCompactImageUrl(item.imageUrl) : item.imageUrl}
+                          alt={item.name}
                           className={`object-contain rounded-md ${isCompactView ? 'w-16 h-16' : 'w-32 h-32'}`}
                         />
                       ) : (
@@ -841,7 +871,7 @@ export default function InventoryPage() {
                     {!isCompactView && (
                       <TableCell>
                         <Collapsible>
-                          <CollapsibleTrigger 
+                          <CollapsibleTrigger
                             onClick={() => toggleItemExpansion(item.id)}
                             className="flex items-center gap-1 text-orange-600 hover:text-orange-800"
                           >
@@ -862,8 +892,8 @@ export default function InventoryPage() {
                 {filteredInventory.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={isCompactView ? 4 : 5} className="text-center py-10 text-amber-500">
-                      {searchQuery ? 
-                        `No items found matching "${searchQuery}". Try a different search term.` : 
+                      {searchQuery ?
+                        `No items found matching "${searchQuery}". Try a different search term.` :
                         'No inventory items found. Add items by scanning a UPC code or manually adding them.'}
                     </TableCell>
                   </TableRow>
@@ -873,6 +903,6 @@ export default function InventoryPage() {
           </div>
         </Card>
       </div>
-    </div>
+    </div >
   );
 } 

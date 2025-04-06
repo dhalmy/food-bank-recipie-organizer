@@ -1,4 +1,4 @@
-import { InventoryItem as DatabaseInventoryItem, get_all_inventory_items, add_inventory_item, update_inventory_item, delete_inventory_item } from './localDatabase';
+import { InventoryItem as DatabaseInventoryItem, get_all_inventory_items, add_inventory_item, update_inventory_item, delete_inventory_item, get_inventory_item, decrement_item } from './localDatabase';
 
 // Interface for inventory items (simplified version for the UI)
 export interface InventoryItem {
@@ -113,6 +113,14 @@ export function updateInventoryItem(item: InventoryItem): void {
 // Delete an inventory item
 export function deleteInventoryItem(id: string): void {
   delete_inventory_item(id);
+}
+
+export function decrementItem(id: string): void {
+  decrement_item(id);
+}
+
+export function incrementItem(id: string): void {
+  incrementItem(id);
 }
 
 // Get inventory items by category
