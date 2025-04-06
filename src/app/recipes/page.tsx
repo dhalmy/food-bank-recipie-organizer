@@ -1,12 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import recipeListTitle from './recipe-list-title.png';
-import recipeGeneratorTitle from './recipe-generator-title.png';
-
 import { useRouter } from 'next/navigation';
-import { convertRecipesToMinRecipes, getListOfRecipes, minRecipe } from './types';
-import { getAllIngredientsList } from '@/food-database/inventoryUtils';
 
 interface Ingredient {
   name: string;
@@ -28,15 +23,13 @@ interface Recipe {
   author: string;
 }
 
-
 export default function RecipesPage() {
   const router = useRouter();
   const [input, setInput] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [minRecipes, setMinRecipes] = useState<minRecipe[]>([]);
-  const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
+  const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
 
   // Load recipes on initial render
@@ -55,34 +48,6 @@ export default function RecipesPage() {
         setIsLoading(false);
       }
     };
-
-     // Load recipes from localStorage if available
-    const storedRecipes = localStorage.getItem('minRecipes');
-    if (storedRecipes) {
-      setMinRecipes(JSON.parse(storedRecipes));
-      console.log("recipies FOUND in local storage")
-    }
-
-    // Fetch fresh recipes
-    const fetchMinRecipes = async () => {
-      console.log("calling fetch Recipes")
-      try {
-        const response = await fetch('/api/recipes');
-        if (response.ok) {
-          const Recipes = await response.json();
-          const MinRecipes = await convertRecipesToMinRecipes(Recipes);
-          console.log(MinRecipes);
-          setMinRecipes(MinRecipes);
-          localStorage.setItem('minRecipes', JSON.stringify(MinRecipes));
-          console.log("recipies LOADED into local storage")
-        }
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
-      }
-    };
-
-    setAvailableIngredients(getAllIngredientsList());
-    fetchMinRecipes();
     fetchRecipes();
   }, []);
 
@@ -163,13 +128,13 @@ export default function RecipesPage() {
     } finally {
       setIsLoading(false);
     }
-    }
+  };
 
   return (
     <div style={containerStyle}>
       {/* Left column: recipe list */}
       <div style={leftColumnStyle}>
-        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
+        <h2 style={headerStyle}>Recipe List</h2>
         {error && <p style={errorStyle}>{error}</p>}
         {isLoading && recipes.length === 0 ? (
           <p style={loadingStyle}>Loading recipes...</p>
@@ -207,7 +172,7 @@ export default function RecipesPage() {
 
       {/* Right column: controls */}
       <div style={rightColumnStyle}>
-        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
+        <h2 style={headerStyle}>Recipe Generator</h2>
         
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
@@ -261,7 +226,7 @@ export default function RecipesPage() {
         <div style={baseIngredientsContainer}>
           <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
           <div style={baseIngredientsList}>
-            {availableIngredients.map((ing, i) => (
+            {baseIngredients.map((ing, i) => (
               <span key={i} style={baseIngredientStyle}>{ing}</span>
             ))}
           </div>
@@ -277,6 +242,7 @@ const containerStyle = {
   gap: '2rem',
   padding: '2rem',
   minHeight: '100vh',
+  backgroundColor: 'var(--background)'
 } as const;
 
 const leftColumnStyle = {
@@ -294,16 +260,6 @@ const rightColumnStyle = {
   gap: '2rem'
 } as const;
 
-const titleImageStyle = {
-  width: '250px',
-  height: '150px',
-  objectFit: 'contain', // Ensures the whole image is visible
-  display: 'block',
-  margin: '0 auto 1rem auto', // Centers the image horizontally
-} as const;
-
-
-
 const headerStyle = {
   fontSize: '1.5rem',
   marginBottom: '1rem',
@@ -313,11 +269,10 @@ const headerStyle = {
 
 const recipeBoxStyle = {
   padding: '1.5rem',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  border: '5px solid #bc4424', // Added border
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
-
 
 const recipeHeaderStyle = {
   display: 'flex',
@@ -333,18 +288,18 @@ const recipeNameStyle = {
 
 const selectButtonStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#bc4424',
-  color: 'white',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
   border: 'none',
   borderRadius: '4px',
   cursor: 'pointer',
   fontSize: '0.9rem',
   transition: 'background-color 0.2s',
-  ':hover': {
-    backgroundColor: '#bc4424'
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
   },
   ':disabled': {
-    backgroundColor: '#bc4424',
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
     cursor: 'not-allowed'
   }
 } as const;
