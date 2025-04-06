@@ -72,6 +72,7 @@ const containerStyle = {
   backgroundColor: '#FFF8F0', // Warm off-white background
   backgroundImage: 'linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), url("https://www.transparenttextures.com/patterns/food.png")',
   fontFamily: '"Poppins", sans-serif',
+  borderRadius: '12px',
 } as const;
 
 const mainLayoutContainer = {
@@ -367,6 +368,7 @@ const recipesGridContainer = {
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
+  borderRadius: '12px',
 } as const;
 
 const previewContainer = {

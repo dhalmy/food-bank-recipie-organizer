@@ -290,7 +290,7 @@ export default function InventoryPage() {
   }, [inventory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 rounded-xl">
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-center mb-8">
           <div>

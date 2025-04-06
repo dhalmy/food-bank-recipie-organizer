@@ -239,6 +239,7 @@ const containerStyle = {
   fontFamily: '"EB Garamond", serif',
   color: '#333',
   backgroundColor: '#FFFDF7',
+  borderRadius: '12px',
 } as const;
 
 const headerContainerStyle = {
