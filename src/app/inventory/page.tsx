@@ -916,9 +916,6 @@ export default function InventoryPage() {
                                 Expires: {new Date(item.expiryDate).toLocaleDateString()}
                               </p>
                             )}
-                            <p className="text-sm text-amber-700 mt-1">
-                              Weight: {item.quantity} {item.unit} per item
-                            </p>
                           </>
                         )}
                       </div>
