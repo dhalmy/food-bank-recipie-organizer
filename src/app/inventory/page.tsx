@@ -387,10 +387,6 @@ export default function InventoryPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setNewItem({
-                        ...newItem,
-                        quantity: Math.max(1, newItem.quantity - 1)
-                      })}
                       className="h-8 w-8 p-0 border-amber-300 text-orange-500 hover:bg-amber-50"
                     >
                       <Minus className="h-4 w-4" />
@@ -411,10 +407,6 @@ export default function InventoryPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setNewItem({
-                        ...newItem,
-                        quantity: newItem.quantity + 1
-                      })}
                       className="h-8 w-8 p-0 border-amber-300 text-orange-500 hover:bg-amber-50"
                     >
                       <Plus className="h-4 w-4" />
