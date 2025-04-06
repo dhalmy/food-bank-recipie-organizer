@@ -1,4 +1,4 @@
-import { InventoryItem as DatabaseInventoryItem, get_all_inventory_items, add_inventory_item, update_inventory_item, delete_inventory_item, get_inventory_item, decrement_item } from './localDatabase';
+import { InventoryItem as DatabaseInventoryItem, get_all_inventory_items, add_inventory_item, update_inventory_item, delete_inventory_item, get_inventory_item, decrement_item, initializeDatabase } from './localDatabase';
 
 // Interface for inventory items (simplified version for the UI)
 export interface InventoryItem {
@@ -64,6 +64,19 @@ export function uiItemToDatabaseItem(item: InventoryItem): DatabaseInventoryItem
 // Get all inventory items with counts for duplicates
 export function getAllInventoryItems(): InventoryItem[] {
   try {
+    // Check if database is initialized
+    const isInitialized = typeof window !== 'undefined' && localStorage.getItem('dbInitialized') === 'true';
+    
+    if (!isInitialized) {
+      console.warn('Database not fully initialized yet, attempting initialization');
+      const initialized = initializeDatabase();
+      
+      if (!initialized) {
+        console.warn('Failed to initialize database in getAllInventoryItems');
+        return [];
+      }
+    }
+    
     const databaseItems = get_all_inventory_items();
     console.log('Retrieved database items:', databaseItems);
     
