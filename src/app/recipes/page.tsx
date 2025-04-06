@@ -296,10 +296,11 @@ const headerStyle = {
 
 const recipeBoxStyle = {
   padding: '1.5rem',
-  backgroundColor: 'white',
   borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  border: '5px solid #bc4424', // Added border
 } as const;
+
 
 const recipeHeaderStyle = {
   display: 'flex',
@@ -315,7 +316,7 @@ const recipeNameStyle = {
 
 const selectButtonStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#ff6b6b',
+  backgroundColor: '#bc4424',
   color: 'white',
   border: 'none',
   borderRadius: '4px',
@@ -323,10 +324,10 @@ const selectButtonStyle = {
   fontSize: '0.9rem',
   transition: 'background-color 0.2s',
   ':hover': {
-    backgroundColor: '#ff5252'
+    backgroundColor: '#bc4424'
   },
   ':disabled': {
-    backgroundColor: '#cccccc',
+    backgroundColor: '#bc4424',
     cursor: 'not-allowed'
   }
 } as const;
