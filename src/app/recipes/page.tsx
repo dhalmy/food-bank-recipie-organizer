@@ -7,6 +7,41 @@ import { convertRecipesToMinRecipes, getListOfRecipes, getRecipeFromName } from 
 import recipeListTitle from './recipe-list-title.png';
 import recipeGeneratorTitle from './recipe-generator-title.png';
 
+// Add custom style for hiding scrollbars
+const hideScrollbarStyles = `
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`;
+
+// Replace with fancy scrollbar styles
+const fancyScrollbarStyles = `
+  .fancy-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    background-color: #f5f0e8;
+    border-radius: 4px;
+  }
+  
+  .fancy-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #e67e22;
+    border-radius: 4px;
+    border: 2px solid #f5f0e8;
+  }
+  
+  .fancy-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #d35400;
+  }
+  
+  .fancy-scrollbar::-webkit-scrollbar-track {
+    background-color: #f5f0e8;
+    border-radius: 4px;
+  }
+`;
+
 interface Ingredient {
   name: string;
   quantity: string;
@@ -27,6 +62,439 @@ interface Recipe {
   author: string;
 }
 
+// Style Definitions
+const containerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1.5rem',
+  padding: '2rem',
+  minHeight: '100vh',
+  backgroundColor: '#FFF8F0', // Warm off-white background
+  backgroundImage: 'linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), url("https://www.transparenttextures.com/patterns/food.png")',
+  fontFamily: '"Poppins", sans-serif',
+} as const;
+
+const mainLayoutContainer = {
+  display: 'flex',
+  gap: '2.5rem',
+  maxWidth: '1400px',
+  margin: '0 auto 2rem auto',
+  width: '100%',
+  position: 'relative',
+  '@media (max-width: 992px)': {
+    flexDirection: 'column',
+    gap: '1.5rem',
+  }
+} as const;
+
+const leftColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '2rem',
+  width: '65%',
+  height: '100%',
+  '@media (max-width: 992px)': {
+    width: '100%',
+  }
+} as const;
+
+const rightColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '35%',
+  position: 'relative',
+  alignSelf: 'stretch',
+  '@media (max-width: 992px)': {
+    width: '100%',
+  }
+} as const;
+
+const rightScrollContainer = {
+  padding: '1.5rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  '@media (max-width: 992px)': {
+    position: 'relative',
+    width: '100%',
+  }
+} as const;
+
+const pageHeaderStyle = {
+  textAlign: 'center',
+  marginBottom: '2rem',
+  position: 'relative',
+  padding: '2rem 1rem',
+  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  borderRadius: '12px',
+  boxShadow: '0 4px 20px rgba(210, 140, 60, 0.15)',
+  maxWidth: '1200px',
+  margin: '0 auto 2rem auto',
+  width: 'calc(100% - 2rem)',
+  '@media (max-width: 768px)': {
+    padding: '1.5rem 1rem',
+  }
+} as const;
+
+const recipeNameStyle = {
+  fontSize: '1.4rem',
+  fontWeight: '600',
+  color: '#834D18', // Warm brown
+  fontFamily: '"Playfair Display", serif'
+} as const;
+
+const recipeHeaderStyle = {
+  marginBottom: '1rem',
+  borderBottom: '2px dotted #E9D8C4',
+  paddingBottom: '0.75rem',
+} as const;
+
+const ingredientsStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.5rem',
+  padding: '0.75rem',
+  backgroundColor: '#FFF8F0',
+  borderRadius: '8px',
+  border: '1px dashed #E9D8C4',
+} as const;
+
+const miniIngredientsStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.5rem',
+  padding: '0.75rem',
+  backgroundColor: '#FFF8F0',
+  borderRadius: '8px',
+  border: '1px dashed #E9D8C4',
+} as const;
+
+const ingredientStyle = {
+  display: 'flex',
+  gap: '0.5rem',
+  color: '#5D4037', // Deep brown
+  fontSize: '0.95rem',
+} as const;
+
+const quantityStyle = {
+  fontWeight: 'bold',
+  color: '#834D18', // Warm brown
+} as const;
+
+const nameStyle = {
+  color: '#5D4037', // Deep brown
+} as const;
+
+const detailsStyle = {
+  marginTop: '1rem',
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: '0.9rem',
+  color: '#8D6E63', // Lighter brown
+  padding: '0.5rem 0.75rem',
+  backgroundColor: 'rgba(233, 216, 196, 0.3)',
+  borderRadius: '6px',
+} as const;
+
+const generatorSectionContainer = {
+  padding: '1.5rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+  width: '100%',
+  height: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const ingredientsFlowContainer = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1.5rem',
+  width: '100%',
+} as const;
+
+const ingredientsSectionContainer = {
+  padding: '1.5rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const ingredientSelectorContainer = {
+  backgroundColor: '#FFF8F0',
+  borderRadius: '8px',
+  border: '1px dashed #E9D8C4',
+  padding: '1rem',
+  width: '100%',
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const baseIngredientsList = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.75rem',
+  overflowY: 'auto',
+  padding: '0.5rem',
+  height: '100%',
+  maxHeight: '400px',
+  '@media (max-width: 992px)': {
+    maxHeight: '250px',
+  }
+} as const;
+
+const baseIngredientStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#FFF8F0',
+  borderRadius: '20px',
+  fontSize: '0.9rem',
+  color: '#5D4037',
+  border: '1px solid #E9D8C4',
+  transition: 'all 0.2s',
+} as const;
+
+const selectedIngredientsContainer = {
+  padding: '1.5rem',
+  backgroundColor: 'rgba(230, 126, 34, 0.05)',
+  borderRadius: '8px',
+  border: '1px dashed #E67E22',
+  marginBottom: '1.5rem',
+  width: '100%',
+} as const;
+
+const buttonGroupStyle = {
+  display: 'flex',
+  gap: '1rem',
+} as const;
+
+const miniSelectButtonStyle = {
+  padding: '0.75rem 1.5rem',
+  backgroundColor: '#E67E22', // Orange
+  color: 'white',
+  border: 'none',
+  borderRadius: '30px',
+  cursor: 'pointer',
+  fontSize: '0.95rem',
+  fontWeight: '600',
+  transition: 'all 0.2s',
+  boxShadow: '0 2px 5px rgba(230, 126, 34, 0.3)',
+  marginTop: '1rem',
+  alignSelf: 'center',
+  width: '100%',
+  '&:hover': {
+    backgroundColor: '#D35400',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 8px rgba(230, 126, 34, 0.4)',
+  },
+  ':disabled': {
+    backgroundColor: '#F3AF7D',
+    cursor: 'not-allowed',
+    boxShadow: 'none',
+  }
+} as const;
+
+const generateButtonStyle = {
+  padding: '0.75rem 2rem',
+  backgroundColor: '#E67E22', // Orange
+  color: 'white',
+  border: 'none',
+  borderRadius: '30px',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  fontWeight: '600',
+  transition: 'all 0.2s',
+  boxShadow: '0 4px 8px rgba(230, 126, 34, 0.3)',
+  alignSelf: 'center',
+  width: '250px',
+  margin: '0 auto',
+  '&:hover': {
+    backgroundColor: '#D35400',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(230, 126, 34, 0.4)',
+  },
+  ':disabled': {
+    backgroundColor: '#F3AF7D',
+    cursor: 'not-allowed',
+    boxShadow: 'none',
+  }
+} as const;
+
+const loadingStyle = {
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: '#834D18',
+  opacity: 0.8,
+} as const;
+
+const errorStyle = {
+  padding: '1rem',
+  textAlign: 'center',
+  fontSize: '1rem',
+  color: '#e74c3c',
+  backgroundColor: 'rgba(231, 76, 60, 0.1)',
+  borderRadius: '8px',
+  border: '1px solid rgba(231, 76, 60, 0.2)',
+} as const;
+
+const emptyStyle = {
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: '#8D6E63',
+  opacity: 0.8,
+  fontStyle: 'italic',
+} as const;
+
+const recipesGridContainer = {
+  width: '100%',
+  height: '100%',
+  overflowY: 'auto',
+  flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const previewContainer = {
+  marginTop: '2rem',
+  padding: '1.5rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+} as const;
+
+const previewHeader = {
+  fontSize: '1.4rem',
+  marginBottom: '1rem',
+  color: '#834D18',
+  fontFamily: '"Playfair Display", serif',
+  borderBottom: '2px dotted #E9D8C4',
+  paddingBottom: '0.5rem',
+} as const;
+
+const previewContent = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+} as const;
+
+const saveButtonStyle = {
+  padding: '0.75rem 1.5rem',
+  backgroundColor: '#E67E22', // Orange
+  color: 'white',
+  border: 'none',
+  borderRadius: '30px',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  fontWeight: '600',
+  transition: 'all 0.2s',
+  marginTop: '1rem',
+  boxShadow: '0 2px 5px rgba(230, 126, 34, 0.3)',
+  '&:hover': {
+    backgroundColor: '#D35400',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 8px rgba(230, 126, 34, 0.4)',
+  },
+  ':disabled': {
+    backgroundColor: '#F3AF7D',
+    cursor: 'not-allowed',
+    boxShadow: 'none',
+  }
+} as const;
+
+// Recipe cards styles
+const compactRecipeCardStyle = {
+  padding: '0.7rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+  transition: 'transform 0.2s, box-shadow 0.2s',
+  position: 'relative',
+  overflow: 'hidden',
+  height: '100%',
+  minWidth: '180px',
+  cursor: 'pointer',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 12px rgba(210, 140, 60, 0.15)',
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '5px',
+    height: '100%',
+    backgroundColor: '#E67E22',
+    opacity: 0.7,
+  }
+} as const;
+
+const expandedRecipeCardStyle = {
+  padding: '1.25rem',
+  backgroundColor: '#FFF',
+  borderRadius: '12px',
+  border: '1px solid #E9D8C4',
+  boxShadow: '0 6px 15px rgba(210, 140, 60, 0.15)',
+  position: 'relative',
+  overflow: 'hidden',
+  minWidth: '180px',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '5px',
+    height: '100%',
+    backgroundColor: '#E67E22',
+    opacity: 0.7,
+  }
+} as const;
+
+const expandButtonStyle = {
+  padding: '0.15rem 0.4rem',
+  backgroundColor: 'rgba(230, 126, 34, 0.1)',
+  color: '#E67E22',
+  border: '1px solid #E67E22',
+  borderRadius: '4px',
+  fontSize: '0.7rem',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  '&:hover': {
+    backgroundColor: 'rgba(230, 126, 34, 0.2)',
+  }
+} as const;
+
+const collapseButtonStyle = {
+  padding: '0.15rem 0.4rem',
+  backgroundColor: 'rgba(230, 126, 34, 0.1)',
+  color: '#E67E22',
+  border: '1px solid #E67E22',
+  borderRadius: '4px',
+  fontSize: '0.7rem',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  '&:hover': {
+    backgroundColor: 'rgba(230, 126, 34, 0.2)',
+  }
+} as const;
+
 export default function RecipesPage() {
   const router = useRouter();
   const [input, setInput] = useState('');
@@ -38,7 +506,8 @@ export default function RecipesPage() {
   const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
   const [selectedIngredients, setSelectedingredients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
- 
+  const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
+  const [recipeSearchQuery, setRecipeSearchQuery] = useState('');
 
   // Load recipes on initial render
   useEffect(() => {
@@ -76,6 +545,13 @@ export default function RecipesPage() {
   useEffect(() => {
     setInputValue(selectedIngredients.join(', '));
   }, [selectedIngredients]);
+
+  // Filter recipes based on search query
+  const filteredRecipes = recipeSearchQuery.trim() === '' 
+    ? availableRecipes 
+    : availableRecipes.filter(recipeName => 
+        recipeName.toLowerCase().includes(recipeSearchQuery.toLowerCase())
+      );
 
   // Handle selecting a meal
   const handleSelectMeal = async (recipe: Recipe) => {
@@ -163,42 +639,481 @@ export default function RecipesPage() {
     }
   };
 
+  // Handle expanding a recipe card
+  const handleExpandRecipe = (recipeId: string) => {
+    if (expandedRecipe === recipeId) {
+      setExpandedRecipe(null); // Collapse if already expanded
+    } else {
+      setExpandedRecipe(recipeId); // Expand the clicked recipe
+      
+      // Add setTimeout to allow the DOM to update before scrolling
+      setTimeout(() => {
+        // Find the recipe container and scroll it to the left
+        const recipeContainer = document.querySelector('.recipe-scroll-container');
+        if (recipeContainer) {
+          recipeContainer.scrollLeft = 0;
+        }
+      }, 50);
+    }
+  };
+
   return (
     <div style={containerStyle}>
-      {/* Right column: controls */}
-      <div style={leftColumnStyle}>
-        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
+      <style dangerouslySetInnerHTML={{ __html: fancyScrollbarStyles }} />
+      
+      <div style={pageHeaderStyle}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          color: '#834D18',
+          fontFamily: '"Playfair Display", serif',
+          marginBottom: '0.5rem',
+        }}>Recipe Explorer</h1>
+        <p style={{
+          fontSize: '1.1rem',
+          color: '#8D6E63',
+          maxWidth: '600px',
+          margin: '0 auto',
+        }}>Discover recipes based on your available ingredients or generate new ones</p>
+      </div>
+      
+      {/* Main Content Layout */}
+      <div style={mainLayoutContainer}>
+        {/* Left Column - Generator and Ingredients */}
+        <div style={leftColumnStyle}>
+          {/* Recipe Generator Section */}
+          <div style={generatorSectionContainer}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}>
+              <h2 style={{
+                fontSize: '1.6rem',
+                color: '#834D18',
+                fontFamily: '"Playfair Display", serif',
+                margin: 0,
+              }}>AI Powered Recipe Generator</h2>
+            </div>
+            
+            <p style={{color: '#8D6E63', marginBottom: '1.5rem', fontSize: '1.05rem'}}>
+              Create a custom recipe using your available ingredients. Select ingredients from below and click generate.
+            </p>
+          </div>
+          
+          {/* Ingredients Flow - Selector, Selected, and Generate Button */}
+          <div style={ingredientsFlowContainer}>
+            {/* Ingredients Selection Section */}
+            <div style={ingredientsSectionContainer}>
+              <h2 style={{
+                fontSize: '1.4rem',
+                color: '#834D18',
+                fontFamily: '"Playfair Display", serif',
+                marginBottom: '1rem',
+                textAlign: 'center'
+              }}>
+                Available Ingredients
+              </h2>
+              
+              <div style={ingredientSelectorContainer}>
+                <div style={baseIngredientsList}>
+                  {availableIngredients.map((ingredientName, i) => (
+                    <div
+                      key={i}
+                      onClick={() => handleRecipeClick(ingredientName)}
+                      style={{
+                        ...baseIngredientStyle,
+                        cursor: 'pointer',
+                        backgroundColor: selectedIngredients.includes(ingredientName)
+                          ? 'rgba(230, 126, 34, 0.15)'
+                          : '#FFF8F0',
+                        borderColor: selectedIngredients.includes(ingredientName)
+                          ? '#E67E22'
+                          : '#E9D8C4',
+                        color: selectedIngredients.includes(ingredientName)
+                          ? '#E67E22'
+                          : '#5D4037',
+                        fontWeight: selectedIngredients.includes(ingredientName)
+                          ? '600'
+                          : '400',
+                      }}
+                    >
+                      {ingredientName}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Selected Ingredients */}
+            {selectedIngredients.length > 0 && (
+              <div style={selectedIngredientsContainer}>
+                <div style={{
+                  fontSize: '0.95rem', 
+                  marginBottom: '0.75rem',
+                  color: '#834D18',
+                  fontWeight: '600'
+                }}>Selected ingredients:</div>
+                <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem'}}>
+                  {selectedIngredients.map((ingredient, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        ...baseIngredientStyle,
+                        display: 'inline-flex',
+                        cursor: 'pointer',
+                        backgroundColor: 'rgba(230, 126, 34, 0.15)',
+                        borderColor: '#E67E22',
+                        color: '#E67E22',
+                        fontWeight: '600',
+                      }}
+                      onClick={() => handleRecipeClick(ingredient)}
+                    >
+                      {ingredient}
+                      <span style={{marginLeft: '0.5rem'}}>×</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Generate Button */}
+            <div style={buttonGroupStyle}>
+              <button
+                onClick={handleGenerate}
+                style={generateButtonStyle}
+                disabled={isLoading || selectedIngredients.length === 0}
+              >
+                {isLoading ? 'Generating...' : 'Generate Recipe'}
+              </button>
+            </div>
 
-        <div style={controlsContainer}>
-          <div style={buttonGroupStyle}>
-            <button
-              onClick={handleGenerate}
-              style={generateButtonStyle}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Generating...' : 'Generate Recipe'}
-            </button>
+            {selectedIngredients.length === 0 && (
+              <p style={{
+                fontSize: '0.95rem',
+                color: '#e67e22',
+                fontStyle: 'italic',
+                textAlign: 'center'
+              }}>
+                Select ingredients above to generate a recipe
+              </p>
+            )}
+          </div>
+        </div>
+        
+        {/* Right Column - Existing Recipes (Scrollable) */}
+        <div style={rightColumnStyle}>
+          <div style={rightScrollContainer}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              justifyContent: 'space-between'
+            }}>
+              <h2 style={{
+                fontSize: '1.4rem',
+                color: '#834D18',
+                fontFamily: '"Playfair Display", serif',
+                margin: 0,
+              }}>Available Recipes</h2>
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                position: 'relative',
+                width: '200px',
+              }}>
+                <input 
+                  type="text"
+                  placeholder="Filter recipes..."
+                  value={recipeSearchQuery}
+                  onChange={(e) => setRecipeSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.75rem',
+                    border: '1px solid #E9D8C4',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    backgroundColor: '#FFF8F0',
+                    color: '#5D4037',
+                    outline: 'none',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#E67E22';
+                    e.target.style.boxShadow = '0 0 0 2px rgba(230, 126, 34, 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#E9D8C4';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                {recipeSearchQuery && (
+                  <button 
+                    onClick={() => setRecipeSearchQuery('')}
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      background: 'none',
+                      border: 'none',
+                      color: '#8D6E63',
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      padding: '0',
+                    }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            {error && <p style={errorStyle}>{error}</p>}
+            
+            <div style={recipesGridContainer}>
+              {isLoading && recipes.length === 0 ? (
+                <p style={loadingStyle}>Loading recipes...</p>
+              ) : filteredRecipes.length > 0 ? (
+                <div 
+                  className="recipe-scroll-container fancy-scrollbar"
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    width: '100%',
+                    height: '650px', // Reduced height
+                    paddingBottom: '0.5rem',
+                    gap: '1rem',
+                  }}
+                >
+                  {/* First create a wrapper for all non-expanded cards */}
+                  {!expandedRecipe && (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateRows: 'repeat(5, 100px)',
+                      gridAutoColumns: '180px',
+                      gridAutoFlow: 'column',
+                      gap: '0.7rem',
+                      flexShrink: 0,
+                      width: 'max-content',
+                    }}>
+                      {filteredRecipes.map(recipeName => {
+                        // Convert recipe name to full recipe object
+                        const recipe = getRecipeFromName(recipes, recipeName);
+                        
+                        // Skip if recipe not found
+                        if (!recipe) return null;
+                        
+                        return (
+                          <div 
+                            key={recipe.id} 
+                            style={{
+                              ...compactRecipeCardStyle,
+                              width: '180px',
+                              height: '100px',
+                            }}
+                            onClick={() => handleExpandRecipe(recipe.id)}
+                          >
+                            <h3 style={{...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0'}}>
+                              {recipe.name}
+                            </h3>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <span style={{color: '#8D6E63', fontSize: '0.8rem'}}>{recipe.difficulty}</span>
+                              <button 
+                                style={expandButtonStyle}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleExpandRecipe(recipe.id);
+                                }}
+                              >
+                                Expand
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }).filter(Boolean)}
+                    </div>
+                  )}
+                  
+                  {/* Then, if there's an expanded recipe, show it */}
+                  {expandedRecipe && availableRecipes.map(recipeName => {
+                    // Convert recipe name to full recipe object
+                    const recipe = getRecipeFromName(recipes, recipeName);
+                    
+                    // Skip if recipe not found or not the expanded one
+                    if (!recipe || recipe.id !== expandedRecipe) return null;
+                    
+                    return (
+                      <div 
+                        key={recipe.id} 
+                        style={{
+                          ...expandedRecipeCardStyle,
+                          width: '380px',
+                          height: '630px',
+                          flexShrink: 0,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          overflow: 'auto'
+                        }}
+                      >
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 0.5rem 0', borderBottom: '1px dotted #E9D8C4'}}>
+                          <h3 style={{...recipeNameStyle, fontSize: '1.1rem', margin: 0}}>{recipe.name}</h3>
+                          <button 
+                            style={collapseButtonStyle}
+                            onClick={() => handleExpandRecipe(recipe.id)}
+                          >
+                            Collapse
+                          </button>
+                        </div>
+                        
+                        <div style={{flex: 1, overflow: 'auto', padding: '0.5rem 0.25rem 0.5rem 0'}}>
+                          <div style={{...miniIngredientsStyle, marginBottom: '0.75rem'}}>
+                            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18'}}>Ingredients</h4>
+                            <div style={{maxHeight: '300px', overflowY: 'auto', paddingRight: '0.25rem'}}>
+                              {recipe.ingredients.map((ing, i) => (
+                                <div key={i} style={{...ingredientStyle, marginBottom: '0.25rem'}}>
+                                  <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                                  <span style={nameStyle}>{ing.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h4 style={{margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#834D18'}}>Details</h4>
+                            <div style={{...detailsStyle, fontSize: '0.85rem', marginTop: '0.25rem', flexWrap: 'wrap', gap: '0.5rem'}}>
+                              <span><strong>Difficulty:</strong> {recipe.difficulty}</span>
+                              <span><strong>Prep:</strong> {recipe.prepTime}</span>
+                              <span><strong>Cook:</strong> {recipe.cookTime}</span>
+                              <span><strong>Servings:</strong> {recipe.servings}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <button
+                          onClick={() => handleSelectMeal(recipe)}
+                          style={{...miniSelectButtonStyle, marginTop: '0.5rem'}}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? '...' : 'View Details'}
+                        </button>
+                      </div>
+                    );
+                  }).filter(Boolean)}
+                  
+                  {/* If there's an expanded recipe, show the rest of the recipes in a grid */}
+                  {expandedRecipe && (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateRows: 'repeat(5, 100px)',
+                      gridAutoColumns: '180px',
+                      gridAutoFlow: 'column',
+                      gap: '0.7rem',
+                      flexShrink: 0,
+                      width: 'max-content',
+                    }}>
+                      {filteredRecipes.map(recipeName => {
+                        // Convert recipe name to full recipe object
+                        const recipe = getRecipeFromName(recipes, recipeName);
+                        
+                        // Skip if recipe not found or it's the expanded one
+                        if (!recipe || recipe.id === expandedRecipe) return null;
+                        
+                        return (
+                          <div 
+                            key={recipe.id} 
+                            style={{
+                              ...compactRecipeCardStyle,
+                              width: '180px',
+                              height: '100px',
+                            }}
+                            onClick={() => handleExpandRecipe(recipe.id)}
+                          >
+                            <h3 style={{...recipeNameStyle, fontSize: '0.9rem', margin: '0 0 0.3rem 0'}}>
+                              {recipe.name}
+                            </h3>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <span style={{color: '#8D6E63', fontSize: '0.8rem'}}>{recipe.difficulty}</span>
+                              <button 
+                                style={expandButtonStyle}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleExpandRecipe(recipe.id);
+                                }}
+                              >
+                                Expand
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }).filter(Boolean)}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p style={emptyStyle}>No recipes match your search. Try adjusting your filter or generating a new recipe!</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Generated Recipe Section - Appears below everything when a recipe is generated */}
+      {generatedRecipe && (
+        <div style={{
+          maxWidth: '1200px',
+          margin: '2rem auto 0 auto',
+          padding: '1.5rem',
+          backgroundColor: '#FFF',
+          borderRadius: '12px',
+          border: '1px solid #E9D8C4',
+          boxShadow: '0 4px 10px rgba(210, 140, 60, 0.1)',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+            borderBottom: '2px dotted #E9D8C4',
+            paddingBottom: '1rem',
+          }}>
+            <img src={recipeGeneratorTitle.src} alt="Generated Recipe" style={{
+              height: '40px',
+              marginRight: '1rem',
+            }} />
+            <h2 style={{
+              fontSize: '1.6rem',
+              color: '#834D18',
+              fontFamily: '"Playfair Display", serif',
+              margin: 0,
+            }}>Generated Recipe</h2>
           </div>
 
-          {/* Ingredient bubbles - names only */}
-          {selectedIngredients.map((ingredient, index) => (
-            <div
-              key={index}
-              style={{
-                ...baseIngredientStyle,
-                display: 'inline-flex',
-                cursor: 'default'
-              }}
-            >
-              {ingredient}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+          }}>
+            {/* Recipe Header */}
+            <h3 style={{...recipeNameStyle, fontSize: '1.4rem', marginBottom: '0'}}>{generatedRecipe.name}</h3>
+            
+            {/* Details Box */}
+            <div style={{...detailsStyle, marginTop: '0'}}>
+              <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
+              <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
             </div>
-          ))}
-
-          {generatedRecipe && (
-            <div style={previewContainer}>
-              <h3 style={previewHeader}>Generated Recipe Preview</h3>
-              <div style={previewContent}>
-                <h4 style={recipeNameStyle}>{generatedRecipe.name}</h4>
+            
+            {/* Two Column Layout for Ingredients and Instructions */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '2rem',
+              flexWrap: 'wrap',
+            }}>
+              {/* Ingredients Column */}
+              <div style={{
+                flex: '1',
+                minWidth: '300px',
+              }}>
+                <h4 style={{margin: '0 0 0.75rem 0', fontSize: '1.1rem', color: '#834D18'}}>Ingredients</h4>
                 <div style={ingredientsStyle}>
                   {generatedRecipe.ingredients.map((ing, i) => (
                     <div key={i} style={ingredientStyle}>
@@ -207,355 +1122,47 @@ export default function RecipesPage() {
                     </div>
                   ))}
                 </div>
-                <div style={detailsStyle}>
-                  <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
-                  <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
-                </div>
-                <button
-                  onClick={saveGeneratedRecipe}
-                  style={saveButtonStyle}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Saving...' : 'Add to Recipes'}
-                </button>
+              </div>
+
+              {/* Instructions Column */}
+              <div style={{
+                flex: '1.5',
+                minWidth: '300px',
+              }}>
+                <h4 style={{
+                  margin: '0 0 0.75rem 0',
+                  fontSize: '1.1rem',
+                  color: '#834D18',
+                  borderBottom: '1px dotted #E9D8C4',
+                  paddingBottom: '0.5rem'
+                }}>
+                  Instructions
+                </h4>
+                <ol style={{
+                  color: '#5D4037',
+                  paddingLeft: '1.5rem',
+                  margin: '0',
+                }}>
+                  {generatedRecipe.instructions.map((step, i) => (
+                    <li key={i} style={{marginBottom: '0.75rem'}}>{step}</li>  
+                  ))}
+                </ol>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-      <div style={rightColumnStyle}>
-        <div style={baseIngredientsContainer}>
-          <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
-          <div style={baseIngredientsList}>
-            {availableIngredients.map((ingredientName, i) => (
-              <div
-                key={i}
-                onClick={() => handleRecipeClick(ingredientName)}
-                style={{
-                  ...baseIngredientStyle,
-                  cursor: 'pointer',
-                  backgroundColor: selectedIngredients.includes(ingredientName)
-                    ? 'rgba(var(--primary), 0.2)'
-                    : 'rgba(var(--foreground), 0.1)',
-                  border: selectedIngredients.includes(ingredientName)
-                    ? '1px solid rgba(var(--primary), 0.5)'
-                    : '1px solid transparent',
-                }}
+
+            {/* Save Button */}
+            <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
+              <button
+                onClick={saveGeneratedRecipe}
+                style={saveButtonStyle}
+                disabled={isLoading}
               >
-                {ingredientName}
-              </div>
-            ))}
+                {isLoading ? 'Saving...' : 'Add to Recipes'}
+              </button>
+            </div>
           </div>
         </div>
-
-        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
-        {error && <p style={errorStyle}>{error}</p>}
-        {isLoading && recipes.length === 0 ? (
-          <p style={loadingStyle}>Loading recipes...</p>
-        ) : availableRecipes.length > 0 ? (
-          availableRecipes.map(recipeName => {
-            // Convert recipe name to full recipe object
-            const recipe = getRecipeFromName(recipes, recipeName);
-
-            // Skip if recipe not found (or handle differently if you prefer)
-            if (!recipe) return null;
-
-            return (
-              <div key={recipe.id} style={recipeBoxStyle}>
-                <div style={recipeHeaderStyle}>
-                  <h3 style={recipeNameStyle}>{recipe.name}</h3>
-                  <button
-                    onClick={() => handleSelectMeal(recipe)}
-                    style={selectButtonStyle}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Selecting...' : 'Select Meal'}
-                  </button>
-                </div>
-                <div style={ingredientsStyle}>
-                  {recipe.ingredients.map((ing, i) => (
-                    <div key={i} style={ingredientStyle}>
-                      <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
-                      <span style={nameStyle}>{ing.name}</span>
-                    </div>
-                  ))}
-                </div>
-                <div style={detailsStyle}>
-                  <span>{recipe.cuisine} • {recipe.difficulty}</span>
-                  <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
-                </div>
-              </div>
-            );
-          }).filter(Boolean) // Remove any null entries from failed lookups
-        ) : (
-          <p style={emptyStyle}>No recipes yet. Add some!</p>
-        )}
-      </div>
+      )}
     </div>
   );
 }
-
-// Style Definitions
-const containerStyle = {
-  display: 'flex',
-  gap: '2rem',
-  padding: '2rem',
-  minHeight: '100vh',
-  backgroundColor: 'var(--background)'
-} as const;
-
-const leftColumnStyle = {
-  flex: 1,
-  maxWidth: '400px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem'
-} as const;
-
-const rightColumnStyle = {
-  flex: 2,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2rem'
-} as const;
-
-
-const recipeBoxStyle = {
-  padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
-} as const;
-
-const recipeHeaderStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '1rem'
-} as const;
-
-const recipeNameStyle = {
-  fontSize: '1.2rem',
-  color: 'var(--foreground)'
-} as const;
-
-const selectButtonStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  color: 'var(--foreground)',
-  border: 'none',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontSize: '0.9rem',
-  transition: 'background-color 0.2s',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)'
-  },
-  ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)',
-    cursor: 'not-allowed'
-  }
-} as const;
-
-const ingredientsStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.5rem'
-} as const;
-
-const ingredientStyle = {
-  display: 'flex',
-  gap: '0.5rem',
-  color: 'var(--foreground)'
-} as const;
-
-const quantityStyle = {
-  fontWeight: 'bold',
-  color: 'var(--foreground)'
-} as const;
-
-const nameStyle = {
-  color: 'var(--foreground)',
-  opacity: 0.9
-} as const;
-
-const detailsStyle = {
-  marginTop: '1rem',
-  display: 'flex',
-  justifyContent: 'space-between',
-  fontSize: '0.9rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const loadingStyle = {
-  padding: '2rem',
-  textAlign: 'center',
-  fontSize: '1.2rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const errorStyle = {
-  padding: '1rem',
-  textAlign: 'center',
-  fontSize: '1rem',
-  color: '#ef4444',
-  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-  borderRadius: '8px',
-  border: '1px solid rgba(239, 68, 68, 0.2)'
-} as const;
-
-const emptyStyle = {
-  padding: '2rem',
-  textAlign: 'center',
-  fontSize: '1.2rem',
-  color: 'var(--foreground)',
-  opacity: 0.7,
-  fontStyle: 'italic'
-} as const;
-
-const controlsContainer = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem',
-  padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
-} as const;
-
-const buttonGroupStyle = {
-  display: 'flex',
-  gap: '1rem'
-} as const;
-
-const generateButtonStyle = {
-  padding: '0.75rem 1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  color: 'var(--foreground)',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  fontSize: '1rem',
-  flex: 1,
-  transition: 'background-color 0.2s',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)'
-  },
-  ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)',
-    cursor: 'not-allowed'
-  }
-} as const;
-
-const inputStyle = {
-  padding: '0.75rem',
-  border: '1px solid rgba(var(--foreground), 0.2)',
-  borderRadius: '6px',
-  fontSize: '1rem',
-  width: '100%',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  color: 'var(--foreground)',
-  transition: 'background-color 0.2s',
-  ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)'
-  }
-} as const;
-
-const previewContainer = {
-  marginTop: '2rem',
-  padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
-} as const;
-
-const previewHeader = {
-  fontSize: '1.25rem',
-  marginBottom: '1rem',
-  color: 'var(--foreground)',
-  fontFamily: '"EB Garamond", serif'
-} as const;
-
-const previewContent = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem'
-} as const;
-
-const titleImageStyle = {
-  width: '250px',
-  height: '150px',
-  objectFit: 'contain', // Ensures the whole image is visible
-  display: 'block',
-  margin: '0 auto 1rem auto', // Centers the image horizontally
-} as const;
-
-
-const saveButtonStyle = {
-  padding: '0.75rem 1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  color: 'var(--foreground)',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  fontSize: '1rem',
-  transition: 'background-color 0.2s',
-  marginTop: '1rem',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)'
-  },
-  ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)',
-    cursor: 'not-allowed'
-  }
-} as const;
-
-const baseIngredientsContainer = {
-  padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
-} as const;
-
-const baseIngredientsTitle = {
-  marginBottom: '0.5rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const baseIngredientsList = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem'
-} as const;
-
-const baseIngredientStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  borderRadius: '20px',
-  fontSize: '0.9rem',
-  color: 'var(--foreground)'
-} as const;
-
-const recipeButtonStyle = {
-  ...baseIngredientStyle,
-  cursor: 'pointer',
-  border: 'none',
-  outline: 'none',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)',
-    transform: 'scale(1.05)'
-  },
-  '&:active': {
-    transform: 'scale(0.98)'
-  }
-} as const;
-
-const selectedRecipeButtonStyle = {
-  ...recipeButtonStyle,
-  backgroundColor: 'rgba(var(--primary), 0.2)',
-  border: '1px solid rgba(var(--primary), 0.5)'
-} as const;
