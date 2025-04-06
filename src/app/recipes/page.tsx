@@ -252,13 +252,12 @@ export default function RecipesPage() {
   );
 }
 
-// Style Definitions
+// Styles
 const containerStyle = {
   display: 'flex',
   gap: '2rem',
   padding: '2rem',
   minHeight: '100vh',
-  backgroundColor: 'var(--background)'
 } as const;
 
 const leftColumnStyle = {
@@ -276,19 +275,20 @@ const rightColumnStyle = {
   gap: '2rem'
 } as const;
 
+
 const headerStyle = {
   fontSize: '1.5rem',
   marginBottom: '1rem',
-  color: 'var(--foreground)',
-  fontFamily: '"EB Garamond", serif'
+  color: '#333'
 } as const;
 
 const recipeBoxStyle = {
   padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
+  borderRadius: '8px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  border: '5px solid #bc4424', // Added border
 } as const;
+
 
 const recipeHeaderStyle = {
   display: 'flex',
@@ -299,23 +299,23 @@ const recipeHeaderStyle = {
 
 const recipeNameStyle = {
   fontSize: '1.2rem',
-  color: 'var(--foreground)'
+  color: '#444'
 } as const;
 
 const selectButtonStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  color: 'var(--foreground)',
+  backgroundColor: '#bc4424',
+  color: 'white',
   border: 'none',
   borderRadius: '4px',
   cursor: 'pointer',
   fontSize: '0.9rem',
   transition: 'background-color 0.2s',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)'
+  ':hover': {
+    backgroundColor: '#bc4424'
   },
   ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)',
+    backgroundColor: '#bc4424',
     cursor: 'not-allowed'
   }
 } as const;
@@ -328,18 +328,16 @@ const ingredientsStyle = {
 
 const ingredientStyle = {
   display: 'flex',
-  gap: '0.5rem',
-  color: 'var(--foreground)'
+  gap: '0.5rem'
 } as const;
 
 const quantityStyle = {
   fontWeight: 'bold',
-  color: 'var(--foreground)'
+  color: '#0070f3'
 } as const;
 
 const nameStyle = {
-  color: 'var(--foreground)',
-  opacity: 0.9
+  color: '#666'
 } as const;
 
 const detailsStyle = {
@@ -347,35 +345,23 @@ const detailsStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   fontSize: '0.9rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const loadingStyle = {
-  padding: '2rem',
-  textAlign: 'center',
-  fontSize: '1.2rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const errorStyle = {
-  padding: '1rem',
-  textAlign: 'center',
-  fontSize: '1rem',
-  color: '#ef4444',
-  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-  borderRadius: '8px',
-  border: '1px solid rgba(239, 68, 68, 0.2)'
+  color: '#666'
 } as const;
 
 const emptyStyle = {
-  padding: '2rem',
-  textAlign: 'center',
-  fontSize: '1.2rem',
-  color: 'var(--foreground)',
-  opacity: 0.7,
+  color: '#999',
   fontStyle: 'italic'
+} as const;
+
+const loadingStyle = {
+  color: '#666'
+} as const;
+
+const errorStyle = {
+  color: '#ff3333',
+  padding: '0.5rem',
+  backgroundColor: '#ffeeee',
+  borderRadius: '4px'
 } as const;
 
 const controlsContainer = {
@@ -383,9 +369,9 @@ const controlsContainer = {
   flexDirection: 'column',
   gap: '1rem',
   padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
+  backgroundColor: 'white',
+  borderRadius: '8px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
 } as const;
 
 const buttonGroupStyle = {
@@ -395,35 +381,56 @@ const buttonGroupStyle = {
 
 const generateButtonStyle = {
   padding: '0.75rem 1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  color: 'var(--foreground)',
+  backgroundColor: '#0070f3',
+  color: 'white',
   border: 'none',
   borderRadius: '6px',
   cursor: 'pointer',
   fontSize: '1rem',
-  flex: 1,
+  flex: 2,
   transition: 'background-color 0.2s',
-  '&:hover': {
-    backgroundColor: 'rgba(var(--foreground), 0.2)'
-  },
   ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)',
+    backgroundColor: '#cccccc',
     cursor: 'not-allowed'
   }
 } as const;
 
 const inputStyle = {
   padding: '0.75rem',
-  border: '1px solid rgba(var(--foreground), 0.2)',
+  border: '1px solid #ddd',
   borderRadius: '6px',
   fontSize: '1rem',
   width: '100%',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  color: 'var(--foreground)',
   transition: 'background-color 0.2s',
   ':disabled': {
-    backgroundColor: 'rgba(var(--foreground), 0.05)'
+    backgroundColor: '#f0f0f0'
   }
+} as const;
+
+const baseIngredientsContainer = {
+  padding: '1.5rem',
+  backgroundColor: 'white',
+  borderRadius: '8px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+} as const;
+
+const baseIngredientsTitle = {
+  marginBottom: '0.5rem',
+  color: '#666'
+} as const;
+
+const baseIngredientsList = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.5rem'
+} as const;
+
+const baseIngredientStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#f0f0f0',
+  borderRadius: '20px',
+  fontSize: '0.9rem',
+  color: '#333'
 } as const;
 
 const previewContainer = {
@@ -466,29 +473,3 @@ const saveButtonStyle = {
   }
 } as const;
 
-const baseIngredientsContainer = {
-  padding: '1.5rem',
-  backgroundColor: 'rgba(var(--foreground), 0.03)',
-  borderRadius: '12px',
-  border: '1px solid rgba(var(--foreground), 0.1)'
-} as const;
-
-const baseIngredientsTitle = {
-  marginBottom: '0.5rem',
-  color: 'var(--foreground)',
-  opacity: 0.8
-} as const;
-
-const baseIngredientsList = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem'
-} as const;
-
-const baseIngredientStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: 'rgba(var(--foreground), 0.1)',
-  borderRadius: '20px',
-  fontSize: '0.9rem',
-  color: 'var(--foreground)'
-} as const;
