@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import recipeListTitle from './recipe-list-title.png';
+import recipeGeneratorTitle from './recipe-generator-title.png';
+
+import { useRouter } from 'next/navigation';
 import { convertRecipesToMinRecipes, getListOfRecipes, minRecipe } from './types';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
 
@@ -13,10 +17,20 @@ interface Ingredient {
 interface Recipe {
   id: string;
   name: string;
+  cuisine: string;
   ingredients: Ingredient[];
+  prepTime: string;
+  cookTime: string;
+  instructions: string[];
+  servings: number;
+  equipment: string[];
+  difficulty: string;
+  author: string;
 }
 
+
 export default function RecipesPage() {
+  const router = useRouter();
   const [input, setInput] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,11 +86,32 @@ export default function RecipesPage() {
     fetchRecipes();
   }, []);
 
+  // Handle selecting a meal
+  const handleSelectMeal = async (recipe: Recipe) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/selected-meal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recipe)
+      });
+
+      if (!response.ok) throw new Error('Failed to select meal');
+      
+      router.push('/meal-preparation');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to select meal');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Add dummy recipe to JSONL
   const addDummyRecipe = async () => {
     const dummyRecipe: Recipe = {
       id: `dummy-${Date.now()}`,
       name: `Dummy Recipe ${recipes.length + 1}`,
+      cuisine: 'International',
       ingredients: [
         { 
           name: baseIngredients[Math.floor(Math.random() * baseIngredients.length)], 
@@ -88,7 +123,14 @@ export default function RecipesPage() {
           quantity: (Math.floor(Math.random() * 3) + 1).toString(), 
           unit: ['g', 'tbsp', 'pieces'][Math.floor(Math.random() * 3)] 
         }
-      ]
+      ],
+      prepTime: '10 minutes',
+      cookTime: '20 minutes',
+      instructions: ['Mix ingredients', 'Cook as directed'],
+      servings: 2,
+      equipment: ['Pan', 'Spoon'],
+      difficulty: 'Easy',
+      author: 'system'
     };
 
     try {
@@ -128,11 +170,19 @@ export default function RecipesPage() {
       const newRecipe: Recipe = {
         id: `gen-${Date.now()}`,
         name: `Generated ${input.split(' ')[0]} Recipe`,
+        cuisine: 'International',
         ingredients: selectedIngredients.map(ing => ({
           name: ing,
           quantity: (Math.floor(Math.random() * 3) + 1).toString(),
           unit: ['g', 'cups', 'pieces'][Math.floor(Math.random() * 3)]
-        }))
+        })),
+        prepTime: `${Math.floor(Math.random() * 10) + 5} minutes`,
+        cookTime: `${Math.floor(Math.random() * 20) + 10} minutes`,
+        instructions: ['Prepare ingredients', 'Combine and cook'],
+        servings: Math.floor(Math.random() * 3) + 2,
+        equipment: ['Pan', 'Spoon', 'Bowl'],
+        difficulty: ['Easy', 'Medium'][Math.floor(Math.random() * 2)],
+        author: 'system'
       };
 
       const response = await fetch('/api/recipes', {
@@ -151,20 +201,29 @@ export default function RecipesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+    }
 
   return (
     <div style={containerStyle}>
       {/* Left column: recipe list */}
       <div style={leftColumnStyle}>
-        <h2 style={headerStyle}>Recipe List</h2>
+        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
         {error && <p style={errorStyle}>{error}</p>}
         {isLoading && recipes.length === 0 ? (
           <p style={loadingStyle}>Loading recipes...</p>
         ) : recipes.length > 0 ? (
           recipes.map(recipe => (
             <div key={recipe.id} style={recipeBoxStyle}>
-              <h3 style={recipeNameStyle}>{recipe.name}</h3>
+              <div style={recipeHeaderStyle}>
+                <h3 style={recipeNameStyle}>{recipe.name}</h3>
+                <button 
+                  onClick={() => handleSelectMeal(recipe)}
+                  style={selectButtonStyle}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Selecting...' : 'Select Meal'}
+                </button>
+              </div>
               <div style={ingredientsStyle}>
                 {recipe.ingredients.map((ing, i) => (
                   <div key={i} style={ingredientStyle}>
@@ -172,6 +231,10 @@ export default function RecipesPage() {
                     <span style={nameStyle}>{ing.name}</span>
                   </div>
                 ))}
+              </div>
+              <div style={detailsStyle}>
+                <span>{recipe.cuisine} • {recipe.difficulty}</span>
+                <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
               </div>
             </div>
           ))
@@ -182,7 +245,7 @@ export default function RecipesPage() {
 
       {/* Right column: controls */}
       <div style={rightColumnStyle}>
-        <h2 style={headerStyle}>Recipe Generator</h2>
+        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
         
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
@@ -231,7 +294,6 @@ const containerStyle = {
   gap: '2rem',
   padding: '2rem',
   minHeight: '100vh',
-  backgroundColor: '#f5f5f5'
 } as const;
 
 const leftColumnStyle = {
@@ -249,6 +311,16 @@ const rightColumnStyle = {
   gap: '2rem'
 } as const;
 
+const titleImageStyle = {
+  width: '250px',
+  height: '150px',
+  objectFit: 'contain', // Ensures the whole image is visible
+  display: 'block',
+  margin: '0 auto 1rem auto', // Centers the image horizontally
+} as const;
+
+
+
 const headerStyle = {
   fontSize: '1.5rem',
   marginBottom: '1rem',
@@ -262,10 +334,34 @@ const recipeBoxStyle = {
   boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
 } as const;
 
+const recipeHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '1rem'
+} as const;
+
 const recipeNameStyle = {
   fontSize: '1.2rem',
-  marginBottom: '1rem',
   color: '#444'
+} as const;
+
+const selectButtonStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#ff6b6b',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  fontSize: '0.9rem',
+  transition: 'background-color 0.2s',
+  ':hover': {
+    backgroundColor: '#ff5252'
+  },
+  ':disabled': {
+    backgroundColor: '#cccccc',
+    cursor: 'not-allowed'
+  }
 } as const;
 
 const ingredientsStyle = {
@@ -285,6 +381,14 @@ const quantityStyle = {
 } as const;
 
 const nameStyle = {
+  color: '#666'
+} as const;
+
+const detailsStyle = {
+  marginTop: '1rem',
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: '0.9rem',
   color: '#666'
 } as const;
 
@@ -328,6 +432,7 @@ const generateButtonStyle = {
   cursor: 'pointer',
   fontSize: '1rem',
   flex: 2,
+  transition: 'background-color 0.2s',
   ':disabled': {
     backgroundColor: '#cccccc',
     cursor: 'not-allowed'
@@ -350,6 +455,7 @@ const inputStyle = {
   borderRadius: '6px',
   fontSize: '1rem',
   width: '100%',
+  transition: 'background-color 0.2s',
   ':disabled': {
     backgroundColor: '#f0f0f0'
   }

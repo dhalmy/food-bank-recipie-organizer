@@ -1,12 +1,8 @@
 import Head from "next/head";
-import aboutBg from "./about-bg.png";
 import aboutTitle from "./about-title.png";
 
 export default function AboutPage() {
   const containerStyle = {
-    backgroundImage: `url(${aboutBg.src})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
     minHeight: "100vh",
     fontFamily: '"EB Garamond", serif',
     lineHeight: "1.6",
