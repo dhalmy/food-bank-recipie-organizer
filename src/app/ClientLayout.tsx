@@ -20,6 +20,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           <nav style={navStyle}>
             <Link href="/" style={linkStyle}>Home</Link>
             <Link href="/about" style={linkStyle}>About</Link>
+            <Link href="/inventory" style={linkStyle}>Inventory</Link>
             <Link href="/recipes" style={linkStyle}>Recipes</Link>
             <Link href="/meal-preparation" style={linkStyle}>Meals</Link>
           </nav>
