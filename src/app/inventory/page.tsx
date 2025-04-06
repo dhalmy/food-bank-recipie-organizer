@@ -11,7 +11,6 @@ import {
   updateInventoryItem, 
   deleteInventoryItem,
   InventoryItem,
-  getAllIngredientsList
 } from '@/food-database/inventoryUtils';
 import { addProductByUPC } from '@/food-database/openFoodFactsUtils';
 import { initializeDatabase } from '@/food-database/localDatabase';
