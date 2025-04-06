@@ -29,6 +29,7 @@ export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
 
   // Load recipes on initial render
@@ -70,54 +71,7 @@ export default function RecipesPage() {
     }
   };
 
-  // Add dummy recipe to JSONL
-  const addDummyRecipe = async () => {
-    const dummyRecipe: Recipe = {
-      id: `dummy-${Date.now()}`,
-      name: `Dummy Recipe ${recipes.length + 1}`,
-      cuisine: 'International',
-      ingredients: [
-        { 
-          name: baseIngredients[Math.floor(Math.random() * baseIngredients.length)], 
-          quantity: (Math.floor(Math.random() * 5) + 1).toString(), 
-          unit: ['g', 'cups', 'pieces'][Math.floor(Math.random() * 3)] 
-        },
-        { 
-          name: baseIngredients[Math.floor(Math.random() * baseIngredients.length)], 
-          quantity: (Math.floor(Math.random() * 3) + 1).toString(), 
-          unit: ['g', 'tbsp', 'pieces'][Math.floor(Math.random() * 3)] 
-        }
-      ],
-      prepTime: '10 minutes',
-      cookTime: '20 minutes',
-      instructions: ['Mix ingredients', 'Cook as directed'],
-      servings: 2,
-      equipment: ['Pan', 'Spoon'],
-      difficulty: 'Easy',
-      author: 'system'
-    };
-
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch('/api/recipes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dummyRecipe)
-      });
-
-      if (!response.ok) throw new Error('Failed to save recipe');
-      
-      const updatedData = await response.json();
-      setRecipes(updatedData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add dummy recipe');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Generate recipe based on input
+  // Generate recipe using OpenAI API
   const handleGenerate = async () => {
     if (!input.trim()) {
       setError('Please enter some description');
@@ -127,41 +81,50 @@ export default function RecipesPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const selectedIngredients = [...baseIngredients]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, Math.floor(Math.random() * 2) + 2);
+      setGeneratedRecipe(null);
 
-      const newRecipe: Recipe = {
-        id: `gen-${Date.now()}`,
-        name: `Generated ${input.split(' ')[0]} Recipe`,
-        cuisine: 'International',
-        ingredients: selectedIngredients.map(ing => ({
-          name: ing,
-          quantity: (Math.floor(Math.random() * 3) + 1).toString(),
-          unit: ['g', 'cups', 'pieces'][Math.floor(Math.random() * 3)]
-        })),
-        prepTime: `${Math.floor(Math.random() * 10) + 5} minutes`,
-        cookTime: `${Math.floor(Math.random() * 20) + 10} minutes`,
-        instructions: ['Prepare ingredients', 'Combine and cook'],
-        servings: Math.floor(Math.random() * 3) + 2,
-        equipment: ['Pan', 'Spoon', 'Bowl'],
-        difficulty: ['Easy', 'Medium'][Math.floor(Math.random() * 2)],
-        author: 'system'
-      };
+      const response = await fetch('/api/generate-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: input,
+          ingredients: baseIngredients
+        })
+      });
 
+      if (!response.ok) throw new Error('Failed to generate recipe');
+      
+      const newRecipe = await response.json();
+      setGeneratedRecipe(newRecipe);
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate recipe');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Save generated recipe to the list
+  const saveGeneratedRecipe = async () => {
+    if (!generatedRecipe) return;
+
+    try {
+      setIsLoading(true);
       const response = await fetch('/api/recipes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newRecipe)
+        body: JSON.stringify(generatedRecipe)
       });
 
-      if (!response.ok) throw new Error('Failed to save generated recipe');
+      if (!response.ok) throw new Error('Failed to save recipe');
       
       const updatedData = await response.json();
       setRecipes(updatedData);
+      setGeneratedRecipe(null);
       setInput('');
+
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate recipe');
+      setError(err instanceof Error ? err.message : 'Failed to save recipe');
     } finally {
       setIsLoading(false);
     }
@@ -220,23 +183,44 @@ export default function RecipesPage() {
             >
               {isLoading ? 'Generating...' : 'Generate Recipe'}
             </button>
-            <button 
-              onClick={addDummyRecipe} 
-              style={dummyButtonStyle}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Adding...' : 'Add Dummy Recipe'}
-            </button>
           </div>
 
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Describe your recipe (e.g. 'quick dinner')"
+            placeholder="Describe your recipe (e.g. 'quick chicken dinner')"
             style={inputStyle}
             disabled={isLoading}
           />
+
+          {generatedRecipe && (
+            <div style={previewContainer}>
+              <h3 style={previewHeader}>Generated Recipe Preview</h3>
+              <div style={previewContent}>
+                <h4 style={recipeNameStyle}>{generatedRecipe.name}</h4>
+                <div style={ingredientsStyle}>
+                  {generatedRecipe.ingredients.map((ing, i) => (
+                    <div key={i} style={ingredientStyle}>
+                      <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                      <span style={nameStyle}>{ing.name}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={detailsStyle}>
+                  <span>{generatedRecipe.cuisine} • {generatedRecipe.difficulty}</span>
+                  <span>{generatedRecipe.prepTime} prep • {generatedRecipe.cookTime} cook</span>
+                </div>
+                <button 
+                  onClick={saveGeneratedRecipe}
+                  style={saveButtonStyle}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Saving...' : 'Add to Recipes'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div style={baseIngredientsContainer}>
@@ -252,13 +236,13 @@ export default function RecipesPage() {
   );
 }
 
-// Styles
+// Style Definitions
 const containerStyle = {
   display: 'flex',
   gap: '2rem',
   padding: '2rem',
   minHeight: '100vh',
-  backgroundColor: '#f5f5f5'
+  backgroundColor: 'var(--background)'
 } as const;
 
 const leftColumnStyle = {
@@ -279,14 +263,15 @@ const rightColumnStyle = {
 const headerStyle = {
   fontSize: '1.5rem',
   marginBottom: '1rem',
-  color: '#333'
+  color: 'var(--foreground)',
+  fontFamily: '"EB Garamond", serif'
 } as const;
 
 const recipeBoxStyle = {
   padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
 
 const recipeHeaderStyle = {
@@ -298,23 +283,23 @@ const recipeHeaderStyle = {
 
 const recipeNameStyle = {
   fontSize: '1.2rem',
-  color: '#444'
+  color: 'var(--foreground)'
 } as const;
 
 const selectButtonStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#ff6b6b',
-  color: 'white',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
   border: 'none',
   borderRadius: '4px',
   cursor: 'pointer',
   fontSize: '0.9rem',
   transition: 'background-color 0.2s',
-  ':hover': {
-    backgroundColor: '#ff5252'
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
   },
   ':disabled': {
-    backgroundColor: '#cccccc',
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
     cursor: 'not-allowed'
   }
 } as const;
@@ -327,16 +312,18 @@ const ingredientsStyle = {
 
 const ingredientStyle = {
   display: 'flex',
-  gap: '0.5rem'
+  gap: '0.5rem',
+  color: 'var(--foreground)'
 } as const;
 
 const quantityStyle = {
   fontWeight: 'bold',
-  color: '#0070f3'
+  color: 'var(--foreground)'
 } as const;
 
 const nameStyle = {
-  color: '#666'
+  color: 'var(--foreground)',
+  opacity: 0.9
 } as const;
 
 const detailsStyle = {
@@ -344,23 +331,35 @@ const detailsStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   fontSize: '0.9rem',
-  color: '#666'
-} as const;
-
-const emptyStyle = {
-  color: '#999',
-  fontStyle: 'italic'
+  color: 'var(--foreground)',
+  opacity: 0.8
 } as const;
 
 const loadingStyle = {
-  color: '#666'
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: 'var(--foreground)',
+  opacity: 0.8
 } as const;
 
 const errorStyle = {
-  color: '#ff3333',
-  padding: '0.5rem',
-  backgroundColor: '#ffeeee',
-  borderRadius: '4px'
+  padding: '1rem',
+  textAlign: 'center',
+  fontSize: '1rem',
+  color: '#ef4444',
+  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+  borderRadius: '8px',
+  border: '1px solid rgba(239, 68, 68, 0.2)'
+} as const;
+
+const emptyStyle = {
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: 'var(--foreground)',
+  opacity: 0.7,
+  fontStyle: 'italic'
 } as const;
 
 const controlsContainer = {
@@ -368,9 +367,9 @@ const controlsContainer = {
   flexDirection: 'column',
   gap: '1rem',
   padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
 
 const buttonGroupStyle = {
@@ -380,52 +379,88 @@ const buttonGroupStyle = {
 
 const generateButtonStyle = {
   padding: '0.75rem 1.5rem',
-  backgroundColor: '#0070f3',
-  color: 'white',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
   border: 'none',
   borderRadius: '6px',
   cursor: 'pointer',
   fontSize: '1rem',
-  flex: 2,
-  transition: 'background-color 0.2s',
-  ':disabled': {
-    backgroundColor: '#cccccc',
-    cursor: 'not-allowed'
-  }
-} as const;
-
-const dummyButtonStyle = {
-  ...generateButtonStyle,
-  backgroundColor: '#4CAF50',
   flex: 1,
+  transition: 'background-color 0.2s',
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
+  },
   ':disabled': {
-    backgroundColor: '#cccccc',
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
     cursor: 'not-allowed'
   }
 } as const;
 
 const inputStyle = {
   padding: '0.75rem',
-  border: '1px solid #ddd',
+  border: '1px solid rgba(var(--foreground), 0.2)',
   borderRadius: '6px',
   fontSize: '1rem',
   width: '100%',
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  color: 'var(--foreground)',
   transition: 'background-color 0.2s',
   ':disabled': {
-    backgroundColor: '#f0f0f0'
+    backgroundColor: 'rgba(var(--foreground), 0.05)'
+  }
+} as const;
+
+const previewContainer = {
+  marginTop: '2rem',
+  padding: '1.5rem',
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
+} as const;
+
+const previewHeader = {
+  fontSize: '1.25rem',
+  marginBottom: '1rem',
+  color: 'var(--foreground)',
+  fontFamily: '"EB Garamond", serif'
+} as const;
+
+const previewContent = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem'
+} as const;
+
+const saveButtonStyle = {
+  padding: '0.75rem 1.5rem',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  transition: 'background-color 0.2s',
+  marginTop: '1rem',
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
+  },
+  ':disabled': {
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
+    cursor: 'not-allowed'
   }
 } as const;
 
 const baseIngredientsContainer = {
   padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
 
 const baseIngredientsTitle = {
   marginBottom: '0.5rem',
-  color: '#666'
+  color: 'var(--foreground)',
+  opacity: 0.8
 } as const;
 
 const baseIngredientsList = {
@@ -436,8 +471,8 @@ const baseIngredientsList = {
 
 const baseIngredientStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#f0f0f0',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
   borderRadius: '20px',
   fontSize: '0.9rem',
-  color: '#333'
+  color: 'var(--foreground)'
 } as const;
