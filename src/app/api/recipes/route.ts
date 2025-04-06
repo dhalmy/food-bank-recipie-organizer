@@ -1,6 +1,6 @@
 // src/app/api/recipes/route.ts
 import { NextResponse } from 'next/server';
-import { Recipe } from '@/app/recipes/types';
+import type { Recipe } from '@/app/recipes/types';
 import fs from 'fs/promises';
 import path from 'path';
 
