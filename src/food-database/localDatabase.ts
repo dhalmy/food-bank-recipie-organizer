@@ -28,7 +28,7 @@ export interface InventoryItem {
   nutritionalFacts: NutritionalFacts;
   expirationDate: string;
   quantity: QuantityValue;
-  servingSize: QuantityValue;
+  servingQuantity: QuantityValue;
   imageUrl?: string; // Optional URL to the product image
   nutritionImageUrl?: string; // Optional URL to the nutrition facts image
   count?: number; // Track number of duplicate items
@@ -160,7 +160,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "014800000238",
             "foodTypeId": 3,
-            "subCategory": "Applesauces",
+            "subCategory": "Cinnamon applesauce",
             "nutritionalFacts": {
               "calories": {
                 "value": 88,
@@ -187,14 +187,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-08-06",
+            "expirationDate": "2027-06-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "container"
+            "servingQuantity": {
+              "value": 113,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/001/480/000/0238/front_en.3.400.jpg",
             "count": 5
@@ -202,7 +202,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "039400016144",
             "foodTypeId": 2,
-            "subCategory": "Canned white common beans",
+            "subCategory": "Baked Beans, Original",
             "nutritionalFacts": {
               "calories": {
                 "value": 115,
@@ -229,14 +229,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-11-06",
+            "expirationDate": "2026-10-06",
             "quantity": {
               "value": 794,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 0.5,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 130,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/003/940/001/6144/front_en.8.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/003/940/001/6144/nutrition_en.12.400.jpg",
@@ -245,7 +245,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "078742001012",
             "foodTypeId": 2,
-            "subCategory": "Chicken breasts",
+            "subCategory": "Chunk Chicken Breast With Rib Meat In Water",
             "nutritionalFacts": {
               "calories": {
                 "value": 77,
@@ -272,14 +272,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2025-11-06",
             "quantity": {
               "value": 5,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 142,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/007/874/200/1012/front_en.11.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/007/874/200/1012/nutrition_en.13.400.jpg",
@@ -288,7 +288,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "086600000206",
             "foodTypeId": 2,
-            "subCategory": "Canned tunas",
+            "subCategory": "Premium chunk light tuna in water",
             "nutritionalFacts": {
               "calories": {
                 "value": 89,
@@ -315,21 +315,21 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-04-06",
+            "expirationDate": "2025-11-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 2,
-              "unit": "onz"
+            "servingQuantity": {
+              "value": 56,
+              "unit": "g"
             },
             "count": 5
           },
           {
             "serialNumber": "096619653133",
             "foodTypeId": 2,
-            "subCategory": "Canned salmons",
+            "subCategory": "Wild Alaska Pink Salmon",
             "nutritionalFacts": {
               "calories": {
                 "value": 94,
@@ -356,14 +356,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2026-10-06",
             "quantity": {
               "value": 6,
               "unit": "cans"
             },
-            "servingSize": {
-              "value": 3,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 85,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/009/661/965/3133/front_en.3.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/661/965/3133/nutrition_en.5.400.jpg",
@@ -372,7 +372,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "034700054117",
             "foodTypeId": 3,
-            "subCategory": "Undefined",
+            "subCategory": "Chopped Spinach",
             "nutritionalFacts": {
               "calories": {
                 "value": 17,
@@ -399,14 +399,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-04-06",
+            "expirationDate": "2025-09-06",
             "quantity": {
               "value": 121,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 0.5,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 121,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/003/470/005/4117/front_en.6.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/003/470/005/4117/nutrition_en.8.400.jpg",
@@ -415,7 +415,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "024000163190",
             "foodTypeId": 3,
-            "subCategory": "Undefined",
+            "subCategory": "Mixed Vegetables",
             "nutritionalFacts": {
               "calories": {
                 "value": 28,
@@ -442,12 +442,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-10-06",
+            "expirationDate": "2027-01-06",
             "quantity": {
               "value": 124,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 124,
               "unit": "g"
             },
@@ -457,7 +457,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "024000163022",
             "foodTypeId": 1,
-            "subCategory": "Canned sweet corn",
+            "subCategory": "Del Monte Whole kernel corn",
             "nutritionalFacts": {
               "calories": {
                 "value": 48,
@@ -489,9 +489,9 @@ export function create_database_with_dummy_data(): void {
               "value": 432,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 125,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3022/front_en.27.400.jpg",
             "count": 5
@@ -499,7 +499,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "024000162971",
             "foodTypeId": 3,
-            "subCategory": "Canned vegetables",
+            "subCategory": "Sliced Beets",
             "nutritionalFacts": {
               "calories": {
                 "value": 41,
@@ -526,12 +526,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-01-06",
+            "expirationDate": "2025-08-06",
             "quantity": {
               "value": 441,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 1,
               "unit": "g"
             },
@@ -542,7 +542,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "024000162995",
             "foodTypeId": 3,
-            "subCategory": "Canned vegetables",
+            "subCategory": "Sliced carrots",
             "nutritionalFacts": {
               "calories": {
                 "value": 20,
@@ -569,14 +569,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-03-06",
+            "expirationDate": "2026-03-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 2,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 123,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/2995/front_en.3.400.jpg",
             "count": 5
@@ -584,7 +584,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "024000163015",
             "foodTypeId": 1,
-            "subCategory": "70",
+            "subCategory": "Sweet corn cream style",
             "nutritionalFacts": {
               "calories": {
                 "value": 48,
@@ -611,14 +611,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-12-06",
+            "expirationDate": "2027-02-06",
             "quantity": {
               "value": 418,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 125,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/front_en.26.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/nutrition_en.28.400.jpg",
@@ -627,7 +627,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "00000000040822",
             "foodTypeId": 1,
-            "subCategory": "Produce",
+            "subCategory": "Jumbo Red Onions",
             "nutritionalFacts": {
               "calories": {
                 "value": 27,
@@ -654,12 +654,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-02-06",
+            "expirationDate": "2025-09-06",
             "quantity": {
               "value": 1,
               "unit": "cup"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 160,
               "unit": "g"
             },
@@ -668,7 +668,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "861745000010",
             "foodTypeId": 1,
-            "subCategory": "Chicken eggs",
+            "subCategory": "Pasture raised vital farms eggs",
             "nutritionalFacts": {
               "calories": {
                 "value": 140,
@@ -695,14 +695,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-03-06",
+            "expirationDate": "2026-10-06",
             "quantity": {
               "value": 24,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 50,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/086/174/500/0010/front_en.33.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/086/174/500/0010/nutrition_en.29.400.jpg",
@@ -711,7 +711,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "021000604647",
             "foodTypeId": 5,
-            "subCategory": "Processed cheese in slices",
+            "subCategory": "Singles American Cheese Slices",
             "nutritionalFacts": {
               "calories": {
                 "value": 287,
@@ -738,14 +738,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-09-06",
+            "expirationDate": "2026-01-06",
             "quantity": {
               "value": 12,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "slice"
+            "servingQuantity": {
+              "value": 21,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/100/060/4647/front_en.32.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/100/060/4647/nutrition_en.24.400.jpg",
@@ -754,7 +754,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "051500255162",
             "foodTypeId": 2,
-            "subCategory": "Creamy peanut butter",
+            "subCategory": "Jif Peanut Butter",
             "nutritionalFacts": {
               "calories": {
                 "value": 576,
@@ -781,14 +781,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-05-06",
+            "expirationDate": "2025-10-06",
             "quantity": {
               "value": 16,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 33,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/005/150/025/5162/front_en.61.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/005/150/025/5162/nutrition_en.63.400.jpg",
@@ -797,7 +797,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "098308243236",
             "foodTypeId": 2,
-            "subCategory": "Dehydrated poultry broth stock",
+            "subCategory": "Roasted Chicken base",
             "nutritionalFacts": {
               "calories": {
                 "value": 251,
@@ -824,14 +824,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-06-06",
+            "expirationDate": "2026-11-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "tsp"
+            "servingQuantity": {
+              "value": 6,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/009/830/824/3236/front_en.15.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/830/824/3236/nutrition_en.17.400.jpg",
@@ -840,7 +840,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "851552001010",
             "foodTypeId": 2,
-            "subCategory": "Dry Beans",
+            "subCategory": "Pinto beans",
             "nutritionalFacts": {
               "calories": {
                 "value": 224,
@@ -867,12 +867,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-05-06",
+            "expirationDate": "2025-07-06",
             "quantity": {
               "value": 32,
               "unit": "oz"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 49,
               "unit": "g"
             },
@@ -883,7 +883,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "859941005915",
             "foodTypeId": 3,
-            "subCategory": "Frozen cauliflower florets",
+            "subCategory": "Veganrobs puffs cauliflower probiotic",
             "nutritionalFacts": {
               "calories": {
                 "value": 500,
@@ -910,14 +910,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-04-06",
+            "expirationDate": "2026-05-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "onz"
+            "servingQuantity": {
+              "value": 28,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/085/994/100/5915/front_en.12.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/085/994/100/5915/nutrition_en.18.400.jpg",
@@ -926,7 +926,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "00447874",
             "foodTypeId": 1,
-            "subCategory": "Couscous",
+            "subCategory": "Sweet & Fluffy Cous Cous",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -953,12 +953,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-10-06",
+            "expirationDate": "2027-05-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -969,7 +969,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "4005817079610",
             "foodTypeId": 3,
-            "subCategory": "Fresh zucchini",
+            "subCategory": "Zucchini",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -1001,7 +1001,7 @@ export function create_database_with_dummy_data(): void {
               "value": 500,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1011,7 +1011,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "0027000378151",
             "foodTypeId": 2,
-            "subCategory": "Soups",
+            "subCategory": "Canned Chili With Beans",
             "nutritionalFacts": {
               "calories": {
                 "value": 111,
@@ -1038,14 +1038,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-08-06",
+            "expirationDate": "2027-05-06",
             "quantity": {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 425,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/700/037/8151/front_en.13.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/700/037/8151/nutrition_en.17.400.jpg",
@@ -1054,7 +1054,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "810032300463",
             "foodTypeId": 1,
-            "subCategory": "Pumpkin seeds",
+            "subCategory": "Organic Sprouted Pumpkin Seeds",
             "nutritionalFacts": {
               "calories": {
                 "value": 571,
@@ -1081,14 +1081,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-01-06",
+            "expirationDate": "2025-11-06",
             "quantity": {
               "value": 22,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 28,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/081/003/230/0463/front_en.46.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/081/003/230/0463/nutrition_en.42.400.jpg",
@@ -1097,7 +1097,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "099482500924",
             "foodTypeId": 1,
-            "subCategory": "Packaged Food",
+            "subCategory": "white rice long grain",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -1124,14 +1124,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-12-06",
+            "expirationDate": "2026-09-06",
             "quantity": {
               "value": 32,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 100,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/009/948/250/0924/front_en.9.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/948/250/0924/nutrition_en.5.400.jpg",
@@ -1140,7 +1140,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "021000658831",
             "foodTypeId": 1,
-            "subCategory": "Macaroni and cheese",
+            "subCategory": "Mac And Cheese Original Flavor",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -1167,14 +1167,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-06-06",
+            "expirationDate": "2027-05-06",
             "quantity": {
               "value": 7.25,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 100,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/100/065/8831/front_en.97.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/100/065/8831/nutrition_en.99.400.jpg",
@@ -1183,7 +1183,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "856312002771",
             "foodTypeId": 5,
-            "subCategory": "Lactose free milk",
+            "subCategory": "Fairlife milk",
             "nutritionalFacts": {
               "calories": {
                 "value": 50,
@@ -1210,12 +1210,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-08-06",
+            "expirationDate": "2027-02-06",
             "quantity": {
               "value": 1.5,
               "unit": "l"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 240,
               "unit": "g"
             },
@@ -1226,7 +1226,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5000171010025",
             "foodTypeId": 2,
-            "subCategory": "Canned salmons",
+            "subCategory": "Wild Pacific Red Salmon",
             "nutritionalFacts": {
               "calories": {
                 "value": 151,
@@ -1253,12 +1253,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-04-06",
+            "expirationDate": "2026-12-06",
             "quantity": {
               "value": 210,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1269,7 +1269,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "0699058010828",
             "foodTypeId": 3,
-            "subCategory": "Mixed bell peppers",
+            "subCategory": "Sweet bell peppers",
             "nutritionalFacts": {
               "calories": {
                 "value": 35,
@@ -1296,12 +1296,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-11-06",
+            "expirationDate": "2026-04-06",
             "quantity": {
               "value": 454,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1311,7 +1311,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5051140474201",
             "foodTypeId": 6,
-            "subCategory": "Groceries",
+            "subCategory": "Dijon Mustard",
             "nutritionalFacts": {
               "calories": {
                 "value": 128,
@@ -1338,12 +1338,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-01-06",
+            "expirationDate": "2027-01-06",
             "quantity": {
               "value": 185,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 5,
               "unit": "g"
             },
@@ -1354,7 +1354,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "0094922424990",
             "foodTypeId": 2,
-            "subCategory": "Beans",
+            "subCategory": "Dry Black Beans",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -1381,14 +1381,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2026-12-06",
             "quantity": {
               "value": 16,
               "unit": "oz"
             },
-            "servingSize": {
-              "value": 4,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 0,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/009/492/242/4990/front_en.8.400.jpg",
             "count": 5
@@ -1396,7 +1396,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5010046001003",
             "foodTypeId": 1,
-            "subCategory": "Canned sweet corn",
+            "subCategory": "Green Giant Sweetcorn",
             "nutritionalFacts": {
               "calories": {
                 "value": 77,
@@ -1423,14 +1423,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2026-05-06",
             "quantity": {
               "value": 198,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 0.5,
-              "unit": "cup"
+            "servingQuantity": {
+              "value": 100,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/501/004/600/1003/front_en.19.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/501/004/600/1003/nutrition_en.27.400.jpg",
@@ -1439,7 +1439,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5057545745946",
             "foodTypeId": 3,
-            "subCategory": "Canned tomatoes",
+            "subCategory": "Chopped Tomatoes",
             "nutritionalFacts": {
               "calories": {
                 "value": 22,
@@ -1466,14 +1466,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-12-06",
+            "expirationDate": "2026-10-06",
             "quantity": {
               "value": 400,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 200,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/505/754/574/5946/front_en.33.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/754/574/5946/nutrition_en.40.400.jpg",
@@ -1482,7 +1482,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "4088600550862",
             "foodTypeId": 3,
-            "subCategory": "Canned tomatoes",
+            "subCategory": "Chopped tomatoes in tomato juice",
             "nutritionalFacts": {
               "calories": {
                 "value": 22,
@@ -1509,12 +1509,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-05-06",
+            "expirationDate": "2026-09-06",
             "quantity": {
               "value": 400,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1525,7 +1525,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "3600900011037",
             "foodTypeId": 1,
-            "subCategory": "Quinoa",
+            "subCategory": "Quinoa gourmand",
             "nutritionalFacts": {
               "calories": {
                 "value": 362,
@@ -1552,12 +1552,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-08-06",
+            "expirationDate": "2026-11-06",
             "quantity": {
               "value": 400,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1568,7 +1568,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5051399182506",
             "foodTypeId": 2,
-            "subCategory": "Canned chickpeas",
+            "subCategory": "Chickpeas In Water",
             "nutritionalFacts": {
               "calories": {
                 "value": 115,
@@ -1595,12 +1595,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-11-06",
+            "expirationDate": "2026-08-06",
             "quantity": {
               "value": 400,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1611,7 +1611,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "6111021090056",
             "foodTypeId": 3,
-            "subCategory": "Tomato pastes",
+            "subCategory": "Aicha Tomato Paste",
             "nutritionalFacts": {
               "calories": {
                 "value": 119,
@@ -1643,7 +1643,7 @@ export function create_database_with_dummy_data(): void {
               "value": 1,
               "unit": "item"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1654,7 +1654,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "8076800195057",
             "foodTypeId": 1,
-            "subCategory": "Durum wheat spaghetti",
+            "subCategory": "Spaghetti N.5",
             "nutritionalFacts": {
               "calories": {
                 "value": 364,
@@ -1686,7 +1686,7 @@ export function create_database_with_dummy_data(): void {
               "value": 500,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 85,
               "unit": "g"
             },
@@ -1697,7 +1697,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "8076809529433",
             "foodTypeId": 1,
-            "subCategory": "Penne rigate",
+            "subCategory": "Barilla Penne Rigate Fullkorn 500g",
             "nutritionalFacts": {
               "calories": {
                 "value": 350,
@@ -1724,12 +1724,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-02-06",
+            "expirationDate": "2026-01-06",
             "quantity": {
               "value": 500,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 80,
               "unit": "g"
             },
@@ -1740,7 +1740,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "0096619488827",
             "foodTypeId": 2,
-            "subCategory": "Chicken breasts",
+            "subCategory": "Chicken, Canned Chicken Breast",
             "nutritionalFacts": {
               "calories": {
                 "value": 107,
@@ -1767,12 +1767,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-05-06",
+            "expirationDate": "2027-02-06",
             "quantity": {
               "value": 354,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 56,
               "unit": "g"
             },
@@ -1783,7 +1783,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5057967342044",
             "foodTypeId": 1,
-            "subCategory": "Wheat breads",
+            "subCategory": "White Tortilla Wraps",
             "nutritionalFacts": {
               "calories": {
                 "value": 284,
@@ -1810,14 +1810,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-12-06",
+            "expirationDate": "2025-11-06",
             "quantity": {
               "value": 8,
               "unit": "pack"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "tortilla"
+            "servingQuantity": {
+              "value": 61,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/front_en.48.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/nutrition_en.50.400.jpg",
@@ -1826,7 +1826,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5057753125769",
             "foodTypeId": 2,
-            "subCategory": "Tunas in brine",
+            "subCategory": "Tuna Chunks",
             "nutritionalFacts": {
               "calories": {
                 "value": 109,
@@ -1853,14 +1853,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-02-06",
+            "expirationDate": "2025-10-06",
             "quantity": {
               "value": 145,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "portion"
+            "servingQuantity": {
+              "value": 102,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/505/775/312/5769/front_en.38.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/775/312/5769/nutrition_en.34.400.jpg",
@@ -1869,7 +1869,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "00389501",
             "foodTypeId": 1,
-            "subCategory": "Salads",
+            "subCategory": "Bistro salad",
             "nutritionalFacts": {
               "calories": {
                 "value": 25,
@@ -1896,12 +1896,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-02-06",
+            "expirationDate": "2026-05-06",
             "quantity": {
               "value": 150,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -1912,7 +1912,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5000295142893",
             "foodTypeId": 5,
-            "subCategory": "Cheddar cheese",
+            "subCategory": "Mature Cheddar",
             "nutritionalFacts": {
               "calories": {
                 "value": 416,
@@ -1939,14 +1939,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-03-06",
+            "expirationDate": "2025-09-06",
             "quantity": {
               "value": 350,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "serving"
+            "servingQuantity": {
+              "value": 30,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/500/029/514/2893/front_en.13.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/500/029/514/2893/nutrition_en.19.400.jpg",
@@ -1955,7 +1955,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5051790270581",
             "foodTypeId": 2,
-            "subCategory": "Cooked green lentils",
+            "subCategory": "Green Lentils In Water",
             "nutritionalFacts": {
               "calories": {
                 "value": 96,
@@ -1982,12 +1982,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2026-04-06",
             "quantity": {
               "value": 390,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 118,
               "unit": "g"
             },
@@ -1998,7 +1998,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "01800982",
             "foodTypeId": 2,
-            "subCategory": "Groceries",
+            "subCategory": "Chicken & Vegetable broth",
             "nutritionalFacts": {
               "calories": {
                 "value": 40,
@@ -2025,14 +2025,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-11-06",
+            "expirationDate": "2026-06-06",
             "quantity": {
               "value": 600,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "half"
+            "servingQuantity": {
+              "value": 300,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/000/000/180/0982/front_en.5.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/000/180/0982/nutrition_en.7.400.jpg",
@@ -2041,7 +2041,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "5000119410696",
             "foodTypeId": 1,
-            "subCategory": "Brown rices",
+            "subCategory": "Brown Rice",
             "nutritionalFacts": {
               "calories": {
                 "value": 177,
@@ -2068,12 +2068,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-12-06",
+            "expirationDate": "2027-01-06",
             "quantity": {
               "value": 1,
               "unit": "kg"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 77,
               "unit": "g"
             },
@@ -2083,7 +2083,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "20242091",
             "foodTypeId": 3,
-            "subCategory": "Fresh broccoli",
+            "subCategory": "Br├│coli",
             "nutritionalFacts": {
               "calories": {
                 "value": 0,
@@ -2110,12 +2110,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2025-07-06",
+            "expirationDate": "2027-01-06",
             "quantity": {
               "value": 500,
               "unit": "g"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 100,
               "unit": "g"
             },
@@ -2125,7 +2125,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "20165079",
             "foodTypeId": 3,
-            "subCategory": "Fresh vegetables",
+            "subCategory": "British carrots",
             "nutritionalFacts": {
               "calories": {
                 "value": 29,
@@ -2152,12 +2152,12 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-10-06",
+            "expirationDate": "2027-04-06",
             "quantity": {
               "value": 1,
               "unit": "kg"
             },
-            "servingSize": {
+            "servingQuantity": {
               "value": 80,
               "unit": "g"
             },
@@ -2168,7 +2168,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "20142360",
             "foodTypeId": 1,
-            "subCategory": "Basmati rices",
+            "subCategory": "Tast of - Basmati Microwave Rice",
             "nutritionalFacts": {
               "calories": {
                 "value": 132,
@@ -2195,14 +2195,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2027-02-06",
+            "expirationDate": "2026-05-06",
             "quantity": {
               "value": 250,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 1,
-              "unit": "container"
+            "servingQuantity": {
+              "value": 125,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/000/002/014/2360/front_en.24.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/002/014/2360/nutrition_en.32.400.jpg",
@@ -2211,7 +2211,7 @@ export function create_database_with_dummy_data(): void {
           {
             "serialNumber": "4088600157924",
             "foodTypeId": 1,
-            "subCategory": "Basmati rices",
+            "subCategory": "Basmati rice",
             "nutritionalFacts": {
               "calories": {
                 "value": 134,
@@ -2238,14 +2238,14 @@ export function create_database_with_dummy_data(): void {
                 "unit": "mg"
               }
             },
-            "expirationDate": "2026-06-06",
+            "expirationDate": "2026-05-06",
             "quantity": {
               "value": 250,
               "unit": "g"
             },
-            "servingSize": {
-              "value": 0.5,
-              "unit": "pack"
+            "servingQuantity": {
+              "value": 125,
+              "unit": "g"
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/408/860/015/7924/front_en.17.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/408/860/015/7924/nutrition_en.19.400.jpg",

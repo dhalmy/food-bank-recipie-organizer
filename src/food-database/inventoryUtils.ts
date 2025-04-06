@@ -11,7 +11,7 @@ export interface InventoryItem {
   imageUrl?: string;
   nutritionImageUrl?: string;
   nutritionalFacts?: any;
-  servingSize?: { value: number; unit: string };
+  servingQuantity?: { value: number; unit: string };
   count?: number;
 }
 
@@ -27,7 +27,7 @@ export function databaseItemToUIItem(item: DatabaseInventoryItem): InventoryItem
     imageUrl: item.imageUrl,
     nutritionImageUrl: item.nutritionImageUrl,
     nutritionalFacts: item.nutritionalFacts,
-    servingSize: item.servingSize,
+    servingQuantity: item.servingQuantity,
     count: item.count || 1
   };
 }
@@ -51,7 +51,7 @@ export function uiItemToDatabaseItem(item: InventoryItem): DatabaseInventoryItem
       value: item.quantity,
       unit: item.unit
     },
-    servingSize: item.servingSize || {
+    servingQuantity: item.servingQuantity || {
       value: 100,
       unit: 'g'
     },

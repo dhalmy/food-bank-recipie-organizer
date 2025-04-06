@@ -189,9 +189,32 @@ export default function InventoryPage() {
     
     const { calories, protein, fat, carbohydrates, sugar, sodium } = item.nutritionalFacts;
     const totalQuantity = item.quantity;
-    const servingSize = item.servingSize?.value || 100;
-    const servingSizeUnit = item.servingSize?.unit || 'g';
-    const servings = servingSize > 0 ? (totalQuantity / servingSize).toFixed(1) : '0';
+    const servingQuantity = item.servingQuantity?.value || 100;
+    const servingQuantityUnit = item.servingQuantity?.unit || 'g';
+    
+    // Calculate servings per container based on units
+    let servingsInfo = '';
+    const supportedUnits = ['g', 'oz', 'kg'];
+    
+    if (supportedUnits.includes(item.unit.toLowerCase())) {
+      // Show serving size info
+      servingsInfo = `• ${servingQuantity} ${servingQuantityUnit} per serving`;
+      
+      // Calculate servings per container with unit conversion if needed
+      let convertedQuantity = totalQuantity;
+      if (item.unit.toLowerCase() === 'oz' && servingQuantityUnit.toLowerCase() === 'g') {
+        // Convert oz to g (1 oz ≈ 28.35g)
+        convertedQuantity = totalQuantity * 28.35;
+      } else if (item.unit.toLowerCase() === 'kg' && servingQuantityUnit.toLowerCase() === 'g') {
+        // Convert kg to g
+        convertedQuantity = totalQuantity * 1000;
+      }
+      
+      if (servingQuantity > 0) {
+        const servings = (convertedQuantity / servingQuantity).toFixed(1);
+        servingsInfo += ` • ${servings} servings`;
+      }
+    }
     
     return (
       <div className="p-4 bg-gray-50 rounded-md">
@@ -208,7 +231,7 @@ export default function InventoryPage() {
           <div className="flex-grow">
             <h4 className="font-bold text-lg mb-2">Nutrition Facts (per serving)</h4>
             <p className="text-sm text-gray-600 mb-2">
-              {totalQuantity}{item.unit} per item • {servingSize} {servingSizeUnit} per serving • {servings} servings
+              {totalQuantity}{item.unit} per item{servingsInfo}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <div>
