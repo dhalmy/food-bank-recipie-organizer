@@ -9,8 +9,8 @@ We united around a commitment to **social equity**, determined to create a real 
 We defined clear roles from the start, allowing each of us to focus on our strengths:
 - **David:** Led the ingredient integration, ensuring that our system accurately gathered and processed data from various sources.
 - **Pierre:** Took charge of the AI recipe generation, developing innovative algorithms to create appetizing recipes from available pantry items.
-- **Griffyn:** Bridged the gap between the raw ingredient data and AI-driven recipe generation, ensuring a seamless flow of information that resulted in coherent, practical meal kits.
-- **UI (Myself):** Developed the landing page, designed the complete UI, created the graphics, and crafted the "About Us" page, bringing our project’s vision to life through compelling visual storytelling.
+- **Griffin:** Bridged the gap between the raw ingredient data and AI-driven recipe generation, ensuring a seamless flow of information that resulted in coherent, practical meal kits.
+- **Noam:** Developed the landing page, designed the complete UI, created the graphics, and crafted the "About Us" page, bringing our project’s vision to life through compelling visual storytelling.
 
 **Technical Journey and Challenges**  
 Our path was filled with both breakthroughs and obstacles:
