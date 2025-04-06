@@ -99,29 +99,73 @@ export async function use_found_database(): Promise<void> {
 }
 
 // Initialize the database if it doesn't exist
-export function initializeDatabase(): void {
+export function initializeDatabase(): boolean {
   try {
     if (typeof window !== 'undefined') {
       const dbString = localStorage.getItem('foodBankDB');
-      if (!dbString) {
+      
+      // Remove this line to force reinitialization for testing
+      localStorage.removeItem('foodBankDB');
+      localStorage.removeItem('dbInitialized');
+      console.log('Forcing database reinitialization for testing');
+      
+      // Check if database exists after potential removal
+      const dbStringAfterReset = localStorage.getItem('foodBankDB');
+      
+      if (!dbStringAfterReset) {
         console.log('Database not found, creating new database with dummy data');
-        create_database_with_dummy_data();
+        const success = create_database_with_dummy_data();
+        
+        if (success) {
+          // Set a flag to indicate initialization is complete
+          localStorage.setItem('dbInitialized', 'true');
+          console.log('Database initialization complete with dummy data');
+          return true;
+        } else {
+          console.error('Failed to create database with dummy data');
+          return false;
+        }
       } else {
         console.log('Using existing database');
         // Migrate the database if needed
         migrateDatabaseIfNeeded();
+        
+        // Verify the database has inventory items
+        const db = JSON.parse(dbStringAfterReset);
+        console.log('Database structure:', Object.keys(db));
+        console.log('Inventory items count:', db.inventoryItems ? db.inventoryItems.length : 0);
+        
+        if (!db.inventoryItems || db.inventoryItems.length === 0) {
+          console.log('Database exists but has no inventory items, adding dummy data');
+          const success = create_database_with_dummy_data();
+          
+          if (success) {
+            console.log('Successfully added dummy data to existing database');
+          } else {
+            console.error('Failed to add dummy data to existing database');
+          }
+        }
+        
+        // Set a flag to indicate initialization is complete
+        localStorage.setItem('dbInitialized', 'true');
+        console.log('Database initialization complete');
+        return true;
       }
     }
+    return false;
   } catch (error) {
     console.error('Error initializing database:', error);
+    return false;
   }
 }
 
 // Create a new database with dummy data
-export function create_database_with_dummy_data(): void {
+export function create_database_with_dummy_data(): boolean {
   try {
     // In a browser environment, we'll use localStorage
     if (typeof window !== 'undefined') {
+      console.log('Creating database with dummy data...');
+      
       // Create a database with dummy data
       const dummyDatabase: Database = {
         foodTypes: [
@@ -2254,11 +2298,26 @@ export function create_database_with_dummy_data(): void {
         ]
       };
       
+      // Store the database and log the result
       localStorage.setItem('foodBankDB', JSON.stringify(dummyDatabase));
-      console.log('Database created with dummy data successfully');
+      
+      // Verify the database was stored correctly
+      const storedDB = localStorage.getItem('foodBankDB');
+      if (storedDB) {
+        const parsedDB = JSON.parse(storedDB);
+        console.log('Database created with dummy data successfully');
+        console.log('Database structure:', Object.keys(parsedDB));
+        console.log('Inventory items count:', parsedDB.inventoryItems ? parsedDB.inventoryItems.length : 0);
+        return true;
+      } else {
+        console.error('Failed to store database with dummy data');
+        return false;
+      }
     }
+    return false;
   } catch (error) {
     console.error('Error creating database with dummy data:', error);
+    return false;
   }
 }
 
@@ -2312,7 +2371,7 @@ export function get_database(): Database {
 }
 
 // Save the database
-export function save_database(db: Database): void {
+export function save_database(db: Database): boolean {
   try {
     if (typeof window !== 'undefined') {
       console.log('Saving database with items');
@@ -2322,11 +2381,20 @@ export function save_database(db: Database): void {
       const savedDB = localStorage.getItem('foodBankDB');
       if (savedDB) {
         const parsedDB = JSON.parse(savedDB);
-        console.log('Verification of saved database');
+        console.log('Verification of saved database successful');
+        
+        // Set the initialized flag
+        localStorage.setItem('dbInitialized', 'true');
+        return true;
+      } else {
+        console.error('Failed to verify database save');
+        return false;
       }
     }
+    return false;
   } catch (error) {
     console.error('Error saving database:', error);
+    return false;
   }
 }
 
@@ -2365,7 +2433,33 @@ export function delete_food_type(foodTypeId: number): void {
 // CRUD operations for InventoryItems
 export function get_all_inventory_items(): InventoryItem[] {
   try {
+    // Check if the database is initialized
+    const isInitialized = localStorage.getItem('dbInitialized') === 'true';
+    if (!isInitialized) {
+      console.log('Database not initialized, initializing now in get_all_inventory_items');
+      const initialized = initializeDatabase();
+      if (!initialized) {
+        console.error('Failed to initialize database in get_all_inventory_items');
+        return [];
+      }
+    }
+    
     const db = get_database();
+    
+    // Check if we have inventory items
+    if (!db.inventoryItems || db.inventoryItems.length === 0) {
+      console.log('No inventory items found in get_all_inventory_items, trying to reinitialize with dummy data');
+      const success = create_database_with_dummy_data();
+      if (success) {
+        // Get the database again after adding dummy data
+        const refreshedDb = get_database();
+        console.log('Refreshed database after adding dummy data');
+        console.log('Inventory items count after refresh:', refreshedDb.inventoryItems ? refreshedDb.inventoryItems.length : 0);
+        return refreshedDb.inventoryItems || [];
+      }
+    }
+    
+    console.log('Returning inventory items, count:', db.inventoryItems ? db.inventoryItems.length : 0);
     return db.inventoryItems || [];
   } catch (error) {
     console.error('Error getting inventory items:', error);
@@ -2378,7 +2472,7 @@ export function get_inventory_item(serialNumber: string): InventoryItem | undefi
   return db.inventoryItems.find(item => item.serialNumber === serialNumber);
 }
 
-export function add_inventory_item(item: InventoryItem): void {
+export function add_inventory_item(item: InventoryItem): boolean {
   try {
     const db = get_database();
     
@@ -2388,9 +2482,10 @@ export function add_inventory_item(item: InventoryItem): void {
     }
     
     db.inventoryItems.push(item);
-    save_database(db);
+    return save_database(db);
   } catch (error) {
     console.error('Error adding inventory item:', error);
+    return false;
   }
 }
 
