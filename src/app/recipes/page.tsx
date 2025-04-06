@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
 import { convertRecipesToMinRecipes, filterCookingLevel, filterCookingTime, filterPrepTime, getListOfRecipes, getRecipeFromName } from './types';
-import recipeListTitle from './recipe-list-title.png';
+//import recipeListTitle from './recipe-list-title.png';
 import recipeGeneratorTitle from './recipe-generator-title.png';
 
 // Add custom style for hiding scrollbars
