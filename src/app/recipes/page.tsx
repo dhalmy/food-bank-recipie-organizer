@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
-import { convertRecipesToMinRecipes, getListOfRecipes } from './types';
+import { convertRecipesToMinRecipes, getListOfRecipes, getRecipeFromName } from './types';
 import recipeListTitle from './recipe-list-title.png';
 import recipeGeneratorTitle from './recipe-generator-title.png';
 
@@ -151,46 +151,8 @@ export default function RecipesPage() {
 
   return (
     <div style={containerStyle}>
-      {/* Left column: recipe list */}
-      <div style={leftColumnStyle}>
-        <img src={recipeListTitle.src} alt="Recipe List" style={titleImageStyle} />
-        {error && <p style={errorStyle}>{error}</p>}
-        {isLoading && recipes.length === 0 ? (
-          <p style={loadingStyle}>Loading recipes...</p>
-        ) : recipes.length > 0 ? (
-          recipes.map(recipe => (
-            <div key={recipe.id} style={recipeBoxStyle}>
-              <div style={recipeHeaderStyle}>
-                <h3 style={recipeNameStyle}>{recipe.name}</h3>
-                <button 
-                  onClick={() => handleSelectMeal(recipe)}
-                  style={selectButtonStyle}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Selecting...' : 'Select Meal'}
-                </button>
-              </div>
-              <div style={ingredientsStyle}>
-                {recipe.ingredients.map((ing, i) => (
-                  <div key={i} style={ingredientStyle}>
-                    <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
-                    <span style={nameStyle}>{ing.name}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={detailsStyle}>
-                <span>{recipe.cuisine} • {recipe.difficulty}</span>
-                <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p style={emptyStyle}>No recipes yet. Add some!</p>
-        )}
-      </div>
-
       {/* Right column: controls */}
-      <div style={rightColumnStyle}>
+      <div style={leftColumnStyle}>
         <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
         
         <div style={controlsContainer}>
@@ -241,25 +203,70 @@ export default function RecipesPage() {
             </div>
           )}
         </div>
-
-        <div style={baseIngredientsContainer}>
-          <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
-          <div style={baseIngredientsList}>
-            {availableIngredients.map((ing, i) => (
-              <span key={i} style={baseIngredientStyle}>{ing}</span>
-            ))}
-          </div>
-        </div>
-
-        <div style={baseIngredientsContainer}>
-          <p style={baseIngredientsTitle}>Available Recipes:</p>
-          <div style={baseIngredientsList}>
-            {availableRecipes.map((ing, i) => (
-              <span key={i} style={baseIngredientStyle}>{ing}</span>
-            ))}
-          </div>
-        </div>
       </div>
+        <div style={rightColumnStyle}>
+          <div style={baseIngredientsContainer}>
+            <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
+            <div style={baseIngredientsList}>
+              {availableIngredients.map((ing, i) => (
+                <span key={i} style={baseIngredientStyle}>{ing}</span>
+              ))}
+            </div>
+          </div>
+
+          <img src={recipeGeneratorTitle.src} alt="Recipe List" style={titleImageStyle} />
+            {error && <p style={errorStyle}>{error}</p>}
+            {isLoading && recipes.length === 0 ? (
+              <p style={loadingStyle}>Loading recipes...</p>
+            ) : availableRecipes.length > 0 ? (
+              availableRecipes.map(recipeName => {
+                // Convert recipe name to full recipe object
+                const recipe = getRecipeFromName(recipes, recipeName);
+                
+                // Skip if recipe not found (or handle differently if you prefer)
+                if (!recipe) return null;
+
+                return (
+                  <div key={recipe.id} style={recipeBoxStyle}>
+                    <div style={recipeHeaderStyle}>
+                      <h3 style={recipeNameStyle}>{recipe.name}</h3>
+                      <button 
+                        onClick={() => handleSelectMeal(recipe)}
+                        style={selectButtonStyle}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? 'Selecting...' : 'Select Meal'}
+                      </button>
+                    </div>
+                    <div style={ingredientsStyle}>
+                      {recipe.ingredients.map((ing, i) => (
+                        <div key={i} style={ingredientStyle}>
+                          <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                          <span style={nameStyle}>{ing.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={detailsStyle}>
+                      <span>{recipe.cuisine} • {recipe.difficulty}</span>
+                      <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
+                    </div>
+                  </div>
+                );
+              }).filter(Boolean) // Remove any null entries from failed lookups
+            ) : (
+              <p style={emptyStyle}>No recipes yet. Add some!</p>
+            )}
+
+
+          <div style={baseIngredientsContainer}>
+            <p style={baseIngredientsTitle}>Available Recipes:</p>
+            <div style={baseIngredientsList}>
+              {availableRecipes.map((ing, i) => (
+                <span key={i} style={baseIngredientStyle}>{ing}</span>
+              ))}
+            </div>
+          </div>
+        </div>
     </div>
   );
 }
