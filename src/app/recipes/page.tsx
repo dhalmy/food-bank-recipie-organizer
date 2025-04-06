@@ -15,6 +15,7 @@ interface Recipe {
 }
 
 export default function RecipesPage() {
+  // For generating new recipes (existing functionality)
   const [input, setInput] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,6 +121,23 @@ export default function RecipesPage() {
       setIsLoading(false);
     }
   };
+
+  // Pagination functionality
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 6;
+  const recipes = recipesData;
+  const totalPages = Math.ceil(recipes.length / recipesPerPage);
+
+  const indexOfLastRecipe = currentPage * recipesPerPage;
+  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
+  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
+
+  const goToFirstPage = () => setCurrentPage(1);
+  const goToPrevPage = () =>
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const goToNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const goToLastPage = () => setCurrentPage(totalPages);
 
   return (
     <div style={containerStyle}>
@@ -274,7 +292,7 @@ const errorStyle = {
 
 const controlsContainer = {
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'column' as const,
   gap: '1rem',
   padding: '1.5rem',
   backgroundColor: 'white',
