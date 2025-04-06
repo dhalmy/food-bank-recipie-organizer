@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const { prompt, ingredients } = await request.json();
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [{
         role: "user",
         content: `Create a detailed recipe using these ingredients: ${ingredients.join(', ')}. 
