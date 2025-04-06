@@ -1,4 +1,4 @@
-import { InventoryItem, add_inventory_item, get_inventory_item } from './localDatabase';
+import { InventoryItem, add_inventory_item, get_inventory_item, update_inventory_item } from './localDatabase';
 
 interface OpenFoodFactsResponse {
   code: string;
@@ -13,6 +13,13 @@ interface OpenFoodFactsResponse {
     serving_quantity?: string;
     serving_quantity_unit?: string;
     serving_size?: string;
+    // Image URLs
+    image_front_url?: string;
+    image_front_thumb_url?: string;
+    image_front_small_url?: string;
+    image_nutrition_url?: string;
+    image_nutrition_thumb_url?: string;
+    image_nutrition_small_url?: string;
     nutriments: {
       'energy-kcal_serving'?: number;
       'energy-kcal_unit'?: string;
@@ -61,6 +68,7 @@ export async function fetchProductByUPC(upcCode: string): Promise<InventoryItem 
     const isValidStatus = 
       data.status === 1 || 
       data.status === 0 || 
+      data.status === "success" ||
       data.status === "success_with_warnings";
     
     if (!isValidStatus) {
@@ -89,6 +97,18 @@ export async function fetchProductByUPC(upcCode: string): Promise<InventoryItem 
         foodTypeId = 5; // Dairy
       }
     }
+    
+    // Get product image URL (with fallbacks)
+    const imageUrl = data.product.image_front_url || 
+                    data.product.image_front_thumb_url || 
+                    data.product.image_front_small_url || 
+                    '';
+    
+    // Get nutrition image URL (with fallbacks)
+    const nutritionImageUrl = data.product.image_nutrition_url || 
+                             data.product.image_nutrition_thumb_url || 
+                             data.product.image_nutrition_small_url || 
+                             '';
     
     // Create an InventoryItem from the API response
     const inventoryItem: InventoryItem = {
@@ -129,7 +149,9 @@ export async function fetchProductByUPC(upcCode: string): Promise<InventoryItem 
       servingSize: {
         value: parseFloat(data.product.serving_quantity || '100'),
         unit: data.product.serving_quantity_unit || 'g'
-      }
+      },
+      imageUrl: imageUrl,
+      nutritionImageUrl: nutritionImageUrl
     };
     
     console.log('Created InventoryItem:', JSON.stringify(inventoryItem, null, 2));
@@ -151,17 +173,40 @@ export async function addProductByUPC(upcCode: string): Promise<boolean> {
   try {
     // Check if the product already exists in the database
     const existingItem = get_inventory_item(upcCode);
+    
     if (existingItem) {
-      console.log('Product already exists in database:', existingItem);
-      return true; // Return true since the product is already in the database
+      console.log('Product already exists in database, incrementing count', existingItem);
+      
+      // Increment the count of the existing item
+      const currentCount = existingItem.count || 1;
+      existingItem.count = currentCount + 1;
+      
+      console.log(`Updating count from ${currentCount} to ${existingItem.count}`);
+      
+      // Update the item in the database
+      update_inventory_item(existingItem);
+      
+      // Verify the item was updated
+      const updatedItem = get_inventory_item(upcCode);
+      if (updatedItem && updatedItem.count === existingItem.count) {
+        console.log('Product count incremented successfully to:', updatedItem.count);
+      } else {
+        console.error('Product count was not updated correctly');
+      }
+      
+      return true; // Return true since the product count was incremented
     }
     
+    // If the product doesn't exist, fetch it from the API
     const inventoryItem = await fetchProductByUPC(upcCode);
     
     if (!inventoryItem) {
       console.error('Failed to fetch product data');
       return false;
     }
+    
+    // Set initial count to 1 for new items
+    inventoryItem.count = 1;
     
     console.log('Adding inventory item to database:', inventoryItem);
     add_inventory_item(inventoryItem);

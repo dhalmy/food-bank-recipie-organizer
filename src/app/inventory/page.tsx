@@ -5,6 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { 
   getAllInventoryItems, 
   addInventoryItem, 
@@ -16,6 +29,7 @@ import {
 import { addProductByUPC } from '@/food-database/openFoodFactsUtils';
 import { initializeDatabase } from '@/food-database/localDatabase';
 import { convertRecipesToMinRecipes, minRecipe } from '../recipes/types';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function InventoryPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -25,6 +39,7 @@ export default function InventoryPage() {
   const [upcCode, setUpcCode] = useState('');
   const [scanStatus, setScanStatus] = useState<string>('');
   const [scanError, setScanError] = useState<string>('');
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [minRecipes, setMinRecipes] = useState<minRecipe[]>([]);
   const [newItem, setNewItem] = useState<Partial<InventoryItem>>({
     name: '',
@@ -46,7 +61,7 @@ export default function InventoryPage() {
     const storedRecipes = localStorage.getItem('minRecipes');
     if (storedRecipes) {
       setMinRecipes(JSON.parse(storedRecipes));
-      console.log("recipies FOUND in local storage")
+      console.log("recipes FOUND in local storage")
     }
 
     // Fetch fresh recipes
@@ -145,7 +160,9 @@ export default function InventoryPage() {
       
       if (success) {
         setScanStatus('Product added successfully!');
-        setInventory(getAllInventoryItems());
+        // Refresh the inventory list to show the updated count
+        const updatedInventory = getAllInventoryItems();
+        setInventory(updatedInventory);
         setUpcCode('');
       } else {
         setScanStatus('Product not found');
@@ -158,6 +175,58 @@ export default function InventoryPage() {
     } finally {
       setIsScanningUPC(false);
     }
+  };
+
+  const toggleItemExpansion = (id: string) => {
+    setExpandedItems(prev => 
+      prev.includes(id) 
+        ? prev.filter(itemId => itemId !== id) 
+        : [...prev, id]
+    );
+  };
+
+  const renderNutritionalFacts = (item: InventoryItem) => {
+    if (!item.nutritionalFacts) return null;
+    
+    const { calories, protein, fat, carbohydrates, sugar, sodium } = item.nutritionalFacts;
+    const totalQuantity = item.quantity;
+    const servingSize = item.servingSize?.value || 100;
+    const servingSizeUnit = item.servingSize?.unit || 'g';
+    const servings = servingSize > 0 ? (totalQuantity / servingSize).toFixed(1) : '0';
+    
+    return (
+      <div className="p-4 bg-gray-50 rounded-md">
+        <div className="flex gap-4">
+          {item.nutritionImageUrl && (
+            <div className="flex-shrink-0">
+              <img 
+                src={item.nutritionImageUrl} 
+                alt="Nutrition Facts" 
+                className="w-48 h-auto object-contain"
+              />
+            </div>
+          )}
+          <div className="flex-grow">
+            <h4 className="font-bold text-lg mb-2">Nutrition Facts (per serving)</h4>
+            <p className="text-sm text-gray-600 mb-2">
+              {totalQuantity}{item.unit} per item • {servingSize} {servingSizeUnit} per serving • {servings} servings
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <p><span className="font-semibold">Calories:</span> {calories.value} {calories.unit}</p>
+                <p><span className="font-semibold">Protein:</span> {protein.value} {protein.unit}</p>
+                <p><span className="font-semibold">Fat:</span> {fat.value} {fat.unit}</p>
+              </div>
+              <div>
+                <p><span className="font-semibold">Carbs:</span> {carbohydrates.value} {carbohydrates.unit}</p>
+                <p><span className="font-semibold">Sugar:</span> {sugar.value} {sugar.unit}</p>
+                <p><span className="font-semibold">Sodium:</span> {sodium.value} {sodium.unit}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -259,35 +328,95 @@ export default function InventoryPage() {
         </Card>
       )}
 
-      <div className="grid gap-4">
-        {inventory.map((item) => (
-          <Card key={item.id} className="p-4">
-            <div className="flex items-center gap-4">
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.id)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedItems([...selectedItems, item.id]);
-                  } else {
-                    setSelectedItems(selectedItems.filter(id => id !== item.id));
-                  }
-                }}
-              />
-              <div>
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-gray-600">
-                  {item.quantity} {item.unit} • {item.category}
-                </p>
-                {item.expiryDate && (
-                  <p className="text-sm text-gray-600">
-                    Expires: {new Date(item.expiryDate).toLocaleDateString()}
-                  </p>
-                )}
-              </div>
-            </div>
-          </Card>
-        ))}
+      {/* Inventory Table */}
+      <div className="rounded-md border mb-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">Select</TableHead>
+              <TableHead className="w-20">Quantity</TableHead>
+              <TableHead className="w-40">Image</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Nutrition</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {inventory.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedItems([...selectedItems, item.id]);
+                      } else {
+                        setSelectedItems(selectedItems.filter(id => id !== item.id));
+                      }
+                    }}
+                    className="h-4 w-4"
+                  />
+                </TableCell>
+                <TableCell className="font-medium text-center">
+                  {item.count || 1}
+                </TableCell>
+                <TableCell>
+                  {item.imageUrl ? (
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      className="w-32 h-32 object-contain"
+                    />
+                  ) : (
+                    <div className="w-32 h-32 bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                      No Image
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <h3 className="font-semibold">{item.name}</h3>
+                    <p className="text-sm text-gray-600">
+                      {item.category}
+                    </p>
+                    {item.expiryDate && (
+                      <p className="text-sm text-gray-600">
+                        Expires: {new Date(item.expiryDate).toLocaleDateString()}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-600">
+                      Weight: {item.quantity} {item.unit} per item ({(item.count || 1)} in stock)
+                    </p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Collapsible>
+                    <CollapsibleTrigger 
+                      onClick={() => toggleItemExpansion(item.id)}
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                    >
+                      {expandedItems.includes(item.id) ? (
+                        <>Hide Nutrition <ChevronUp size={16} /></>
+                      ) : (
+                        <>Show Nutrition <ChevronDown size={16} /></>
+                      )}
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      {renderNutritionalFacts(item)}
+                    </CollapsibleContent>
+                  </Collapsible>
+                </TableCell>
+              </TableRow>
+            ))}
+            {inventory.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                  No inventory items found. Add items by scanning a UPC code or manually adding them.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
