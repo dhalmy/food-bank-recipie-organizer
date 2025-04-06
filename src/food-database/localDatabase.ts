@@ -286,47 +286,6 @@ export function create_database_with_dummy_data(): void {
             "count": 5
           },
           {
-            "serialNumber": "086600000206",
-            "foodTypeId": 2,
-            "subCategory": "Premium chunk light tuna in water",
-            "nutritionalFacts": {
-              "calories": {
-                "value": 89,
-                "unit": "kcal"
-              },
-              "protein": {
-                "value": 19.64,
-                "unit": "g"
-              },
-              "fat": {
-                "value": 0,
-                "unit": "g"
-              },
-              "carbohydrates": {
-                "value": 0,
-                "unit": "g"
-              },
-              "sugar": {
-                "value": 0,
-                "unit": "g"
-              },
-              "sodium": {
-                "value": 321,
-                "unit": "mg"
-              }
-            },
-            "expirationDate": "2025-11-06",
-            "quantity": {
-              "value": 1,
-              "unit": "item"
-            },
-            "servingQuantity": {
-              "value": 56,
-              "unit": "g"
-            },
-            "count": 5
-          },
-          {
             "serialNumber": "096619653133",
             "foodTypeId": 2,
             "subCategory": "Wild Alaska Pink Salmon",
@@ -622,47 +581,6 @@ export function create_database_with_dummy_data(): void {
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/front_en.26.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/nutrition_en.28.400.jpg",
-            "count": 5
-          },
-          {
-            "serialNumber": "00000000040822",
-            "foodTypeId": 3,
-            "subCategory": "Jumbo Red Onions",
-            "nutritionalFacts": {
-              "calories": {
-                "value": 27,
-                "unit": "kcal"
-              },
-              "protein": {
-                "value": 0.688,
-                "unit": "g"
-              },
-              "fat": {
-                "value": 0.0625,
-                "unit": "g"
-              },
-              "carbohydrates": {
-                "value": 5.84,
-                "unit": "g"
-              },
-              "sugar": {
-                "value": 2.66,
-                "unit": "g"
-              },
-              "sodium": {
-                "value": 2.5,
-                "unit": "mg"
-              }
-            },
-            "expirationDate": "2025-09-06",
-            "quantity": {
-              "value": 1,
-              "unit": "cup"
-            },
-            "servingQuantity": {
-              "value": 160,
-              "unit": "g"
-            },
             "count": 5
           },
           {
@@ -1821,6 +1739,88 @@ export function create_database_with_dummy_data(): void {
             },
             "imageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/front_en.48.400.jpg",
             "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/nutrition_en.50.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "00000000040822",
+            "foodTypeId": 3,
+            "subCategory": "Jumbo Red Onions",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 27,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.688,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.0625,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 5.84,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.66,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 2.5,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-09-06",
+            "quantity": {
+              "value": 1,
+              "unit": "cup"
+            },
+            "servingQuantity": {
+              "value": 160,
+              "unit": "g"
+            },
+            "count": 5
+          },
+          {
+            "serialNumber": "086600000206",
+            "foodTypeId": 2,
+            "subCategory": "Premium chunk light tuna in water",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 89,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 19.64,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 321,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-11-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingQuantity": {
+              "value": 56,
+              "unit": "g"
+            },
             "count": 5
           },
           {

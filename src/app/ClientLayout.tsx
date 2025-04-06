@@ -5,13 +5,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import backgroundImage from './images/empty-bg.png';
 import backgroundImageDarker from './images/empty-bg-darker.png';
+import { Outfit } from 'next/font/google';
+
+const outfit = Outfit({ 
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isRoot = pathname === '/';
 
   return (
-    <div style={layoutStyle}>
+    <div style={layoutStyle} className={outfit.className}>
       {!isRoot && (
         <header style={headerStyle}>
           <div style={logoContainerStyle}>
@@ -74,9 +80,10 @@ const logoContainerStyle = {
 
 const siteNameStyle = {
   fontSize: '1.5rem',
-  fontWeight: 'bold',
+  fontWeight: '700',
   color: '#f8f0e3',
   letterSpacing: '0.5px',
+  fontFamily: 'var(--font-outfit)',
 } as const;
 
 const navStyle = {
@@ -95,6 +102,7 @@ const linkStyle = {
   transition: 'all 0.2s ease',
   position: 'relative',
   overflow: 'hidden',
+  fontFamily: 'var(--font-outfit)',
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     transform: 'translateY(-2px)',
