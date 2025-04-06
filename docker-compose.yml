@@ -1,12 +1,12 @@
-version: '3.9'
-
 services:
   nextjs-app:
-    build: .
+    build:
+      context: . # Ensure this is the correct path to your project root
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000" 
-    volumes:
-      - .:/usr/src/app 
-      - /usr/src/app/node_modules 
-    environment:
-      NODE_ENV: production
+      - "3000:3000"
+    secrets:
+      - OPENAI_API_KEY
+secrets:
+  OPENAI_API_KEY:
+    file: .env.local
