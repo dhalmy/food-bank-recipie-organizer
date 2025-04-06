@@ -68,23 +68,44 @@ export default function InventoryPage() {
 
   // Load inventory items on component mount
   useEffect(() => {
-    // Initialize the database first
-    initializeDatabase();
+    let checkCount = 0;
+    const maxChecks = 10; // Avoid infinite loop
 
-    // Then load the inventory items
-    const items = getAllInventoryItems();
-    setInventory(items);
+    // Function to initialize database and load inventory
+    const initAndLoadData = () => {
+      console.log('Attempting to initialize database...');
+      const initialized = initializeDatabase();
+      
+      if (initialized || typeof window !== 'undefined' && localStorage.getItem('dbInitialized') === 'true') {
+        console.log('Database initialized successfully, loading inventory items');
+        const items = getAllInventoryItems();
+        
+        // Only update inventory if we actually got items
+        if (items && items.length > 0) {
+          console.log(`Loaded ${items.length} inventory items successfully`);
+          setInventory(items);
+        } else {
+          console.warn('Database initialized but no items were returned');
+        }
 
-    // Load recipes from localStorage if available
-    const storedRecipes = localStorage.getItem('minRecipes');
-    if (storedRecipes) {
-      setMinRecipes(JSON.parse(storedRecipes));
-      console.log("recipes FOUND in local storage")
-    }
+        // Load recipes from localStorage if available
+        const storedRecipes = localStorage.getItem('minRecipes');
+        if (storedRecipes) {
+          setMinRecipes(JSON.parse(storedRecipes));
+          console.log("Recipes found in local storage");
+        }
 
-    // Fetch fresh recipes
+        // Fetch fresh recipes
+        fetchRecipes();
+        return items && items.length > 0; // Return true only if we actually got items
+      }
+      
+      return false;
+    };
+
+    // Function to fetch recipes
     const fetchRecipes = async () => {
-      console.log("calling fetch Recipes")
+      console.log("Calling fetch Recipes");
       try {
         const response = await fetch('/api/recipes');
         if (response.ok) {
@@ -98,8 +119,50 @@ export default function InventoryPage() {
       }
     };
 
-    fetchRecipes();
-
+    // Try to initialize immediately
+    const success = initAndLoadData();
+    
+    // If not successful or no items were loaded, set up polling
+    if (!success) {
+      console.log('Initial load unsuccessful, setting up polling');
+      const intervalId = setInterval(() => {
+        checkCount++;
+        console.log(`Retrying database initialization (attempt ${checkCount}/${maxChecks})...`);
+        
+        const success = initAndLoadData();
+        
+        if (success || checkCount >= maxChecks) {
+          clearInterval(intervalId);
+          
+          if (!success && checkCount >= maxChecks) {
+            console.error('Failed to initialize database after maximum attempts');
+            // As a last resort, try to load whatever might be there
+            const items = getAllInventoryItems();
+            if (items && items.length > 0) {
+              setInventory(items);
+            }
+          }
+        }
+      }, 1000); // Increased to 1000ms for more reliability
+      
+      // Cleanup interval on component unmount
+      return () => clearInterval(intervalId);
+    }
+    
+    // Additional check after a delay even if initial load was "successful"
+    // This helps in cases where the database initialization completed but data wasn't ready
+    const finalCheckTimer = setTimeout(() => {
+      if (inventory.length === 0) {
+        console.log('No inventory items after initialization, performing final check');
+        const items = getAllInventoryItems();
+        if (items && items.length > 0) {
+          console.log(`Final check found ${items.length} items`);
+          setInventory(items);
+        }
+      }
+    }, 3000);
+    
+    return () => clearTimeout(finalCheckTimer);
   }, []);
 
   const handleAddItem = () => {
@@ -252,7 +315,7 @@ export default function InventoryPage() {
           <div className="flex-grow">
             <h4 className="font-bold text-lg mb-2 text-amber-800">Nutrition Facts (per serving)</h4>
             <p className="text-sm text-amber-700 mb-3">
-              {totalQuantity}{item.unit} per item • {servingSize} {servingSizeUnit} per serving • {servings} servings
+              {totalQuantity}{item.unit} per item • {servingSize} {servingSizeUnit} per serving
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white p-3 rounded-md border border-amber-200">
               <div>
@@ -853,9 +916,6 @@ export default function InventoryPage() {
                                 Expires: {new Date(item.expiryDate).toLocaleDateString()}
                               </p>
                             )}
-                            <p className="text-sm text-amber-700 mt-1">
-                              Weight: {item.quantity} {item.unit} per item
-                            </p>
                           </>
                         )}
                       </div>

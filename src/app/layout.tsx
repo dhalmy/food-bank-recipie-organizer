@@ -4,8 +4,8 @@ import './globals.css';
 import { ClientLayout } from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: 'Food BRO',
-  description: '',
+  title: 'Pantry EQ - Equal Acess Meal Kits',
+  description: 'Equal Acess Meal Kits ',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
