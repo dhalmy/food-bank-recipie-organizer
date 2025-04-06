@@ -92,19 +92,9 @@ function extractNutritionalFacts(product) {
 
 // Function to determine a subcategory from the product data
 function determineSubCategory(product) {
-  // Try to get category from product tags
-  if (product.categories_hierarchy && product.categories_hierarchy.length > 0) {
-    // Use the most specific category (last in hierarchy)
-    const mostSpecificCategory = product.categories_hierarchy[product.categories_hierarchy.length - 1]
-      .replace(/^en:|^fr:|^de:|^es:/, '')  // Remove language prefix
-      .replace(/-/g, ' ');  // Replace hyphens with spaces
-    
-    return mostSpecificCategory.charAt(0).toUpperCase() + mostSpecificCategory.slice(1);
-  }
-  
   // Fall back to product name if no categories
   if (product.product_name) {
-    return "Packaged Food";
+    return product.product_name;
   }
   
   return "Misc Food Item";
@@ -124,19 +114,16 @@ function extractQuantityAndServing(product) {
     }
   }
 
-  // Try to parse serving size from product data
-  let servingSize = { value: 100, unit: "g" }; // Default serving size
-  if (product.serving_size) {
-    const servingMatch = product.serving_size.match(/(\d+(?:\.\d+)?)\s*([a-zA-Z]+)/);
-    if (servingMatch) {
-      servingSize = {
-        value: parseFloat(servingMatch[1]),
-        unit: servingMatch[2].toLowerCase()
-      };
-    }
+  // Try to parse serving quantity from product data
+  let servingQuantity = { value: 100, unit: "g" }; // Default serving quantity
+  if (product.serving_quantity) {
+    servingQuantity = {
+      value: parseFloat(product.serving_quantity),
+      unit: product.serving_quantity_unit || "g"
+    };
   }
 
-  return { quantity, servingSize };
+  return { quantity, servingQuantity };
 }
 
 // Generate a future expiration date
@@ -162,7 +149,7 @@ async function fetchProductsData() {
         const foodTypeId = categorizeFoodType(product);
         const subCategory = determineSubCategory(product);
         const nutritionalFacts = extractNutritionalFacts(product);
-        const { quantity, servingSize } = extractQuantityAndServing(product);
+        const { quantity, servingQuantity } = extractQuantityAndServing(product);
         
         // Get image URLs if available
         const imageUrl = product.image_url || product.image_front_url || undefined;
@@ -176,7 +163,7 @@ async function fetchProductsData() {
           nutritionalFacts,
           expirationDate: generateExpirationDate(),
           quantity,
-          servingSize,
+          servingQuantity,
           imageUrl,
           nutritionImageUrl,
           count: 1
@@ -202,7 +189,7 @@ async function fetchProductsData() {
           },
           expirationDate: generateExpirationDate(),
           quantity: { value: 1, unit: "item" },
-          servingSize: { value: 100, unit: "g" },
+          servingQuantity: { value: 100, unit: "g" },
           count: 1
         };
         
