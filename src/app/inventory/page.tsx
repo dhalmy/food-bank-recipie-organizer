@@ -10,10 +10,12 @@ import {
   addInventoryItem, 
   updateInventoryItem, 
   deleteInventoryItem,
-  InventoryItem
+  InventoryItem,
+  getAllIngredientsList
 } from '@/food-database/inventoryUtils';
 import { addProductByUPC } from '@/food-database/openFoodFactsUtils';
 import { initializeDatabase } from '@/food-database/localDatabase';
+import { convertRecipesToMinRecipes, minRecipe } from '../recipes/types';
 
 export default function InventoryPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -23,6 +25,7 @@ export default function InventoryPage() {
   const [upcCode, setUpcCode] = useState('');
   const [scanStatus, setScanStatus] = useState<string>('');
   const [scanError, setScanError] = useState<string>('');
+  const [minRecipes, setMinRecipes] = useState<minRecipe[]>([]);
   const [newItem, setNewItem] = useState<Partial<InventoryItem>>({
     name: '',
     quantity: 0,
@@ -38,6 +41,32 @@ export default function InventoryPage() {
     // Then load the inventory items
     const items = getAllInventoryItems();
     setInventory(items);
+
+    // Load recipes from localStorage if available
+    const storedRecipes = localStorage.getItem('minRecipes');
+    if (storedRecipes) {
+      setMinRecipes(JSON.parse(storedRecipes));
+      console.log("recipies FOUND in local storage")
+    }
+
+    // Fetch fresh recipes
+    const fetchRecipes = async () => {
+      console.log("calling fetch Recipes")
+      try {
+        const response = await fetch('/api/recipes');
+        if (response.ok) {
+          const Recipes = await response.json();
+          const MinRecipes = await convertRecipesToMinRecipes(Recipes);
+          setMinRecipes(MinRecipes);
+          localStorage.setItem('minRecipes', JSON.stringify(MinRecipes));
+        }
+      } catch (error) {
+        console.error('Failed to fetch recipes:', error);
+      }
+    };
+
+    fetchRecipes();
+    
   }, []);
 
   const handleAddItem = () => {

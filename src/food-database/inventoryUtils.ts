@@ -63,6 +63,21 @@ export function getAllInventoryItems(): InventoryItem[] {
   }
 }
 
+export function getAllIngredientsList(): string[] {
+  const ingredients: Set<string> = new Set(); // Using Set to ensure uniqueness
+  const allItems = getAllInventoryItems();
+
+  // Add all inventory item names as ingredients
+  allItems.forEach(item => {
+    if (item.name) {
+      ingredients.add(item.name.trim());
+    }
+  });
+
+  // Convert Set to array and sort alphabetically
+  return Array.from(ingredients).sort((a, b) => a.localeCompare(b));
+}
+
 // Add a new inventory item
 export function addInventoryItem(item: InventoryItem): void {
   const databaseItem = uiItemToDatabaseItem(item);

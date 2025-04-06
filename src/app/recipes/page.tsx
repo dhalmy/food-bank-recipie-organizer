@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { convertRecipesToMinRecipes, getListOfRecipes, minRecipe } from './types';
+import { getAllIngredientsList } from '@/food-database/inventoryUtils';
 
 interface Ingredient {
   name: string;
@@ -15,11 +17,12 @@ interface Recipe {
 }
 
 export default function RecipesPage() {
-  // For generating new recipes (existing functionality)
   const [input, setInput] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [minRecipes, setMinRecipes] = useState<minRecipe[]>([]);
+  const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
   const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
 
   // Load recipes on initial render
@@ -38,6 +41,34 @@ export default function RecipesPage() {
         setIsLoading(false);
       }
     };
+
+     // Load recipes from localStorage if available
+    const storedRecipes = localStorage.getItem('minRecipes');
+    if (storedRecipes) {
+      setMinRecipes(JSON.parse(storedRecipes));
+      console.log("recipies FOUND in local storage")
+    }
+
+    // Fetch fresh recipes
+    const fetchMinRecipes = async () => {
+      console.log("calling fetch Recipes")
+      try {
+        const response = await fetch('/api/recipes');
+        if (response.ok) {
+          const Recipes = await response.json();
+          const MinRecipes = await convertRecipesToMinRecipes(Recipes);
+          console.log(MinRecipes);
+          setMinRecipes(MinRecipes);
+          localStorage.setItem('minRecipes', JSON.stringify(MinRecipes));
+          console.log("recipies LOADED into local storage")
+        }
+      } catch (error) {
+        console.error('Failed to fetch recipes:', error);
+      }
+    };
+
+    setAvailableIngredients(getAllIngredientsList());
+    fetchMinRecipes();
     fetchRecipes();
   }, []);
 
@@ -122,23 +153,6 @@ export default function RecipesPage() {
     }
   };
 
-  // Pagination functionality
-  const [currentPage, setCurrentPage] = useState(1);
-  const recipesPerPage = 6;
-  const recipes = recipesData;
-  const totalPages = Math.ceil(recipes.length / recipesPerPage);
-
-  const indexOfLastRecipe = currentPage * recipesPerPage;
-  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
-  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
-
-  const goToFirstPage = () => setCurrentPage(1);
-  const goToPrevPage = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const goToNextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const goToLastPage = () => setCurrentPage(totalPages);
-
   return (
     <div style={containerStyle}>
       {/* Left column: recipe list */}
@@ -201,7 +215,7 @@ export default function RecipesPage() {
         <div style={baseIngredientsContainer}>
           <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
           <div style={baseIngredientsList}>
-            {baseIngredients.map((ing, i) => (
+            {availableIngredients.map((ing, i) => (
               <span key={i} style={baseIngredientStyle}>{ing}</span>
             ))}
           </div>
@@ -292,7 +306,7 @@ const errorStyle = {
 
 const controlsContainer = {
   display: 'flex',
-  flexDirection: 'column' as const,
+  flexDirection: 'column',
   gap: '1rem',
   padding: '1.5rem',
   backgroundColor: 'white',

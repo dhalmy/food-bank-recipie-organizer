@@ -1,17 +1,8 @@
 // src/app/api/recipes/route.ts
 import { NextResponse } from 'next/server';
+import { Recipe } from '@/app/recipes/types';
 import fs from 'fs/promises';
 import path from 'path';
-
-interface Recipe {
-  id: string;
-  name: string;
-  ingredients: Array<{
-    name: string;
-    quantity: string;
-    unit: string;
-  }>;
-}
 
 const recipesFilePath = path.join(process.cwd(), 'src/app/recipes/recipes.jsonl');
 
@@ -37,7 +28,7 @@ async function getRecipes(): Promise<Recipe[]> {
         recipes.push(recipe);
       }
     } catch (error) {
-      console.error(`Error parsing line ${index + 1}: ${error.message}`);
+      console.error(`Error parsing line ${index + 1}: ${error}`);
     }
   });
 
@@ -50,7 +41,7 @@ function validateRecipe(recipe: any): recipe is Recipe {
     typeof recipe?.id === 'string' &&
     typeof recipe?.name === 'string' &&
     Array.isArray(recipe?.ingredients) &&
-    recipe.ingredients.every(ing => 
+    recipe.ingredients.every((ing: { name: any; quantity: any; unit: any; }) => 
       typeof ing?.name === 'string' &&
       typeof ing?.quantity === 'string' &&
       typeof ing?.unit === 'string'
