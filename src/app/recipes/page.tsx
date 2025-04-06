@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllIngredientsList } from '@/food-database/inventoryUtils';
-import { convertRecipesToMinRecipes, getListOfRecipes } from './types';
+import { convertRecipesToMinRecipes, getListOfRecipes, getRecipeFromName } from './types';
+import recipeListTitle from './recipe-list-title.png';
+import recipeGeneratorTitle from './recipe-generator-title.png';
 
 interface Ingredient {
   name: string;
@@ -35,7 +37,6 @@ export default function RecipesPage() {
   const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
   const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
 
-
   // Load recipes on initial render
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -52,11 +53,22 @@ export default function RecipesPage() {
         setIsLoading(false);
       }
     };
-
-    setAvailableIngredients(getAllIngredientsList());
-    setAvailableRecipes(getListOfRecipes(convertRecipesToMinRecipes(recipes), availableIngredients));
+  
     fetchRecipes();
   }, []);
+  
+  // Update available ingredients when component mounts
+  useEffect(() => {
+    setAvailableIngredients(getAllIngredientsList());
+  }, []);
+  
+  // Update available recipes whenever recipes or ingredients change
+  useEffect(() => {
+    if (recipes.length > 0 && availableIngredients.length > 0) {
+      const minRecipes = convertRecipesToMinRecipes(recipes);
+      setAvailableRecipes(getListOfRecipes(minRecipes, availableIngredients));
+    }
+  }, [recipes, availableIngredients]);
 
   // Handle selecting a meal
   const handleSelectMeal = async (recipe: Recipe) => {
@@ -139,47 +151,9 @@ export default function RecipesPage() {
 
   return (
     <div style={containerStyle}>
-      {/* Left column: recipe list */}
-      <div style={leftColumnStyle}>
-        <h2 style={headerStyle}>Recipe List</h2>
-        {error && <p style={errorStyle}>{error}</p>}
-        {isLoading && recipes.length === 0 ? (
-          <p style={loadingStyle}>Loading recipes...</p>
-        ) : recipes.length > 0 ? (
-          recipes.map(recipe => (
-            <div key={recipe.id} style={recipeBoxStyle}>
-              <div style={recipeHeaderStyle}>
-                <h3 style={recipeNameStyle}>{recipe.name}</h3>
-                <button 
-                  onClick={() => handleSelectMeal(recipe)}
-                  style={selectButtonStyle}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Selecting...' : 'Select Meal'}
-                </button>
-              </div>
-              <div style={ingredientsStyle}>
-                {recipe.ingredients.map((ing, i) => (
-                  <div key={i} style={ingredientStyle}>
-                    <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
-                    <span style={nameStyle}>{ing.name}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={detailsStyle}>
-                <span>{recipe.cuisine} • {recipe.difficulty}</span>
-                <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p style={emptyStyle}>No recipes yet. Add some!</p>
-        )}
-      </div>
-
       {/* Right column: controls */}
-      <div style={rightColumnStyle}>
-        <h2 style={headerStyle}>Recipe Generator</h2>
+      <div style={leftColumnStyle}>
+        <img src={recipeGeneratorTitle.src} alt="Recipe Generator" style={titleImageStyle} />
         
         <div style={controlsContainer}>
           <div style={buttonGroupStyle}>
@@ -229,35 +203,81 @@ export default function RecipesPage() {
             </div>
           )}
         </div>
-
-        <div style={baseIngredientsContainer}>
-          <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
-          <div style={baseIngredientsList}>
-            {availableIngredients.map((ing, i) => (
-              <span key={i} style={baseIngredientStyle}>{ing}</span>
-            ))}
-          </div>
-        </div>
-
-        <div style={baseIngredientsContainer}>
-          <p style={baseIngredientsTitle}>Available Recipes:</p>
-          <div style={baseIngredientsList}>
-            {availableRecipes.map((ing, i) => (
-              <span key={i} style={baseIngredientStyle}>{ing}</span>
-            ))}
-          </div>
-        </div>
       </div>
+        <div style={rightColumnStyle}>
+          <div style={baseIngredientsContainer}>
+            <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
+            <div style={baseIngredientsList}>
+              {availableIngredients.map((ing, i) => (
+                <span key={i} style={baseIngredientStyle}>{ing}</span>
+              ))}
+            </div>
+          </div>
+
+          <img src={recipeGeneratorTitle.src} alt="Recipe List" style={titleImageStyle} />
+            {error && <p style={errorStyle}>{error}</p>}
+            {isLoading && recipes.length === 0 ? (
+              <p style={loadingStyle}>Loading recipes...</p>
+            ) : availableRecipes.length > 0 ? (
+              availableRecipes.map(recipeName => {
+                // Convert recipe name to full recipe object
+                const recipe = getRecipeFromName(recipes, recipeName);
+                
+                // Skip if recipe not found (or handle differently if you prefer)
+                if (!recipe) return null;
+
+                return (
+                  <div key={recipe.id} style={recipeBoxStyle}>
+                    <div style={recipeHeaderStyle}>
+                      <h3 style={recipeNameStyle}>{recipe.name}</h3>
+                      <button 
+                        onClick={() => handleSelectMeal(recipe)}
+                        style={selectButtonStyle}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? 'Selecting...' : 'Select Meal'}
+                      </button>
+                    </div>
+                    <div style={ingredientsStyle}>
+                      {recipe.ingredients.map((ing, i) => (
+                        <div key={i} style={ingredientStyle}>
+                          <span style={quantityStyle}>{ing.quantity} {ing.unit}</span>
+                          <span style={nameStyle}>{ing.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={detailsStyle}>
+                      <span>{recipe.cuisine} • {recipe.difficulty}</span>
+                      <span>{recipe.prepTime} prep • {recipe.cookTime} cook</span>
+                    </div>
+                  </div>
+                );
+              }).filter(Boolean) // Remove any null entries from failed lookups
+            ) : (
+              <p style={emptyStyle}>No recipes yet. Add some!</p>
+            )}
+
+
+          <div style={baseIngredientsContainer}>
+            <p style={baseIngredientsTitle}>Available Recipes:</p>
+            <div style={baseIngredientsList}>
+              {availableRecipes.map((ing, i) => (
+                <span key={i} style={baseIngredientStyle}>{ing}</span>
+              ))}
+            </div>
+          </div>
+        </div>
     </div>
   );
 }
 
-// Styles
+// Style Definitions
 const containerStyle = {
   display: 'flex',
   gap: '2rem',
   padding: '2rem',
   minHeight: '100vh',
+  backgroundColor: 'var(--background)'
 } as const;
 
 const leftColumnStyle = {
@@ -276,19 +296,12 @@ const rightColumnStyle = {
 } as const;
 
 
-const headerStyle = {
-  fontSize: '1.5rem',
-  marginBottom: '1rem',
-  color: '#333'
-} as const;
-
 const recipeBoxStyle = {
   padding: '1.5rem',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  border: '5px solid #bc4424', // Added border
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
-
 
 const recipeHeaderStyle = {
   display: 'flex',
@@ -299,23 +312,23 @@ const recipeHeaderStyle = {
 
 const recipeNameStyle = {
   fontSize: '1.2rem',
-  color: '#444'
+  color: 'var(--foreground)'
 } as const;
 
 const selectButtonStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#bc4424',
-  color: 'white',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
   border: 'none',
   borderRadius: '4px',
   cursor: 'pointer',
   fontSize: '0.9rem',
   transition: 'background-color 0.2s',
-  ':hover': {
-    backgroundColor: '#bc4424'
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
   },
   ':disabled': {
-    backgroundColor: '#bc4424',
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
     cursor: 'not-allowed'
   }
 } as const;
@@ -328,16 +341,18 @@ const ingredientsStyle = {
 
 const ingredientStyle = {
   display: 'flex',
-  gap: '0.5rem'
+  gap: '0.5rem',
+  color: 'var(--foreground)'
 } as const;
 
 const quantityStyle = {
   fontWeight: 'bold',
-  color: '#0070f3'
+  color: 'var(--foreground)'
 } as const;
 
 const nameStyle = {
-  color: '#666'
+  color: 'var(--foreground)',
+  opacity: 0.9
 } as const;
 
 const detailsStyle = {
@@ -345,23 +360,35 @@ const detailsStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   fontSize: '0.9rem',
-  color: '#666'
-} as const;
-
-const emptyStyle = {
-  color: '#999',
-  fontStyle: 'italic'
+  color: 'var(--foreground)',
+  opacity: 0.8
 } as const;
 
 const loadingStyle = {
-  color: '#666'
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: 'var(--foreground)',
+  opacity: 0.8
 } as const;
 
 const errorStyle = {
-  color: '#ff3333',
-  padding: '0.5rem',
-  backgroundColor: '#ffeeee',
-  borderRadius: '4px'
+  padding: '1rem',
+  textAlign: 'center',
+  fontSize: '1rem',
+  color: '#ef4444',
+  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+  borderRadius: '8px',
+  border: '1px solid rgba(239, 68, 68, 0.2)'
+} as const;
+
+const emptyStyle = {
+  padding: '2rem',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  color: 'var(--foreground)',
+  opacity: 0.7,
+  fontStyle: 'italic'
 } as const;
 
 const controlsContainer = {
@@ -369,9 +396,9 @@ const controlsContainer = {
   flexDirection: 'column',
   gap: '1rem',
   padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
 } as const;
 
 const buttonGroupStyle = {
@@ -381,56 +408,35 @@ const buttonGroupStyle = {
 
 const generateButtonStyle = {
   padding: '0.75rem 1.5rem',
-  backgroundColor: '#0070f3',
-  color: 'white',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  color: 'var(--foreground)',
   border: 'none',
   borderRadius: '6px',
   cursor: 'pointer',
   fontSize: '1rem',
-  flex: 2,
+  flex: 1,
   transition: 'background-color 0.2s',
+  '&:hover': {
+    backgroundColor: 'rgba(var(--foreground), 0.2)'
+  },
   ':disabled': {
-    backgroundColor: '#cccccc',
+    backgroundColor: 'rgba(var(--foreground), 0.05)',
     cursor: 'not-allowed'
   }
 } as const;
 
 const inputStyle = {
   padding: '0.75rem',
-  border: '1px solid #ddd',
+  border: '1px solid rgba(var(--foreground), 0.2)',
   borderRadius: '6px',
   fontSize: '1rem',
   width: '100%',
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  color: 'var(--foreground)',
   transition: 'background-color 0.2s',
   ':disabled': {
-    backgroundColor: '#f0f0f0'
+    backgroundColor: 'rgba(var(--foreground), 0.05)'
   }
-} as const;
-
-const baseIngredientsContainer = {
-  padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-} as const;
-
-const baseIngredientsTitle = {
-  marginBottom: '0.5rem',
-  color: '#666'
-} as const;
-
-const baseIngredientsList = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem'
-} as const;
-
-const baseIngredientStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: '#f0f0f0',
-  borderRadius: '20px',
-  fontSize: '0.9rem',
-  color: '#333'
 } as const;
 
 const previewContainer = {
@@ -454,6 +460,15 @@ const previewContent = {
   gap: '1rem'
 } as const;
 
+const titleImageStyle = {
+  width: '250px',
+  height: '150px',
+  objectFit: 'contain', // Ensures the whole image is visible
+  display: 'block',
+  margin: '0 auto 1rem auto', // Centers the image horizontally
+} as const;
+
+
 const saveButtonStyle = {
   padding: '0.75rem 1.5rem',
   backgroundColor: 'rgba(var(--foreground), 0.1)',
@@ -473,3 +488,29 @@ const saveButtonStyle = {
   }
 } as const;
 
+const baseIngredientsContainer = {
+  padding: '1.5rem',
+  backgroundColor: 'rgba(var(--foreground), 0.03)',
+  borderRadius: '12px',
+  border: '1px solid rgba(var(--foreground), 0.1)'
+} as const;
+
+const baseIngredientsTitle = {
+  marginBottom: '0.5rem',
+  color: 'var(--foreground)',
+  opacity: 0.8
+} as const;
+
+const baseIngredientsList = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.5rem'
+} as const;
+
+const baseIngredientStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: 'rgba(var(--foreground), 0.1)',
+  borderRadius: '20px',
+  fontSize: '0.9rem',
+  color: 'var(--foreground)'
+} as const;

@@ -7,19 +7,29 @@ export interface minRecipe {
   }>
 }
 
-export interface Recipe {
+interface Ingredient {
+  name: string;
+  quantity: string;
+  unit: string;
+}
+
+interface Recipe {
   id: string;
   name: string;
-  ingredients: Array<{
-    name: string;
-    quantity: string;
-    unit: string;
-  }>;
+  cuisine: string;
+  ingredients: Ingredient[];
+  prepTime: string;
+  cookTime: string;
+  instructions: string[];
+  servings: number;
+  equipment: string[];
+  difficulty: string;
+  author: string;
 }
 
 export function convertRecipesToMinRecipes(recipes: Recipe[]): minRecipe[] {
   const minRecipes: minRecipe[] = [];
-  
+
   for (let i = 0; i < recipes.length; i++) {
     const recipe = recipes[i];
     const minRecipe: minRecipe = {
@@ -28,8 +38,31 @@ export function convertRecipesToMinRecipes(recipes: Recipe[]): minRecipe[] {
     };
     minRecipes.push(minRecipe);
   }
-  
+
   return minRecipes;
+}
+
+export function getRecipeFromName(recipes: Recipe[], name: string): Recipe {
+  const foundRecipe = recipes.find(recipe => recipe.name === name);
+  
+  if (!foundRecipe) {
+    // Return a default recipe object rather than undefined
+    return {
+      id: 'not-found',
+      name: 'Recipe Not Found',
+      cuisine: '',
+      ingredients: [],
+      prepTime: '',
+      cookTime: '',
+      instructions: ['Recipe could not be found'],
+      servings: 0,
+      equipment: [],
+      difficulty: 'unknown',
+      author: 'system'
+    };
+  }
+
+  return foundRecipe;
 }
 
 export function getListOfRecipes(recipes: minRecipe[], availableIngredients: string[]): string[] {
@@ -45,7 +78,7 @@ export function getListOfRecipes(recipes: minRecipe[], availableIngredients: str
 function canMakeRecipe(recipe: minRecipe, normalizedAvailable: string[]): boolean {
   return recipe.ingredients.every(ingredient => {
     const normalizedIngredient = normalizeIngredient(ingredient.name);
-    return normalizedAvailable.some(available => 
+    return normalizedAvailable.some(available =>
       matchesIngredient(normalizedIngredient, available)
     );
   });
@@ -63,7 +96,7 @@ function matchesIngredient(recipeIng: string, availableIng: string): boolean {
   const availableWords = availableIng.split(/\s+/);
 
   // Count matching words (bidirectional)
-  const matchingWords = recipeWords.filter(rw => 
+  const matchingWords = recipeWords.filter(rw =>
     availableWords.some(aw => aw.includes(rw) || rw.includes(aw))
   ).length;
 

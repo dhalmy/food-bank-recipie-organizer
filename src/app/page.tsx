@@ -20,8 +20,6 @@ export default function LandingPage() {
       if (!exists) {
         await create_database();
         setDbStatus('Database created.');
-        const db = await openDB('foodBank', 1);
-        await create_dummy_data(db); // Add dummy data
       } else {
         await use_found_database();
         setDbStatus('Database already exists.');

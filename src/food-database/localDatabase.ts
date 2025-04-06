@@ -2300,7 +2300,7 @@ export function get_database(): Database {
           db.inventoryItems = [];
         }
         
-        console.log('Retrieved database with items:', db.inventoryItems);
+        console.log('Retrieved database with items');
         return db;
       }
     }
@@ -2315,14 +2315,14 @@ export function get_database(): Database {
 export function save_database(db: Database): void {
   try {
     if (typeof window !== 'undefined') {
-      console.log('Saving database with items:', db.inventoryItems);
+      console.log('Saving database with items');
       localStorage.setItem('foodBankDB', JSON.stringify(db));
       
       // Verify save by immediately reading back
       const savedDB = localStorage.getItem('foodBankDB');
       if (savedDB) {
         const parsedDB = JSON.parse(savedDB);
-        console.log('Verification of saved database:', parsedDB.inventoryItems);
+        console.log('Verification of saved database');
       }
     }
   } catch (error) {
