@@ -22,7 +22,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         <header style={headerStyle}>
           <div style={logoContainerStyle}>
             <Image src="/favicon.ico" alt="Logo" width={40} height={40} style={{ borderRadius: '50%' }} />
-            <span style={siteNameStyle}>Food Bro</span>
+            <span style={siteNameStyle}>Pantry EQ</span>
           </div>
           <nav style={navStyle}>
             {[
