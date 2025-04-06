@@ -29,6 +29,9 @@ export interface InventoryItem {
   expirationDate: string;
   quantity: QuantityValue;
   servingSize: QuantityValue;
+  imageUrl?: string; // Optional URL to the product image
+  nutritionImageUrl?: string; // Optional URL to the nutrition facts image
+  count?: number; // Track number of duplicate items
 }
 
 export interface FoodType {
@@ -155,52 +158,2098 @@ export function create_database_with_dummy_data(): void {
         ],
         inventoryItems: [
           {
-            serialNumber: "GRAIN001",
-            foodTypeId: 1,
-            subCategory: "Rice",
-            nutritionalFacts: {
-              calories: { value: 130, unit: "kcal" },
-              protein: { value: 2.7, unit: "g" },
-              fat: { value: 0.3, unit: "g" },
-              carbohydrates: { value: 28, unit: "g" },
-              sugar: { value: 0, unit: "g" },
-              sodium: { value: 1, unit: "mg" }
+            "serialNumber": "014800000238",
+            "foodTypeId": 3,
+            "subCategory": "Applesauces",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 88,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 22.1,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 21.2,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
             },
-            expirationDate: "2024-12-31",
-            quantity: { value: 10, unit: "kg" },
-            servingSize: { value: 100, unit: "g" }
+            "expirationDate": "2025-08-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "container"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/001/480/000/0238/front_en.3.400.jpg",
+            "count": 5
           },
           {
-            serialNumber: "PROT001",
-            foodTypeId: 2,
-            subCategory: "Canned Beans",
-            nutritionalFacts: {
-              calories: { value: 120, unit: "kcal" },
-              protein: { value: 7, unit: "g" },
-              fat: { value: 0.5, unit: "g" },
-              carbohydrates: { value: 22, unit: "g" },
-              sugar: { value: 1, unit: "g" },
-              sodium: { value: 400, unit: "mg" }
+            "serialNumber": "039400016144",
+            "foodTypeId": 2,
+            "subCategory": "Canned white common beans",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 115,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 5.38,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.769,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 23.1,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 9.23,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 438,
+                "unit": "mg"
+              }
             },
-            expirationDate: "2024-10-15",
-            quantity: { value: 24, unit: "cans" },
-            servingSize: { value: 130, unit: "g" }
+            "expirationDate": "2025-11-06",
+            "quantity": {
+              "value": 794,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 0.5,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/003/940/001/6144/front_en.8.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/003/940/001/6144/nutrition_en.12.400.jpg",
+            "count": 5
           },
           {
-            serialNumber: "VEG001",
-            foodTypeId: 3,
-            subCategory: "Canned Vegetables",
-            nutritionalFacts: {
-              calories: { value: 25, unit: "kcal" },
-              protein: { value: 1.2, unit: "g" },
-              fat: { value: 0.1, unit: "g" },
-              carbohydrates: { value: 5, unit: "g" },
-              sugar: { value: 2, unit: "g" },
-              sodium: { value: 300, unit: "mg" }
+            "serialNumber": "078742001012",
+            "foodTypeId": 2,
+            "subCategory": "Chicken breasts",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 77,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 16.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.76,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 493,
+                "unit": "mg"
+              }
             },
-            expirationDate: "2024-08-30",
-            quantity: { value: 36, unit: "cans" },
-            servingSize: { value: 125, unit: "g" }
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 5,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/007/874/200/1012/front_en.11.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/007/874/200/1012/nutrition_en.13.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "086600000206",
+            "foodTypeId": 2,
+            "subCategory": "Canned tunas",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 89,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 19.64,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 321,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-04-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 2,
+              "unit": "onz"
+            },
+            "count": 5
+          },
+          {
+            "serialNumber": "096619653133",
+            "foodTypeId": 2,
+            "subCategory": "Canned salmons",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 94,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 20,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.76,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 282,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 6,
+              "unit": "cans"
+            },
+            "servingSize": {
+              "value": 3,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/009/661/965/3133/front_en.3.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/661/965/3133/nutrition_en.5.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "034700054117",
+            "foodTypeId": 3,
+            "subCategory": "Undefined",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 17,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1.65,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 2.48,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 256,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-04-06",
+            "quantity": {
+              "value": 121,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 0.5,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/003/470/005/4117/front_en.6.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/003/470/005/4117/nutrition_en.8.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "024000163190",
+            "foodTypeId": 3,
+            "subCategory": "Undefined",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 28,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1.3,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 5.85,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 1.95,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0.202,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-10-06",
+            "quantity": {
+              "value": 124,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 124,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3190/front_en.6.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "024000163022",
+            "foodTypeId": 1,
+            "subCategory": "Canned sweet corn",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 48,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.8,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.8,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 10.4,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 5.6,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-03-06",
+            "quantity": {
+              "value": 432,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3022/front_en.27.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "024000162971",
+            "foodTypeId": 3,
+            "subCategory": "Canned vegetables",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 41,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.81,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 8.94,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 8.13,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 203,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-01-06",
+            "quantity": {
+              "value": 441,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/2971/front_en.10.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/2971/nutrition_en.12.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "024000162995",
+            "foodTypeId": 3,
+            "subCategory": "Canned vegetables",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 20,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.659,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 4.63,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.64,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 198,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-03-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 2,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/2995/front_en.3.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "024000163015",
+            "foodTypeId": 1,
+            "subCategory": "70",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 48,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.8,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.8,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 10.4,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 4.8,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 272,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-12-06",
+            "quantity": {
+              "value": 418,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/front_en.26.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/400/016/3015/nutrition_en.28.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "00000000040822",
+            "foodTypeId": 1,
+            "subCategory": "Produce",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 27,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.688,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.0625,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 5.84,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.66,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 2.5,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-02-06",
+            "quantity": {
+              "value": 1,
+              "unit": "cup"
+            },
+            "servingSize": {
+              "value": 160,
+              "unit": "g"
+            },
+            "count": 5
+          },
+          {
+            "serialNumber": "861745000010",
+            "foodTypeId": 1,
+            "subCategory": "Chicken eggs",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 140,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 12,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 10,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 140,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-03-06",
+            "quantity": {
+              "value": 24,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/086/174/500/0010/front_en.33.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/086/174/500/0010/nutrition_en.29.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "021000604647",
+            "foodTypeId": 5,
+            "subCategory": "Processed cheese in slices",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 287,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 19,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 19,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 9.52,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 9.52,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 1100,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-09-06",
+            "quantity": {
+              "value": 12,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "slice"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/100/060/4647/front_en.32.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/100/060/4647/nutrition_en.24.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "051500255162",
+            "foodTypeId": 2,
+            "subCategory": "Creamy peanut butter",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 576,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 21.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 48.5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 24.2,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 9.09,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 424,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-05-06",
+            "quantity": {
+              "value": 16,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/005/150/025/5162/front_en.61.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/005/150/025/5162/nutrition_en.63.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "098308243236",
+            "foodTypeId": 2,
+            "subCategory": "Dehydrated poultry broth stock",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 251,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 16.7,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 33.3,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 16.7,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 5830,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-06-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "tsp"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/009/830/824/3236/front_en.15.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/830/824/3236/nutrition_en.17.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "851552001010",
+            "foodTypeId": 2,
+            "subCategory": "Dry Beans",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 224,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 18.4,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 2.04,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 63.3,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.04,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 10.200000000000001,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-05-06",
+            "quantity": {
+              "value": 32,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 49,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/085/155/200/1010/front_en.28.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/085/155/200/1010/nutrition_en.32.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "859941005915",
+            "foodTypeId": 3,
+            "subCategory": "Frozen cauliflower florets",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 500,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 10.714285714286,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 25,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 57.142857142857,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 3.5714285714286,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 607.14285714284,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-04-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "onz"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/085/994/100/5915/front_en.12.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/085/994/100/5915/nutrition_en.18.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "00447874",
+            "foodTypeId": 1,
+            "subCategory": "Couscous",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-10-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/000/044/7874/front_en.3.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/000/044/7874/nutrition_en.11.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "4005817079610",
+            "foodTypeId": 3,
+            "subCategory": "Fresh zucchini",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-10-06",
+            "quantity": {
+              "value": 500,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/400/581/707/9610/front_en.12.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "0027000378151",
+            "foodTypeId": 2,
+            "subCategory": "Soups",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 111,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 6.82,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 4.71,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 10.4,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.59,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 405000,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-08-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/700/037/8151/front_en.13.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/700/037/8151/nutrition_en.17.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "810032300463",
+            "foodTypeId": 1,
+            "subCategory": "Pumpkin seeds",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 571,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 28.6,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 46.4,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 14.3,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 482,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-01-06",
+            "quantity": {
+              "value": 22,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/081/003/230/0463/front_en.46.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/081/003/230/0463/nutrition_en.42.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "099482500924",
+            "foodTypeId": 1,
+            "subCategory": "Packaged Food",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-12-06",
+            "quantity": {
+              "value": 32,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/009/948/250/0924/front_en.9.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/948/250/0924/nutrition_en.5.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "021000658831",
+            "foodTypeId": 1,
+            "subCategory": "Macaroni and cheese",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-06-06",
+            "quantity": {
+              "value": 7.25,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/002/100/065/8831/front_en.97.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/002/100/065/8831/nutrition_en.99.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "856312002771",
+            "foodTypeId": 5,
+            "subCategory": "Lactose free milk",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 50,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 5.42,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.88,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 2.5,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 50,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-08-06",
+            "quantity": {
+              "value": 1.5,
+              "unit": "l"
+            },
+            "servingSize": {
+              "value": 240,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/085/631/200/2771/front_en.155.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/085/631/200/2771/nutrition_en.157.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5000171010025",
+            "foodTypeId": 2,
+            "subCategory": "Canned salmons",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 151,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 20.4,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 7.8,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 360,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-04-06",
+            "quantity": {
+              "value": 210,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/500/017/101/0025/front_en.27.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/500/017/101/0025/nutrition_en.29.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "0699058010828",
+            "foodTypeId": 3,
+            "subCategory": "Mixed bell peppers",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 35,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 6,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-11-06",
+            "quantity": {
+              "value": 454,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/069/905/801/0828/front_en.3.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5051140474201",
+            "foodTypeId": 6,
+            "subCategory": "Groceries",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 128,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 6.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 9.2,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 3.7,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.3,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 2480,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-01-06",
+            "quantity": {
+              "value": 185,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 5,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/114/047/4201/front_en.20.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/114/047/4201/nutrition_en.29.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "0094922424990",
+            "foodTypeId": 2,
+            "subCategory": "Beans",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 16,
+              "unit": "oz"
+            },
+            "servingSize": {
+              "value": 4,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/009/492/242/4990/front_en.8.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5010046001003",
+            "foodTypeId": 1,
+            "subCategory": "Canned sweet corn",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 77,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 2.4,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.2,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 12.6,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 7.4,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 160,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 198,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 0.5,
+              "unit": "cup"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/501/004/600/1003/front_en.19.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/501/004/600/1003/nutrition_en.27.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5057545745946",
+            "foodTypeId": 3,
+            "subCategory": "Canned tomatoes",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 22,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1.1,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.1,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 3.8,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 3.8,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 27.5,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-12-06",
+            "quantity": {
+              "value": 400,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/754/574/5946/front_en.33.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/754/574/5946/nutrition_en.40.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "4088600550862",
+            "foodTypeId": 3,
+            "subCategory": "Canned tomatoes",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 22,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1.1,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.1,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 3.8,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 3.8,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 4,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-05-06",
+            "quantity": {
+              "value": 400,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/408/860/055/0862/front_en.3.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/408/860/055/0862/nutrition_en.10.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "3600900011037",
+            "foodTypeId": 1,
+            "subCategory": "Quinoa",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 362,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 14,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 4.1,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 65,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-08-06",
+            "quantity": {
+              "value": 400,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/360/090/001/1037/front.12.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/360/090/001/1037/nutrition.10.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5051399182506",
+            "foodTypeId": 2,
+            "subCategory": "Canned chickpeas",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 115,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 6.7,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 2.2,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 13.6,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0.4,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 40,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-11-06",
+            "quantity": {
+              "value": 400,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/139/918/2506/front_en.39.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/139/918/2506/nutrition_en.41.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "6111021090056",
+            "foodTypeId": 3,
+            "subCategory": "Tomato pastes",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 119,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 4.6,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.4,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 23.7,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 9,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 200,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-09-06",
+            "quantity": {
+              "value": 1,
+              "unit": "item"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/611/102/109/0056/front_fr.15.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/611/102/109/0056/nutrition_fr.17.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "8076800195057",
+            "foodTypeId": 1,
+            "subCategory": "Durum wheat spaghetti",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 364,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 13,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 2,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 71,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 3.5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 4,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-06-06",
+            "quantity": {
+              "value": 500,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 85,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/807/680/019/5057/front_en.3428.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/807/680/019/5057/nutrition_en.3056.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "8076809529433",
+            "foodTypeId": 1,
+            "subCategory": "Penne rigate",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 350,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 13,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 2.5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 64,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 3.5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 4,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-02-06",
+            "quantity": {
+              "value": 500,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 80,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/807/680/952/9433/front_en.377.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/807/680/952/9433/nutrition_en.374.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "0096619488827",
+            "foodTypeId": 2,
+            "subCategory": "Chicken breasts",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 107,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 23.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.79,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 482,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-05-06",
+            "quantity": {
+              "value": 354,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 56,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/009/661/948/8827/front_en.259.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/009/661/948/8827/nutrition_en.261.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5057967342044",
+            "foodTypeId": 1,
+            "subCategory": "Wheat breads",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 284,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 8.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 49.7,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.2,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 386,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-12-06",
+            "quantity": {
+              "value": 8,
+              "unit": "pack"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "tortilla"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/front_en.48.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/796/734/2044/nutrition_en.50.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5057753125769",
+            "foodTypeId": 2,
+            "subCategory": "Tunas in brine",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 109,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 24.9,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 393,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-02-06",
+            "quantity": {
+              "value": 145,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "portion"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/775/312/5769/front_en.38.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/775/312/5769/nutrition_en.34.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "00389501",
+            "foodTypeId": 1,
+            "subCategory": "Salads",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 25,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 1.9,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 3.2,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 2.7,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 80,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-02-06",
+            "quantity": {
+              "value": 150,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/000/038/9501/front_en.13.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/000/038/9501/nutrition_en.15.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5000295142893",
+            "foodTypeId": 5,
+            "subCategory": "Cheddar cheese",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 416,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 25.3,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 35,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 657,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-03-06",
+            "quantity": {
+              "value": 350,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "serving"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/500/029/514/2893/front_en.13.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/500/029/514/2893/nutrition_en.19.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5051790270581",
+            "foodTypeId": 2,
+            "subCategory": "Cooked green lentils",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 96,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 6.2,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.7,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 13.2,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0.8,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 4,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 390,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 118,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/505/179/027/0581/front_en.45.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/505/179/027/0581/nutrition_en.55.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "01800982",
+            "foodTypeId": 2,
+            "subCategory": "Groceries",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 40,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 2.5,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.8,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 3.4,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-11-06",
+            "quantity": {
+              "value": 600,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "half"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/000/180/0982/front_en.5.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/000/180/0982/nutrition_en.7.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "5000119410696",
+            "foodTypeId": 1,
+            "subCategory": "Brown rices",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 177,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 4,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 35.3,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0.1,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 4,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-12-06",
+            "quantity": {
+              "value": 1,
+              "unit": "kg"
+            },
+            "servingSize": {
+              "value": 77,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/500/011/941/0696/front_en.16.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "20242091",
+            "foodTypeId": 3,
+            "subCategory": "Fresh broccoli",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 0,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2025-07-06",
+            "quantity": {
+              "value": 500,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 100,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/002/024/2091/front_es.102.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "20165079",
+            "foodTypeId": 3,
+            "subCategory": "Fresh vegetables",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 29,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 0.5,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.5,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 6,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 5.5,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 28,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-10-06",
+            "quantity": {
+              "value": 1,
+              "unit": "kg"
+            },
+            "servingSize": {
+              "value": 80,
+              "unit": "g"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/002/016/5079/front_en.23.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/002/016/5079/nutrition_en.25.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "20142360",
+            "foodTypeId": 1,
+            "subCategory": "Basmati rices",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 132,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 3.12,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 0.72,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 27.6,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 240,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2027-02-06",
+            "quantity": {
+              "value": 250,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 1,
+              "unit": "container"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/000/002/014/2360/front_en.24.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/000/002/014/2360/nutrition_en.32.400.jpg",
+            "count": 5
+          },
+          {
+            "serialNumber": "4088600157924",
+            "foodTypeId": 1,
+            "subCategory": "Basmati rices",
+            "nutritionalFacts": {
+              "calories": {
+                "value": 134,
+                "unit": "kcal"
+              },
+              "protein": {
+                "value": 2.64,
+                "unit": "g"
+              },
+              "fat": {
+                "value": 1.84,
+                "unit": "g"
+              },
+              "carbohydrates": {
+                "value": 26.4,
+                "unit": "g"
+              },
+              "sugar": {
+                "value": 0.08,
+                "unit": "g"
+              },
+              "sodium": {
+                "value": 0,
+                "unit": "mg"
+              }
+            },
+            "expirationDate": "2026-06-06",
+            "quantity": {
+              "value": 250,
+              "unit": "g"
+            },
+            "servingSize": {
+              "value": 0.5,
+              "unit": "pack"
+            },
+            "imageUrl": "https://images.openfoodfacts.org/images/products/408/860/015/7924/front_en.17.400.jpg",
+            "nutritionImageUrl": "https://images.openfoodfacts.org/images/products/408/860/015/7924/nutrition_en.19.400.jpg",
+            "count": 5
           }
         ]
       };
@@ -251,6 +2300,7 @@ export function get_database(): Database {
           db.inventoryItems = [];
         }
         
+        console.log('Retrieved database with items:', db.inventoryItems);
         return db;
       }
     }
@@ -265,7 +2315,15 @@ export function get_database(): Database {
 export function save_database(db: Database): void {
   try {
     if (typeof window !== 'undefined') {
+      console.log('Saving database with items:', db.inventoryItems);
       localStorage.setItem('foodBankDB', JSON.stringify(db));
+      
+      // Verify save by immediately reading back
+      const savedDB = localStorage.getItem('foodBankDB');
+      if (savedDB) {
+        const parsedDB = JSON.parse(savedDB);
+        console.log('Verification of saved database:', parsedDB.inventoryItems);
+      }
     }
   } catch (error) {
     console.error('Error saving database:', error);
@@ -345,11 +2403,34 @@ export function update_inventory_item(item: InventoryItem): void {
       db.inventoryItems = [];
     }
     
+    console.log(`Updating item with serialNumber ${item.serialNumber}:`, item);
+    
+    // Find the index of the item to update
     const index = db.inventoryItems.findIndex(i => i.serialNumber === item.serialNumber);
+    
     if (index !== -1) {
-      db.inventoryItems[index] = item;
-      save_database(db);
+      // Item exists, update it
+      console.log(`Found item at index ${index}, updating it`);
+      db.inventoryItems[index] = { ...item };
+      
+      // Remove any duplicate entries with the same serialNumber
+      // This ensures we only have one instance of each item
+      if (db.inventoryItems.filter(i => i.serialNumber === item.serialNumber).length > 1) {
+        console.log(`Found duplicates for ${item.serialNumber}, removing them`);
+        db.inventoryItems = db.inventoryItems.filter((i, idx) => 
+          i.serialNumber !== item.serialNumber || idx === index
+        );
+      }
+      
+      console.log(`Updated inventory item at index ${index}:`, db.inventoryItems[index]);
+    } else {
+      // Item doesn't exist yet, add it
+      console.log(`Item not found, adding new item`);
+      db.inventoryItems.push({ ...item });
     }
+    
+    // Save the updated database
+    save_database(db);
   } catch (error) {
     console.error('Error updating inventory item:', error);
   }
