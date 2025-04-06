@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getAllIngredientsList } from '@/food-database/inventoryUtils';
+import { convertRecipesToMinRecipes, getListOfRecipes } from './types';
 
 interface Ingredient {
   name: string;
@@ -30,6 +32,9 @@ export default function RecipesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
+  const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
+  const [availableRecipes, setAvailableRecipes] = useState<string[]>([]);
+
   const baseIngredients = ['pasta', 'chicken', 'salad', 'tomato', 'rice'];
 
   // Load recipes on initial render
@@ -48,6 +53,9 @@ export default function RecipesPage() {
         setIsLoading(false);
       }
     };
+
+    setAvailableIngredients(getAllIngredientsList());
+    setAvailableRecipes(getListOfRecipes(convertRecipesToMinRecipes(recipes), availableIngredients));
     fetchRecipes();
   }, []);
 
@@ -226,7 +234,16 @@ export default function RecipesPage() {
         <div style={baseIngredientsContainer}>
           <p style={baseIngredientsTitle}>Available Base Ingredients:</p>
           <div style={baseIngredientsList}>
-            {baseIngredients.map((ing, i) => (
+            {availableIngredients.map((ing, i) => (
+              <span key={i} style={baseIngredientStyle}>{ing}</span>
+            ))}
+          </div>
+        </div>
+
+        <div style={baseIngredientsContainer}>
+          <p style={baseIngredientsTitle}>Available Recipes:</p>
+          <div style={baseIngredientsList}>
+            {availableRecipes.map((ing, i) => (
               <span key={i} style={baseIngredientStyle}>{ing}</span>
             ))}
           </div>
