@@ -42,7 +42,7 @@ https://github.com/user-attachments/assets/2cdbd45e-e3a4-4815-801d-6a967aac8685
 1.  **Clone the repository:**
 
     ```bash
-    git clone [your-repository-url]
+    git clone https://github.com/dhalmy/food-bank-recipie-organizer
     cd food-bank-recipe-organizer
     ```
 
