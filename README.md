@@ -19,9 +19,18 @@ Our path was filled with both breakthroughs and obstacles:
 - **AI Integration:** Integrating AI for recipe generation required innovative thinking, as Pierre worked tirelessly to ensure that the technology could translate ingredient lists into creative and nutritious recipes.
 
 
+## Screenshots from the app
+
+![Screenshot 2025-04-08 at 15-41-41 Pantry EQ - Equal Acess Meal Kits](https://github.com/user-attachments/assets/b4cba1a8-d6ce-48a1-be79-1e74c9d98573)
+![inventory](https://github.com/user-attachments/assets/654c1a3b-765a-4924-9b64-401d4b70006d)
+![Screenshot 2025-04-08 at 15-44-09 Pantry EQ - Equal Acess Meal Kits](https://github.com/user-attachments/assets/61145769-f588-4370-b6a4-551ad7fec98f)
+![Screenshot 2025-04-08 at 15-45-13 Pantry EQ - Equal Acess Meal Kits](https://github.com/user-attachments/assets/08f956eb-f454-4f9b-90d3-42c578b0ef71)
 
 
-This project is a Next.js application designed to help food banks organize and generate recipes based on available ingredients.
+## Video Demo
+
+https://github.com/user-attachments/assets/2cdbd45e-e3a4-4815-801d-6a967aac8685
+
 
 ## Prerequisites
 
@@ -72,4 +81,6 @@ This project is a Next.js application designed to help food banks organize and g
 ## Docker Compose (Optional)
 
 If you prefer to use Docker Compose, run `docker-compose up --build` root of your project:
+
+
 
